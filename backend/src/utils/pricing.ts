@@ -176,24 +176,60 @@ export class PricingCalculator {
 
   validateCouponForService(coupon: ICoupon, serviceType: string): { valid: boolean; message?: string } {
     if (!coupon.isActive) {
-      return { valid: false, message: 'Coupon is not active' };
+      return { valid: false, message: 'This coupon is currently not active' };
     }
 
     const now = new Date();
     if (now < coupon.validFrom) {
-      return { valid: false, message: 'Coupon is not yet valid' };
+      const validFromDate = coupon.validFrom.toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      return { valid: false, message: `This coupon will be valid from ${validFromDate}` };
     }
 
     if (now > coupon.validUntil) {
-      return { valid: false, message: 'Coupon has expired' };
+      const validUntilDate = coupon.validUntil.toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      return { valid: false, message: `This coupon expired on ${validUntilDate}` };
     }
 
     if (coupon.usageLimit && coupon.currentUsageCount >= coupon.usageLimit) {
-      return { valid: false, message: 'Coupon usage limit exceeded' };
+      return { valid: false, message: 'This coupon has reached its usage limit and can no longer be used' };
     }
 
     if (!coupon.applicableServices.includes(serviceType as any)) {
-      return { valid: false, message: `Coupon is not applicable for ${serviceType} bookings` };
+      // Create user-friendly service names
+      const serviceNames: { [key: string]: string } = {
+        'airport': 'Airport Transport',
+        'yoga': 'Yoga Sessions',
+        'rental': 'Vehicle Rental',
+        'adventure': 'Adventure Sports'
+      };
+
+      const currentServiceName = serviceNames[serviceType] || serviceType;
+      const applicableServiceNames = coupon.applicableServices.map(service =>
+        serviceNames[service] || service
+      );
+
+      // Create a user-friendly list
+      let serviceList: string;
+      if (applicableServiceNames.length === 1) {
+        serviceList = applicableServiceNames[0];
+      } else if (applicableServiceNames.length === 2) {
+        serviceList = applicableServiceNames.join(' and ');
+      } else {
+        serviceList = applicableServiceNames.slice(0, -1).join(', ') + ', and ' + applicableServiceNames[applicableServiceNames.length - 1];
+      }
+
+      return {
+        valid: false,
+        message: `This coupon is only valid for ${serviceList}. It cannot be used for ${currentServiceName}.`
+      };
     }
 
     return { valid: true };

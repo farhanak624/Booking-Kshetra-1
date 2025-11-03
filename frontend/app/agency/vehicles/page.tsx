@@ -18,6 +18,7 @@ import AgencyNav from '../../../components/AgencyNav';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import ErrorMessage from '../../../components/ErrorMessage';
 import ImageUpload from '../../../components/ImageUpload';
+import toast from 'react-hot-toast';
 
 interface Vehicle {
   _id: string;
@@ -90,12 +91,21 @@ export default function AgencyVehicles() {
         formData.append('images', file);
       });
 
-      const response = await apiClient.agencyPost(`/agency/vehicles/${vehicleId}/upload-images`, formData);
+      const token = localStorage.getItem('agencyToken');
+      const response = await fetch(`http://localhost:5001/api/agency/vehicles/${vehicleId}/upload-images`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
-      if (response.success && response.data) {
-        return (response.data as any).newImageUrls;
+      const result = await response.json();
+
+      if (result.success) {
+        return result.data.newImageUrls;
       } else {
-        throw new Error(response.error || 'Failed to upload images');
+        throw new Error(result.message || 'Failed to upload images');
       }
     } catch (error) {
       console.error('Vehicle image upload error:', error);
@@ -117,7 +127,9 @@ export default function AgencyVehicles() {
       }
       setError('');
     } catch (err) {
-      setError('Failed to load vehicles');
+      const errorMessage = 'Failed to load vehicles';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Vehicles error:', err);
     } finally {
       setLoading(false);
@@ -157,11 +169,14 @@ export default function AgencyVehicles() {
 
       if (response.success) {
         setVehicles(vehicles.filter(v => v._id !== vehicleId));
+        toast.success('Vehicle deleted successfully!');
       } else {
-        setError('Failed to delete vehicle');
+        const errorMessage = 'Failed to delete vehicle';
+        toast.error(errorMessage);
       }
     } catch (err) {
-      setError('Failed to delete vehicle');
+      const errorMessage = 'Failed to delete vehicle';
+      toast.error(errorMessage);
       console.error('Delete error:', err);
     }
   };
@@ -189,8 +204,10 @@ export default function AgencyVehicles() {
           setPendingImages([]);
           setPendingImagePreviews([]);
           setShowModal(false);
+          toast.success('Vehicle updated successfully!');
         } else {
-          setError(response.error || 'Failed to update vehicle');
+          const errorMessage = response.error || 'Failed to update vehicle';
+          toast.error(errorMessage);
         }
       } else {
         // Create new vehicle
@@ -207,7 +224,7 @@ export default function AgencyVehicles() {
               newVehicle.vehicleImages = newImageUrls;
             } catch (error) {
               console.error('Failed to upload vehicle images:', error);
-              setError('Vehicle created but failed to upload images. You can add them later.');
+              toast.error('Vehicle created but failed to upload images. You can add them later.');
             }
           }
 
@@ -218,12 +235,15 @@ export default function AgencyVehicles() {
           setPendingImages([]);
           setPendingImagePreviews([]);
           setShowModal(false);
+          toast.success('Vehicle created successfully!');
         } else {
-          setError(response.error || 'Failed to create vehicle');
+          const errorMessage = response.error || 'Failed to create vehicle';
+          toast.error(errorMessage);
         }
       }
     } catch (err) {
-      setError('Failed to save vehicle');
+      const errorMessage = 'Failed to save vehicle';
+      toast.error(errorMessage);
       console.error('Submit error:', err);
     } finally {
       setSubmitLoading(false);
@@ -549,8 +569,9 @@ export default function AgencyVehicles() {
                               ? { ...v, vehicleImages: [...(v.vehicleImages || []), ...newImageUrls] }
                               : v
                           ));
+                          toast.success('Vehicle images uploaded successfully!');
                         } catch (error) {
-                          setError('Failed to upload images. Please try again.');
+                          toast.error('Failed to upload images. Please try again.');
                         }
                       }}
                       maxFiles={10}

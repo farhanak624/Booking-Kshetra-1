@@ -1,7 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
-import { Upload, X, Image as ImageIcon, Plus, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState } from "react";
+import {
+  Upload,
+  Plus,
+  AlertCircle,
+  CheckCircle,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 
 interface AccommodationImageUploadProps {
   images: string[];
@@ -16,25 +23,25 @@ export default function AccommodationImageUpload({
   onImagesChange,
   onUpload,
   maxImages = 4,
-  disabled = false
+  disabled = false,
 }: AccommodationImageUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
 
   const validateFiles = (files: File[]): string | null => {
-    if (files.length === 0) return 'Please select at least one image';
+    if (files.length === 0) return "Please select at least one image";
 
     if (images.length + files.length > maxImages) {
       return `Maximum ${maxImages} images allowed. You currently have ${images.length} images.`;
     }
 
     for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        return 'Please select only image files';
+      if (!file.type.startsWith("image/")) {
+        return "Please select only image files";
       }
       if (file.size > 5 * 1024 * 1024) {
-        return 'Each image must be less than 5MB';
+        return "Each image must be less than 5MB";
       }
     }
     return null;
@@ -43,7 +50,7 @@ export default function AccommodationImageUpload({
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
-    setError('');
+    setError("");
     const fileArray = Array.from(files);
 
     const validationError = validateFiles(fileArray);
@@ -57,7 +64,7 @@ export default function AccommodationImageUpload({
       const newImageUrls = await onUpload(fileArray);
       onImagesChange([...images, ...newImageUrls]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -93,10 +100,10 @@ export default function AccommodationImageUpload({
   };
 
   const replaceImage = async (index: number, file: File) => {
-    setError('');
+    setError("");
 
     const validationError = validateFiles([file]);
-    if (validationError && !validationError.includes('Maximum')) {
+    if (validationError && !validationError.includes("Maximum")) {
       setError(validationError);
       return;
     }
@@ -108,7 +115,7 @@ export default function AccommodationImageUpload({
       newImages[index] = newImageUrl;
       onImagesChange(newImages);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -131,44 +138,53 @@ export default function AccommodationImageUpload({
 
       {/* Current Images */}
       {images.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {images.map((imageUrl, index) => (
-            <div key={index} className="relative group">
-              <div className="aspect-square relative overflow-hidden rounded-lg border-2 border-gray-200">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+            >
+              {/* Image Container */}
+              <div className="aspect-square relative overflow-hidden bg-gray-100">
                 <img
                   src={imageUrl}
                   alt={`Accommodation image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 flex gap-2">
-                    <label className="bg-blue-600 text-white px-3 py-1 rounded text-sm cursor-pointer hover:bg-blue-700">
-                      Replace
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            replaceImage(index, file);
-                          }
-                        }}
-                        disabled={disabled || uploading}
-                      />
-                    </label>
-                    <button
-                      onClick={() => removeImage(index)}
-                      className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
-                      disabled={disabled || uploading}
-                    >
-                      Remove
-                    </button>
-                  </div>
+                {/* Image number badge */}
+                <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-semibold shadow-lg">
+                  {index + 1}
                 </div>
               </div>
-              <div className="absolute -top-2 -left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
-                {index + 1}
+
+              {/* Action buttons container */}
+              <div className="p-3 space-y-2">
+                <label className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:scale-[1.02]">
+                  <RefreshCw className="w-4 h-4" />
+                  Replace Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        replaceImage(index, file);
+                      }
+                    }}
+                    disabled={disabled || uploading}
+                  />
+                </label>
+
+                <button
+                  onClick={() => removeImage(index)}
+                  className="w-full bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 border border-red-200 hover:border-red-300"
+                  disabled={disabled || uploading}
+                  title="Remove image"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove Image
+                </button>
               </div>
             </div>
           ))}
@@ -180,19 +196,23 @@ export default function AccommodationImageUpload({
         <div
           className={`
             relative border-2 border-dashed rounded-lg p-6 text-center transition-colors
-            ${dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-gray-400'}
-            ${error ? 'border-red-300 bg-red-50' : ''}
+            ${dragOver ? "border-blue-400 bg-blue-50" : "border-gray-300"}
+            ${
+              disabled
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer hover:border-gray-400"
+            }
+            ${error ? "border-red-300 bg-red-50" : ""}
           `}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => {
             if (!disabled) {
-              const input = document.createElement('input');
-              input.type = 'file';
+              const input = document.createElement("input");
+              input.type = "file";
               input.multiple = true;
-              input.accept = 'image/*';
+              input.accept = "image/*";
               input.onchange = (e) => handleInputChange(e as any);
               input.click();
             }
@@ -217,8 +237,9 @@ export default function AccommodationImageUpload({
                   <p className="text-sm text-gray-600">
                     {images.length === 0
                       ? `Click to upload or drag and drop images (max ${maxImages})`
-                      : `Add ${maxImages - images.length} more image${maxImages - images.length !== 1 ? 's' : ''}`
-                    }
+                      : `Add ${maxImages - images.length} more image${
+                          maxImages - images.length !== 1 ? "s" : ""
+                        }`}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     PNG, JPG, GIF up to 5MB each
@@ -243,7 +264,8 @@ export default function AccommodationImageUpload({
         <div className="flex items-center space-x-2 text-green-600 text-sm">
           <CheckCircle className="h-4 w-4" />
           <span>
-            {images.length} image{images.length !== 1 ? 's' : ''} uploaded successfully
+            {images.length} image{images.length !== 1 ? "s" : ""} uploaded
+            successfully
           </span>
         </div>
       )}

@@ -19,6 +19,7 @@ import AgencyNav from '../../../components/AgencyNav';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import ErrorMessage from '../../../components/ErrorMessage';
 import ImageUpload from '../../../components/ImageUpload';
+import toast from 'react-hot-toast';
 
 interface Driver {
   _id: string;
@@ -110,7 +111,9 @@ export default function AgencyDrivers() {
       }
       setError('');
     } catch (err) {
-      setError('Failed to load drivers');
+      const errorMessage = 'Failed to load drivers';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Drivers error:', err);
     } finally {
       setLoading(false);
@@ -159,11 +162,16 @@ export default function AgencyDrivers() {
 
       if (response.success) {
         setDrivers(drivers.filter(d => d._id !== driverId));
+        toast.success('Driver deleted successfully!');
       } else {
-        setError('Failed to delete driver');
+        const errorMessage = 'Failed to delete driver';
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (err) {
-      setError('Failed to delete driver');
+      const errorMessage = 'Failed to delete driver';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Delete error:', err);
     }
   };
@@ -182,8 +190,11 @@ export default function AgencyDrivers() {
             d._id === editingDriver._id ? (response.data as any)?.driver : d
           ));
           setShowModal(false);
+          toast.success('Driver updated successfully!');
         } else {
-          setError(response.error || 'Failed to update driver');
+          const errorMessage = response.error || 'Failed to update driver';
+          setError(errorMessage);
+          toast.error(errorMessage);
         }
       } else {
         // Create new driver
@@ -202,7 +213,9 @@ export default function AgencyDrivers() {
             }
           } catch (imageError) {
             console.error('Failed to upload images for new driver:', imageError);
-            setError('Driver created but failed to upload images. You can upload them later by editing the driver.');
+            const imageErrorMessage = 'Driver created but failed to upload images. You can upload them later by editing the driver.';
+            setError(imageErrorMessage);
+            toast.error('Failed to upload driver images');
           }
 
           setDrivers([...drivers, newDriver]);
@@ -211,12 +224,17 @@ export default function AgencyDrivers() {
           setPendingProfilePhoto(null);
           setPendingLicensePreview('');
           setPendingProfilePreview('');
+          toast.success('Driver created successfully!');
         } else {
-          setError(response.error || 'Failed to create driver');
+          const errorMessage = response.error || 'Failed to create driver';
+          setError(errorMessage);
+          toast.error(errorMessage);
         }
       }
     } catch (err) {
-      setError('Failed to save driver');
+      const errorMessage = 'Failed to save driver';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Submit error:', err);
     } finally {
       setSubmitLoading(false);
@@ -266,26 +284,32 @@ export default function AgencyDrivers() {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await apiClient.agencyPost(
-        `/agency/drivers/${driverId}/upload-license`,
-        formData
-      );
+      const token = localStorage.getItem('agencyToken');
+      const response = await fetch(`http://localhost:5001/api/agency/drivers/${driverId}/upload-license`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
-      if (response.success && response.data) {
-        const data = response.data as any;
+      const result = await response.json();
+
+      if (result.success) {
         // Update the driver in the local state
         setDrivers(prev => prev.map(d =>
           d._id === driverId
-            ? { ...d, licenseImage: data.licenseImageUrl }
+            ? { ...d, licenseImage: result.data.licenseImageUrl }
             : d
         ));
 
         // Update editing driver if it's the same one
         if (editingDriver && editingDriver._id === driverId) {
-          setEditingDriver(prev => prev ? { ...prev, licenseImage: data.licenseImageUrl } : null);
+          setEditingDriver(prev => prev ? { ...prev, licenseImage: result.data.licenseImageUrl } : null);
         }
+        toast.success('License image uploaded successfully!');
       } else {
-        throw new Error(response.error || 'Failed to upload license image');
+        throw new Error(result.message || 'Failed to upload license image');
       }
     } catch (error) {
       console.error('License upload error:', error);
@@ -298,26 +322,32 @@ export default function AgencyDrivers() {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await apiClient.agencyPost(
-        `/agency/drivers/${driverId}/upload-photo`,
-        formData
-      );
+      const token = localStorage.getItem('agencyToken');
+      const response = await fetch(`http://localhost:5001/api/agency/drivers/${driverId}/upload-photo`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
-      if (response.success && response.data) {
-        const data = response.data as any;
+      const result = await response.json();
+
+      if (result.success) {
         // Update the driver in the local state
         setDrivers(prev => prev.map(d =>
           d._id === driverId
-            ? { ...d, profilePhoto: data.profilePhotoUrl }
+            ? { ...d, profilePhoto: result.data.profilePhotoUrl }
             : d
         ));
 
         // Update editing driver if it's the same one
         if (editingDriver && editingDriver._id === driverId) {
-          setEditingDriver(prev => prev ? { ...prev, profilePhoto: data.profilePhotoUrl } : null);
+          setEditingDriver(prev => prev ? { ...prev, profilePhoto: result.data.profilePhotoUrl } : null);
         }
+        toast.success('Profile photo uploaded successfully!');
       } else {
-        throw new Error(response.error || 'Failed to upload profile photo');
+        throw new Error(result.message || 'Failed to upload profile photo');
       }
     } catch (error) {
       console.error('Photo upload error:', error);
@@ -742,7 +772,7 @@ export default function AgencyDrivers() {
                     onChange={(e) => setNewLanguage(e.target.value)}
                     placeholder="Add a language (e.g., English, Hindi, Malayalam)"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddLanguage())}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddLanguage())}
                   />
                   <button
                     type="button"

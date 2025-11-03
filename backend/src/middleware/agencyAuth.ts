@@ -44,13 +44,6 @@ export const agencyAuth = async (req: AgencyAuthRequest, res: Response, next: Ne
       });
     }
 
-    // Check if agency is active
-    if (!agency.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Agency account is deactivated'
-      });
-    }
 
     req.agency = agency;
     next();
@@ -86,7 +79,7 @@ export const optionalAgencyAuth = async (req: AgencyAuthRequest, res: Response, 
 
     if (decoded.type === 'agency') {
       const agency = await Agency.findById(decoded.agencyId);
-      if (agency && agency.isActive) {
+      if (agency) {
         req.agency = agency;
       }
     }

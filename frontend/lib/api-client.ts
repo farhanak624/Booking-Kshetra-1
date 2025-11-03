@@ -20,9 +20,10 @@ class ApiClient {
 
   constructor(baseUrl?: string) {
     const baseURL = baseUrl ||
-      process.env.NEXT_PUBLIC_API_BASE_URL 
-      // ||
-      // "http://localhost:5001/api";
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "http://localhost:5001/api";
+
+    console.log('API Client Base URL:', baseURL); // Debug log
 
     this.axiosInstance = axios.create({
       baseURL,
@@ -107,10 +108,25 @@ class ApiClient {
         }
       }
 
+      console.log('Making API request:', {
+        method,
+        url: config.url,
+        baseURL: this.axiosInstance.defaults.baseURL,
+        headers: requestHeaders,
+        hasBody: !!body
+      });
+
       const response = await this.axiosInstance.request(config);
       return this.handleResponse<T>(response);
     } catch (error: any) {
       console.error("Request Error:", error);
+      console.error("Request Details:", {
+        method,
+        endpoint,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data
+      });
 
       if (error.response) {
         // Server responded with error status

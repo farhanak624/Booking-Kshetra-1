@@ -296,292 +296,109 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Header />
 
-      {/* Hero Section - Split Layout with Beach Background */}
-      <section className="relative min-h-screen overflow-hidden bg-gray-50">
-        {/* Parallax Background */}
-        <motion.div style={{ y }} className="absolute inset-0 scale-110">
+      {/* Hero Section - Tropical Night Theme */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
           <img
-            src="https://ik.imagekit.io/8xufknozx/615043_122333741244763_442710492_o.jpg?updatedAt=1760020608104"
-            alt="Varkala Beach"
+            src="https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710"
+            alt="Kshetra Retreat Hero"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-        </motion.div>
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
 
-        {/* Content - Split Layout */}
+        {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen">
-              {/* Left Side - Content */}
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1 }}
-                className="text-white lg:pr-8"
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="max-w-3xl"
+            >
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">BOOK ROOMS & SERVICES</span>
+                <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4">
+                  All In <span className="text-pink-500">One</span> Place
+                </span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-annie-telescope">
+                Find the perfect stay and trusted services in seconds. Browse rooms, book instantly, and get reliable help at your fingertips.
+              </p>
+
+              {/* CTA Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  window.open(
+                    "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala",
+                    "_blank"
+                  )
+                }
+                className="bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg px-10 py-4 rounded-2xl transition-all duration-300 shadow-lg font-urbanist"
               >
-                {/* Pre-title */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="mb-72"
-                >
-                </motion.div>
-
-                {/* Main Title */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className=""
-                >
-                  {/* <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-none mb-3">
-                    <span className="block text-white">Kshetra</span>
-                    <span className="block text-orange-400 text-4xl md:text-5xl lg:text-6xl font-light">
-                      Retreat
-                    </span>
-                  </h1> */}
-                </motion.div>
-
-                {/* Description */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="mb-2"
-                >
-                  <p className="text-3xl md:text-2xl text-white/90 font-light leading-relaxed max-w-lg">
-                    Welcome To The Boundless Bed Of 
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  className="mb-4"
-                >
-                    <div
-                    onClick={() => {
-                      window.open("https://maps.app.goo.gl/8vRv3Ys4F12MMzdMA", "_blank");
-                    }}
-                    className="flex items-center gap-3 text-white/80 cursor-pointer hover:text-orange-300 transition-colors"
-                    >
-                    <MapPin className="w-5 h-5 text-orange-400" />
-                    <span className="text-lg font-light text-orange-400">
-                      Kshetra Retreat North Cliff Varkala Beach
-                    </span>
-                    </div>
-                </motion.div>
-                {/* Location */}
-
-                {/* CTA Buttons */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 }}
-                  className="flex flex-col sm:flex-row gap-4"
-                >
-                  <button
-                    onClick={() =>
-                      window.open(
-                        "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala",
-                        "_blank"
-                      )
-                    }
-                    className="group px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    Book Your Stay
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-
-                  <button
-                    onClick={() => router.push("/yoga")}
-                    className="group px-8 py-4 bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white font-semibold text-lg rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    Explore More
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </motion.div>
-              </motion.div>
-
-              {/* Right Side - Empty for image showcase */}
-              <div className="hidden lg:block">
-                {/* This space intentionally left for the background image to show */}
-              </div>
-            </div>
+                Start Your Booking
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Main Services Carousel Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-5xl md:text-6xl font-extralight text-white mb-6">
-              Our Main{" "}
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Attractions
-              </span>
-            </h2>
-            <p className="text-2xl text-gray-300 max-w-3xl mx-auto">
-              Discover the three pillars of your perfect retreat experience
-            </p>
-          </motion.div>
+      {/* Kerala's Spirit Section */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png"
+            alt="Where Kerala's Spirit Meets Coastal Serenity"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-          {/* Services Carousel */}
-          <div className="relative max-w-7xl mx-auto">
-            {/* Carousel Container */}
-            <div className="relative overflow-hidden rounded-3xl">
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
+              {/* Left Side - Text Content */}
               <motion.div
-                className="flex transition-transform duration-700 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {mainServices.map((service, index) => (
-                  <div key={service.title} className="w-full flex-shrink-0">
-                    <div className="relative min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden py-12 md:py-16">
-                      {/* Background Image with Parallax */}
-                      <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105"
-                        style={{ backgroundImage: `url('${service.image}')` }}
-                      />
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-r ${service.color} opacity-80`}
-                      />
-
-                      {/* Content */}
-                      <div className="relative z-10 text-white text-center px-4 md:px-8 max-w-6xl mx-auto">
-                        <motion.div
-                          initial={{ opacity: 0, y: 50 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.8 }}
-                          className="space-y-4 md:space-y-6 lg:space-y-8"
-                        >
-                          <div className="flex justify-center mb-4 md:mb-6">
-                            <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                              <service.icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
-                            </div>
-                          </div>
-
-                          <span className="inline-block px-3 py-1 md:px-4 md:py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm font-medium">
-                            {service.category}
-                          </span>
-
-                          <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold">
-                            {service.title}
-                          </h3>
-
-                          <p className="text-lg md:text-xl lg:text-2xl opacity-90 max-w-4xl mx-auto leading-relaxed">
-                            {service.description}
-                          </p>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4 max-w-4xl mx-auto">
-                            {service.features.map((feature, idx) => (
-                              <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 md:px-3 md:py-2"
-                              >
-                                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full flex-shrink-0" />
-                                <span className="text-xs md:text-sm font-medium">
-                                  {feature}
-                                </span>
-                              </motion.div>
-                            ))}
-                          </div>
-
-                          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-                            <div className="text-2xl md:text-3xl font-bold">
-                              {service.price}
-                            </div>
-                            <button
-                              onClick={service.onClick}
-                              className="group bg-white text-gray-900 px-6 py-3 md:px-8 md:py-4 rounded-xl text-base md:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3"
-                            >
-                              Book Now
-                              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
-                            </button>
-                          </div>
-                        </motion.div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-
-            {/* Carousel Navigation */}
-            <div className="flex items-center justify-center mt-8 gap-4">
-              <button
-                onClick={prevSlide}
-                className="w-12 h-12 bg-white/20 backdrop-blur-sm shadow-lg rounded-full flex items-center justify-center hover:bg-white/30 transition-colors group"
-              >
-                <ChevronLeft className="w-6 h-6 text-white group-hover:text-gray-200" />
-              </button>
-
-              {/* Dots Indicator */}
-              <div className="flex gap-2">
-                {mainServices.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide
-                        ? "bg-blue-400 w-8"
-                        : "bg-white/30 hover:bg-white/50"
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={nextSlide}
-                className="w-12 h-12 bg-white/20 backdrop-blur-sm shadow-lg rounded-full flex items-center justify-center hover:bg-white/30 transition-colors group"
-              >
-                <ChevronRight className="w-6 h-6 text-white group-hover:text-gray-200" />
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Service Cards */}
-          <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {mainServices.map((service, index) => (
-              <motion.div
-                key={`quick-${service.title}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                onClick={service.onClick}
-                className={`group cursor-pointer bg-gradient-to-br ${service.color} p-8 rounded-2xl text-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2`}
+                transition={{ duration: 1 }}
+                className="text-white"
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <service.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold">{service.title}</h4>
-                    <p className="text-sm opacity-90">{service.category}</p>
-                  </div>
-                </div>
-                <p className="text-lg font-semibold mb-4">{service.price}</p>
-                <div className="flex items-center gap-2 text-white/90 group-hover:text-white transition-colors">
-                  <span className="text-sm font-medium">Book Now</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight font-water-brush">
+                  Where Kerala's Spirit
+                </h1>
+                <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight font-water-brush">
+                  <span className="text-white">Meets</span> <span className="text-pink-500">Coastal Serenity</span>
+                </h2>
+
+                <div className="space-y-6 text-lg md:text-xl leading-relaxed font-urbanist text-white/90">
+                  <p>
+                    Welcome to Kshetra Retreat, a boutique hideaway perched near the iconic North Cliff of Varkala Beach — Kerala's best-kept coastal secret. More than just a stay, Kshetra is a soulful experience crafted around nature, tradition, wellness, and exploration.
+                  </p>
+                  
+                  <p>
+                    Here, your journey through Kerala begins at your doorstep. Step out to five stunning beaches within minutes, sail through tranquil backwaters and houseboats of Kollam just 20 km away, or trek through the misty Western Ghats and Ponmudi tea gardens about 50 km from us. From Kathakali's birthplace in Kottarakara (25 km) to the Raja Ravi Varma Palace (19 km) and royal palaces of Trivandrum (25 km) — every essence of Kerala lies within a short journey.
+                  </p>
+                  
+                  <p>
+                    At Kshetra, we bring this all together — boutique comfort, heartfelt hospitality, and the unmatched advantage of staying in the true cross-section of Kerala tourism.
+                  </p>
                 </div>
               </motion.div>
-            ))}
+
+            
+            </div>
           </div>
         </div>
       </section>

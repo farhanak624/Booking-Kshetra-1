@@ -41,13 +41,6 @@ export const agencyLogin = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if agency is active
-    if (!agency.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Agency account is deactivated'
-      });
-    }
 
     // Check password
     const isPasswordValid = await agency.comparePassword(password);
