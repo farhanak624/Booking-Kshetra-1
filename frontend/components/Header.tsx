@@ -16,13 +16,15 @@ export default function Header() {
     { name: "Contact", href: "/contact" },
   ];
 
-  // Check if we're on the home page to determine if navbar should be transparent
+  // Check if we're on the home page or yoga page to determine if navbar should be transparent
   const isHomePage = pathname === '/';
+  const isYogaPage = pathname === '/yoga';
+  const isTransparentPage = isHomePage || isYogaPage;
 
   return (
     <header 
-      className="sticky top-0 z-50 transition-all duration-300"
-      style={isHomePage ? { position: 'absolute', width: '100%', backgroundColor: 'transparent' } : {}}
+      className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-transparent' : 'sticky top-0 z-50 bg-black backdrop-blur-md shadow-sm'}`}
+      style={isTransparentPage ? { backgroundColor: 'transparent', background: 'transparent' } : {}}
     >
 
       {/* Main header */}
@@ -44,7 +46,7 @@ export default function Header() {
                     key={item.name}
                     href={item.href}
                     className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-sm ${
-                      isHomePage
+                      isTransparentPage
                         ? 'text-gray-300 hover:text-white'
                         : 'text-gray-700 hover:text-gray-900'
                     }`}
@@ -68,7 +70,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`lg:hidden p-2 transition-colors z-10 relative ml-auto ${isHomePage ? 'text-white hover:text-pink-500' : 'text-gray-700 hover:text-gray-900'}`}
+            className={`lg:hidden p-2 transition-colors z-10 relative ml-auto ${isTransparentPage ? 'text-white hover:text-pink-500' : 'text-gray-700 hover:text-gray-900'}`}
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />
@@ -81,7 +83,7 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className={`lg:hidden border-t backdrop-blur-md shadow-lg ${isHomePage ? 'bg-purple-900/95 border-purple-700' : 'bg-white/95 border-gray-200'}`}>
+        <div className={`lg:hidden border-t backdrop-blur-md shadow-lg ${isTransparentPage ? 'bg-purple-900/95 border-purple-700' : 'bg-white/95 border-gray-200'}`}>
           <nav className="container mx-auto px-4 py-4">
             <div className="flex flex-col gap-4">
               {navigation.map((item) => {
@@ -91,7 +93,7 @@ export default function Header() {
                     key={item.name}
                     href={item.href}
                     className={`font-monomaniac-one font-medium py-2 transition-all duration-200 cursor-pointer ${
-                      isHomePage
+                      isTransparentPage
                         ? isActive
                           ? 'text-pink-500 border-l-2 border-pink-500 pl-4'
                           : 'text-white hover:text-pink-500 hover:border-l-2 hover:border-pink-500 hover:pl-4'
