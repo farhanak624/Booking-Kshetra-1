@@ -1,172 +1,150 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Crown,
-  Phone,
-  Mail,
-  MapPin,
-  Shield,
-  Facebook,
-  Instagram,
-  Twitter,
-} from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+
+const stayLinks = [
+  { label: "Rooms & Suites", href: "/rooms" },
+  { label: "Book Your Stay", href: "/booking" },
+  { label: "Photo Gallery", href: "/gallery" },
+];
+
+const experienceLinks = [
+  { label: "Spa & Wellness", href: "/spa" },
+  { label: "Yoga Sessions", href: "/yoga" },
+  { label: "Dining & Cuisine", href: "/dining" },
+];
+
+const supportLinks = [
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "FAQs", href: "/faqs" },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-slate-900 via-gray-900 to-slate-900 text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div>
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
-                <Crown className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
-                  KSHETRA
-                </h1>
-                <p className="text-xs text-gray-300 font-light tracking-wider">
-                  RETREAT RESORT
-                </p>
-              </div>
+    <footer className="bg-[#090515] text-white border-t border-white/10">
+      <div className="container mx-auto px-4 py-16 lg:py-20">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+          <div className="space-y-6">
+            <Link href="/" className="inline-flex flex-col gap-4">
+              <img
+                src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"
+                alt="Kshetra Retreat Logo"
+                className="w-36"
+              />
             </Link>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Experience tranquility and adventure at Kerala's premier
-              beachfront resort. Discover yoga, wellness, and exciting water
-              sports in paradise.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/"
-                  className="text-gray-300 hover:text-orange-400 transition-colors"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/yoga"
-                  className="text-gray-300 hover:text-orange-400 transition-colors"
-                >
-                  Yoga Programs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services"
-                  className="text-gray-300 hover:text-orange-400 transition-colors"
-                >
-                  Adventure Sports
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-gray-300 hover:text-orange-400 transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Contact Info
-            </h3>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-3">
-                <MapPin className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">
-                  88 Varkala Beach, Kerala, India
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-orange-400 flex-shrink-0" />
+            <div className="space-y-2">
+              <p className="text-sm text-white/70 font-annie-telescope tracking-wider uppercase">
+                Where modern comfort
+              </p>
+              <p className="text-xl text-[#E24AA8] font-water-brush leading-none">
+                meets soulful wellness
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              {[
+                { icon: Twitter, label: "Twitter" },
+                { icon: Facebook, label: "Facebook" },
+                { icon: Instagram, label: "Instagram" },
+              ].map((item) => (
                 <a
-                  href="tel:+919847012345"
-                  className="text-gray-300 hover:text-orange-400 transition-colors text-sm"
-                >
-                  +91 98470 12345
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                <a
-                  href="mailto:info@kshetraretreat.com"
-                  className="text-gray-300 hover:text-orange-400 transition-colors text-sm"
-                >
-                  info@kshetraretreat.com
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Admin & Social */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Connect
-            </h3>
-
-            {/* Social Media */}
-            <div>
-              <h4 className="text-sm font-medium mb-3 text-gray-300">
-                Follow Us
-              </h4>
-              <div className="flex gap-3">
-                <a
+                  key={item.label}
                   href="#"
-                  className="p-2 bg-white/10 rounded-lg hover:bg-orange-500/20 transition-colors"
+                  aria-label={item.label}
+                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#E24AA8] hover:text-white transition-all duration-300"
                 >
-                  <Facebook className="w-4 h-4 text-gray-300 hover:text-orange-400" />
+                  <item.icon className="w-4 h-4" />
                 </a>
-                <a
-                  href="#"
-                  className="p-2 bg-white/10 rounded-lg hover:bg-orange-500/20 transition-colors"
-                >
-                  <Instagram className="w-4 h-4 text-gray-300 hover:text-orange-400" />
-                </a>
-                <a
-                  href="#"
-                  className="p-2 bg-white/10 rounded-lg hover:bg-orange-500/20 transition-colors"
-                >
-                  <Twitter className="w-4 h-4 text-gray-300 hover:text-orange-400" />
-                </a>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-700 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            © 2024 Kshetra Retreat Resort. All rights reserved.
-          </p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <Link
-              href="/privacy"
-              className="text-gray-400 hover:text-orange-400 text-sm transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-gray-400 hover:text-orange-400 text-sm transition-colors"
-            >
-              Terms of Service
-            </Link>
+          <div>
+            <h4 className="text-lg font-annie-telescope uppercase tracking-[0.2em] text-white mb-6">
+              Stay
+            </h4>
+            <ul className="space-y-3">
+              {stayLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm font-urbanist text-white/70 hover:text-[#E24AA8] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <div>
+            <h4 className="text-lg font-annie-telescope uppercase tracking-[0.2em] text-white mb-6">
+              Experience
+            </h4>
+            <ul className="space-y-3">
+              {experienceLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm font-urbanist text-white/70 hover:text-[#E24AA8] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-annie-telescope uppercase tracking-[0.2em] text-white mb-6">
+              Support
+            </h4>
+            <ul className="space-y-3">
+              {supportLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm font-urbanist text-white/70 hover:text-[#E24AA8] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-lg font-annie-telescope uppercase tracking-[0.2em] text-white">
+              Contact
+            </h4>
+            <ul className="space-y-4 font-urbanist text-sm text-white/80">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-[#E24AA8] mt-1 flex-shrink-0" />
+                <span>Varkala, Kerala</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-[#E24AA8] flex-shrink-0" />
+                <a href="mailto:hello@kshetra.com" className="hover:text-[#E24AA8] transition-colors">
+                  hello@kshetra.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-[#E24AA8] flex-shrink-0" />
+                <a href="tel:+919876543210" className="hover:text-[#E24AA8] transition-colors">
+                  +91 98765 43210
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10 bg-[#070312]">
+        <div className="container mx-auto px-4 py-6 text-center">
+          <p className="text-xs md:text-sm text-white/50 font-urbanist tracking-wide">
+            © 2025 Kshetra Retreat. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

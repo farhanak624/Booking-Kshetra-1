@@ -57,12 +57,153 @@ interface Accommodation {
 
 export default function Home() {
   const router = useRouter();
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentWellnessSlide, setCurrentWellnessSlide] = useState(0);
+  const [currentMainServiceSlide, setCurrentMainServiceSlide] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [hoveredRoomType, setHoveredRoomType] = useState<string | null>(null);
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+
+  const wellnessSlides = [
+    {
+      id: "wellness-soul",
+      heading: "Wellness That",
+      highlight: "Touches the Soul",
+      description:
+        "Find inner balance with daily yoga sessions, guided meditation, and Ayurveda therapies designed to heal body and mind. Whether you're here for a rejuvenating break or a certified yoga teacher training, Kshetra's serene setting and experienced instructors make it effortless to reconnect with yourself.",
+      background:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg1.png?updatedAt=1762755561353",
+      cardImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr1.png?updatedAt=1762755559262",
+      cardAlt: "Sunrise yoga above misty mountains",
+      visualImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel1.png",
+      visualAlt: "Meditating monk at sunrise over lotus pond",
+      ctaLabel: "Explore Now",
+      highlightColor: "#B23092",
+      metaLabel: "WELLNESS & EXPERIENCES HIGHLIGHT",
+    },
+    {
+      id: "ayurveda-calm",
+      heading: "Adventure Awaits",
+      highlight: "Beyond the Waves",
+      description:
+        "Step out of your room and into adventure. Learn to surf the rolling Arabian Sea, kayak through serene lagoons, paraglide above dramatic cliffs, or trek through lush forest trails. Our team curates unforgettable experiences — from sunrise beach walks to sunset houseboat cruises — so you make the most of every moment in Varkala. ",
+      background:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg2.png?updatedAt=1762758524024",
+      cardImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr4.png?updatedAt=1762758519609",
+      cardAlt: "Ayurvedic massage setup with herbal oils",
+      visualImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel2.png",
+      visualAlt: "Therapist preparing ayurvedic treatment",
+      ctaLabel: "Explore Now",
+      highlightColor: "#F472B6",
+      metaLabel: "CULINARY PREVIEW",
+    },
+    {
+      id: "mindful-retreats",
+      heading: "Taste Kerala’s Flavours at  ",
+      highlight: "Our Courtyard Restaurant",
+      description:
+        "Savour Kerala’s heritage and global cuisines in our open-air courtyard restaurant. From traditional Kerala sadhya and seafood grills to fresh juices and international favourites, our kitchen celebrates seasonal produce and local flavours, creating meals that are as memorable as the sunsets.",
+      background:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg4.png?updatedAt=1762758521798",
+      cardImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr3.png?updatedAt=1762758519740",
+      cardAlt: "Guests meditating beneath palm trees at dusk",
+      visualImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel3.png",
+      visualAlt: "Glasshouse wellness pavilion under palm trees",
+      ctaLabel: "Explore Now",
+      highlightColor: "#F97316",
+      metaLabel: "NEARBY ATTRACTIONS SNAPSHOT",
+    },
+    {
+      id: "detox-journeys",
+      heading: "Explore More,",
+      highlight: "Every Day",
+      description:
+        "Varkala’s unique location makes day trips effortless. Visit Ponmudi tea estates, marvel at Trivandrum’s palaces, explore the Thenmala eco-forest, or watch a Kathakali performance in its birthplace — all while returning to the comfort of your seaside retreat by nightfall.",
+      background:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg3.png?updatedAt=1762758524100",
+      cardImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr2.png?updatedAt=1762758520155",
+      cardAlt: "Sattvic meal setup with fresh ingredients",
+      visualImage:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel4.png",
+      visualAlt: "Guest enjoying detox herbal infusion in garden",
+      ctaLabel: "Explore Now",
+      highlightColor: "#22D3EE",
+      metaLabel: "YOGA & WELLNESS HIGHLIGHT",
+    },
+  ];
+
+  const activeWellnessSlide = wellnessSlides[currentWellnessSlide];
+
+  const comfortAmenities = [
+    {
+      title: "High-Speed WiFi",
+      description: "Stay connected throughout your stay.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/setup1.png",
+    },
+    {
+      title: "Free Parking",
+      description: "Secure parking for all guests.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2035.png?updatedAt=1762766839424",
+    },
+    {
+      title: "24/7 Room Service",
+      description: "Round-the-clock dining service.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2036.png?updatedAt=1762766839364",
+    },
+    {
+      title: "Spa & Wellness",
+      description: "Rejuvenate with Ayurvedic treatments.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2037.png?updatedAt=1762766839423",
+    },
+    {
+      title: "Yoga Shala",
+      description: "Dedicated yoga and meditation space.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2039.png?updatedAt=1762766839543",
+    },
+    {
+      title: "Beach Access",
+      description: "Direct access to Varkala Beach.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2040.png?updatedAt=1762766839538",
+    },
+    {
+      title: "24/7 Security",
+      description: "Safe and secure environment.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2041.png?updatedAt=1762766839517",
+    },
+    {
+      title: "Concierge Service",
+      description: "Personal assistance for all needs.",
+      image:
+        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/Group%2042.png?updatedAt=1762766839444",
+    },
+  ];
+
+  const handleWellnessPrev = () => {
+    setCurrentWellnessSlide((prev) =>
+      prev === 0 ? wellnessSlides.length - 1 : prev - 1
+    );
+  };
+
+  const handleWellnessNext = () => {
+    setCurrentWellnessSlide((prev) =>
+      prev === wellnessSlides.length - 1 ? 0 : prev + 1
+    );
+  };
 
   // Room type images
   const roomImages = {
@@ -215,7 +356,9 @@ export default function Home() {
   // Carousel auto-slide effect
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % mainServices.length);
+      setCurrentMainServiceSlide(
+        (prev) => (prev + 1) % mainServices.length
+      );
     }, 6000);
     return () => clearInterval(timer);
   }, []);
@@ -229,11 +372,11 @@ export default function Home() {
   }, []);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % mainServices.length);
+    setCurrentMainServiceSlide((prev) => (prev + 1) % mainServices.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide(
+    setCurrentMainServiceSlide(
       (prev) => (prev - 1 + mainServices.length) % mainServices.length
     );
   };
@@ -322,7 +465,9 @@ export default function Home() {
             >
               {/* Main Heading */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
-                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">BOOK ROOMS & SERVICES</span>
+                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
+                  BOOK ROOMS & SERVICES
+                </span>
                 <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4">
                   All In <span className="text-pink-500">One</span> Place
                 </span>
@@ -330,7 +475,8 @@ export default function Home() {
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-annie-telescope">
-                Find the perfect stay and trusted services in seconds. Browse rooms, book instantly, and get reliable help at your fingertips.
+                Find the perfect stay and trusted services in seconds. Browse
+                rooms, book instantly, and get reliable help at your fingertips.
               </p>
 
               {/* CTA Button */}
@@ -379,108 +525,727 @@ export default function Home() {
                   Where Kerala's Spirit
                 </h1>
                 <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight font-water-brush">
-                  <span className="text-white">Meets</span> <span className="text-pink-500">Coastal Serenity</span>
+                  <span className="text-white">Meets</span>{" "}
+                  <span className="text-pink-500">Coastal Serenity</span>
                 </h2>
 
                 <div className="space-y-6 text-lg md:text-xl leading-relaxed font-urbanist text-white/90">
                   <p>
-                    Welcome to Kshetra Retreat, a boutique hideaway perched near the iconic North Cliff of Varkala Beach — Kerala's best-kept coastal secret. More than just a stay, Kshetra is a soulful experience crafted around nature, tradition, wellness, and exploration.
+                    Welcome to Kshetra Retreat, a boutique hideaway perched near
+                    the iconic North Cliff of Varkala Beach — Kerala's best-kept
+                    coastal secret. More than just a stay, Kshetra is a soulful
+                    experience crafted around nature, tradition, wellness, and
+                    exploration.
                   </p>
-                  
+
                   <p>
-                    Here, your journey through Kerala begins at your doorstep. Step out to five stunning beaches within minutes, sail through tranquil backwaters and houseboats of Kollam just 20 km away, or trek through the misty Western Ghats and Ponmudi tea gardens about 50 km from us. From Kathakali's birthplace in Kottarakara (25 km) to the Raja Ravi Varma Palace (19 km) and royal palaces of Trivandrum (25 km) — every essence of Kerala lies within a short journey.
+                    Here, your journey through Kerala begins at your doorstep.
+                    Step out to five stunning beaches within minutes, sail
+                    through tranquil backwaters and houseboats of Kollam just 20
+                    km away, or trek through the misty Western Ghats and Ponmudi
+                    tea gardens about 50 km from us. From Kathakali's birthplace
+                    in Kottarakara (25 km) to the Raja Ravi Varma Palace (19 km)
+                    and royal palaces of Trivandrum (25 km) — every essence of
+                    Kerala lies within a short journey.
                   </p>
-                  
+
                   <p>
-                    At Kshetra, we bring this all together — boutique comfort, heartfelt hospitality, and the unmatched advantage of staying in the true cross-section of Kerala tourism.
+                    At Kshetra, we bring this all together — boutique comfort,
+                    heartfelt hospitality, and the unmatched advantage of
+                    staying in the true cross-section of Kerala tourism.
                   </p>
                 </div>
               </motion.div>
-
-            
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Carousel */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-5xl md:text-6xl font-extralight text-white mb-6">
-              What Our Guests Say
-            </h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Real experiences from travelers who found their perfect retreat
-            </p>
-          </motion.div>
+      {/* Why Varkala Section */}
+      <section className="relative min-h-screen overflow-hidden bg-black">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/varkala.png?updatedAt=1762242897187"
+            alt="Why Varkala - Kerala in One Place"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden">
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex items-end">
+          <div className="container mx-auto px-4 pb-20">
+            <div className="max-w-4xl mx-auto text-center">
               <motion.div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentTestimonial * 100}%)`,
-                }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1 }}
+                className="text-white"
               >
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.8 }}
-                      className="bg-white/10 backdrop-blur-sm rounded-3xl p-12 text-center text-white"
-                    >
-                      <div className="flex justify-center mb-6">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="w-8 h-8 fill-yellow-400 text-yellow-400 mx-1"
-                          />
-                        ))}
-                      </div>
-
-                      <blockquote className="text-2xl md:text-3xl font-light mb-8 leading-relaxed italic">
-                        "{testimonial.text}"
-                      </blockquote>
-
-                      <div className="text-xl font-semibold mb-2">
-                        {testimonial.author}
-                      </div>
-                      <div className="text-lg opacity-80">
-                        {testimonial.location}
-                      </div>
-                    </motion.div>
-                  </div>
-                ))}
+                <h2 className="text-4xl font-annie-telescope md:text-7xl lg:text-8xl font-bold mb-4 leading-tight">
+                  Why <span className="text-[#B23092]">Varkala</span>?
+                </h2>
+                <h3 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-8 font-annie-telescope">
+                  It's Kerala in One Place
+                </h3>
+                <p className="text-xl md:text-2xl leading-relaxed font-urbanist text-white/90 max-w-3xl mx-auto">
+                  Varkala is more than a beach town — it's Kerala in miniature.
+                  In an average 25 km radius, you can experience every element
+                  that makes Kerala world-famous.
+                </p>
               </motion.div>
             </div>
-
-            {/* Testimonial Indicators */}
-            <div className="flex justify-center mt-8 gap-3">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentTestimonial
-                      ? "bg-white w-8"
-                      : "bg-white/50 hover:bg-white/70"
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Detailed Room Booking Section with Parallax */}
+      {/* Attractions Grid Section */}
+      <section className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Card 1: Beaches */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 4 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Beaches"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Beaches
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Varkala Beach, Odayam, Edava, Kappil, and Chilakoor are all
+                  within 5 km.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 2: Backwaters & Houseboats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 20 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Backwaters & Houseboats"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Backwaters & Houseboats (Kollam)
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Glide through palm-lined canals just 20 km away.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 3: Adventure & Surfing */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 4 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Adventure & Surfing"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Adventure & Surfing
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Surf the Arabian Sea, kayak the Varkala backwaters, or
+                  paraglide from the cliffs — all steps from Kshetra.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 4: Jatayu Earth Center */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 25 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Jatayu Earth Center"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Jatayu Earth Center
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Explore the world's largest bird sculpture and zip-line
+                  through nature 25 km away.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 5: Ponmudi Hills & Tea Gardens */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 50 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Ponmudi Hills & Tea Gardens"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Ponmudi Hills & Tea Gardens
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  A scenic 2-hour drive (50 km) through winding ghats and lush
+                  estates.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 6: Thenmala Forest Trails */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 4 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Thenmala Forest Trails"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Thenmala Forest Trails
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Trek through biodiversity hotspots of the Western Ghats.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 7: Kathakali's Birthplace */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 25 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Kathakali's Birthplace"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Kathakali's Birthplace (Kottarakara)
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Witness Kerala's classical art where it began, just 25 km
+                  away.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 8: Raja Ravi Varma Palace */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10">
+                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 19 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Raja Ravi Varma Palace"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Raja Ravi Varma Palace & Museum
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  Step into the legacy of India's greatest painter (19 km).
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 9: Trivandrum Palaces */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="relative rounded-2xl overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute top-4 left-4 z-10">
+                <span className="bg-purple-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Just 25 km near
+                </span>
+              </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Trivandrum Palaces"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                  Trivandrum Palaces & Heritage Sites
+                </h3>
+                <p className="text-sm text-white/90 font-urbanist">
+                  A royal journey within 25 km.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Wellness Section */}
+      <section
+        className="relative min-h-[70vh] overflow-visible bg-gradient-to-r from-purple-900 via-purple-800 to-orange-900"
+        style={{
+          backgroundImage: `linear-gradient(115deg, rgba(12, 6, 24, 0.88), rgba(32, 16, 40, 0.65)), url('${activeWellnessSlide.background}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Decorative patterns */}
+        <div className="absolute bottom-0 left-0 w-64 h-64 opacity-20">
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <path
+              d="M50,150 Q100,100 150,150 T250,150"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.3"
+            />
+            <path
+              d="M30,170 Q100,120 170,170 T310,170"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.2"
+            />
+          </svg>
+        </div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20">
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <path
+              d="M50,150 Q100,100 150,150 T250,150"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.3"
+            />
+            <path
+              d="M30,170 Q100,120 170,170 T310,170"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.2"
+            />
+          </svg>
+        </div>
+
+        {/* Explore Now Button */}
+        <div className="absolute top-8 right-8 z-20">
+          <button className="bg-[#B23092] text-white px-6 py-3 rounded-lg font-urbanist font-semibold hover:bg-[#9a2779] transition-colors duration-200">
+            {activeWellnessSlide.ctaLabel}
+          </button>
+        </div>
+
+        <div className="container mx-auto px-4 py-16 lg:py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[420px]">
+            {/* Left Side - Text Content */}
+            <motion.div
+              key={`${activeWellnessSlide.id}-content`}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              className="text-white space-y-6"
+            >
+              <div>
+                <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 font-annie-telescope">
+                  {activeWellnessSlide.heading}
+                </h2>
+                <h3
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 font-water-brush"
+                  style={{ color: activeWellnessSlide.highlightColor }}
+                >
+                  {activeWellnessSlide.highlight}
+                </h3>
+              </div>
+
+              <p className="text-lg md:text-xl leading-relaxed font-urbanist text-white/90 max-w-2xl">
+                {activeWellnessSlide.description}
+              </p>
+
+              {/* Embedded Yoga Image */}
+              <div className="mt-8 rounded-2xl overflow-hidden max-w-md lg:translate-y-12 shadow-xl">
+                <img
+                  src={activeWellnessSlide.cardImage}
+                  alt={activeWellnessSlide.cardAlt}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.div>
+
+            {/* Right Side - Illustration */}
+            <motion.div
+              key={`${activeWellnessSlide.id}-visual`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              className="relative h-full min-h-[600px] flex items-center justify-center"
+            >
+              {/* <div className="relative w-full h-full">
+                {activeWellnessSlide.visualImage && (
+                  <img
+                    src={activeWellnessSlide.visualImage}
+                    alt={activeWellnessSlide.visualAlt}
+                    className="w-full h-full object-contain drop-shadow-2xl"
+                  />
+                )}
+              </div> */}
+            </motion.div>
+          </div>
+
+          {/* Bottom Navigation */}
+          <div className="absolute bottom-8 right-8 z-20 flex items-center gap-6">
+            <button
+              onClick={handleWellnessPrev}
+              className="flex flex-col items-center gap-2 group"
+              aria-label="View previous wellness slide"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#B23092] flex items-center justify-center hover:bg-[#9a2779] transition-colors duration-200">
+                <svg
+                  width="20"
+                  height="13"
+                  viewBox="0 0 20 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.17785 0L0 6.25L6.17785 12.5L7.07768 11.5897L2.43694 6.89383H20V5.60521H2.43606L7.07768 0.911165L6.17785 0Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <span className="text-white text-xs font-urbanist">PREVIOUS</span>
+            </button>
+
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex items-center gap-2">
+                {wellnessSlides.map((slide, index) => {
+                  const isActive = index === currentWellnessSlide;
+                  return (
+                    <button
+                      key={slide.id}
+                      onClick={() => setCurrentWellnessSlide(index)}
+                      aria-label={`Go to ${slide.heading} slide`}
+                      className={`rounded-full transition-all duration-300 ${
+                        isActive
+                          ? "w-4 h-4 bg-white shadow-lg"
+                          : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80"
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+              <span className="text-white/70 text-xs font-urbanist tracking-wide uppercase">
+                {activeWellnessSlide.metaLabel}
+              </span>
+            </div>
+
+            <button
+              onClick={handleWellnessNext}
+              className="flex flex-col items-center gap-2 group"
+              aria-label="View next wellness slide"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#B23092] flex items-center justify-center hover:bg-[#9a2779] transition-colors duration-200">
+                <svg
+                  width="20"
+                  height="13"
+                  viewBox="0 0 20 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M13.8221 0L20 6.25L13.8221 12.5L12.9223 11.5897L17.5631 6.89383H0V5.60521H17.5639L12.9223 0.911165L13.8221 0Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <span className="text-white text-xs font-urbanist">NEXT</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Comfort Amenities Section */}
+      <section
+        className="relative py-24 lg:py-28 text-white bg-black"
+        style={{
+          backgroundImage:
+            "url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetscoastal.png?updatedAt=1762759854675')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-annie-telescope tracking-wide text-white"
+            >
+              Where Comfort
+            </motion.h2>
+            <motion.h3
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-water-brush text-[#E24AA8] mt-2"
+            >
+              Meets Coastal Luxury
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-6 text-base md:text-lg text-white/85 font-urbanist leading-relaxed"
+            >
+              From high-speed WiFi and personalized concierge services to serene
+              yoga spaces and rejuvenating Ayurvedic therapies — every detail at
+              Kshetra is designed to balance luxury, comfort, and cultural
+              harmony for a truly unforgettable stay.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {comfortAmenities.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                className="relative rounded-2xl overflow-hidden group shadow-lg shadow-black/40"
+              >
+                <div className="aspect-[5/5]">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <h4 className="text-xl font-annie-telescope mb-2">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm text-white/85 font-urbanist">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Guest Reviews Section */}
+      <section
+        className="relative py-24 lg:py-32 text-white bg-black"
+        style={{
+          backgroundImage:
+            "url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png')",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+        }}
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-annie-telescope tracking-wide"
+            >
+              Hear from Those
+            </motion.h2>
+            <motion.h3
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-water-brush text-[#F15BAC] mt-3"
+            >
+              Who’ve Stayed with Us
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-6 text-base md:text-lg text-white/80 font-urbanist leading-relaxed"
+            >
+              Our guests are at the heart of Kshetra. Discover the genuine experiences of
+              travellers who found comfort, care, and connection in our coastal retreat.
+            </motion.p>
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {testimonials.map((testimonial, index) => {
+              // const isHighlight = index === 1;
+              return (
+                <motion.div
+                  key={testimonial.author}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className={`relative rounded-3xl p-8 border backdrop-blur-md transition-all duration-300 ${
+                    // isHighlight
+                       "bg-black/70 border-pink-300/40 shadow-2xl hover:shadow-pink-500/30 scale-[1.04]"
+                      // : "bg-black/60 border-white/10 shadow-lg hover:shadow-black/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border border-white/40">
+                      <img
+                        src={`https://i.pravatar.cc/150?img=${index + 21}`}
+                        alt={testimonial.author}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold font-urbanist">
+                        {testimonial.author}
+                      </h4>
+                      <p className="text-sm text-white/70">{testimonial.location}</p>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1 text-[#F56EB3]">
+                      {[...Array(testimonial.rating)].map((_, starIndex) => (
+                        <Star key={starIndex} className="w-4 h-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-white/85 text-base md:text-lg leading-relaxed font-urbanist">
+                    “{testimonial.text}”
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {false && (
+        <>
+          {/* Detailed Room Booking Section with Parallax */}
       <section className="relative py-32 overflow-hidden">
         {/* Parallax Background */}
         <motion.div
@@ -536,7 +1301,9 @@ export default function Home() {
 
                 <div className="space-y-6">
                   {accommodations.map((accommodation, index) => {
-                    const IconComponent = getIconComponent(accommodation.iconType);
+                    const IconComponent = getIconComponent(
+                      accommodation.iconType
+                    );
 
                     return (
                       <motion.div
@@ -546,13 +1313,12 @@ export default function Home() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                         whileHover={{ scale: 1.02 }}
-                        onMouseEnter={() => setHoveredRoomType(accommodation._id)}
+                        onMouseEnter={() =>
+                          setHoveredRoomType(accommodation._id)
+                        }
                         onMouseLeave={() => setHoveredRoomType(null)}
                         onClick={() =>
-                          window.open(
-                            accommodation.externalLink,
-                            "_blank"
-                          )
+                          window.open(accommodation.externalLink, "_blank")
                         }
                         className={`flex items-center gap-4 text-white cursor-pointer p-4 rounded-lg transition-all duration-300 ${
                           hoveredRoomType === accommodation._id
@@ -560,15 +1326,25 @@ export default function Home() {
                             : "hover:bg-white/10"
                         }`}
                       >
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorThemeIconClasses(accommodation.colorTheme)}`}>
+                        <div
+                          className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorThemeIconClasses(
+                            accommodation.colorTheme
+                          )}`}
+                        >
                           <IconComponent className="w-6 h-6" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="text-xl font-semibold">{accommodation.name}</h4>
+                          <h4 className="text-xl font-semibold">
+                            {accommodation.name}
+                          </h4>
                           <p className="text-white/80">
                             {accommodation.description}
                           </p>
-                          <p className={`font-semibold mt-1 ${getTextColorClasses(accommodation.colorTheme)}`}>
+                          <p
+                            className={`font-semibold mt-1 ${getTextColorClasses(
+                              accommodation.colorTheme
+                            )}`}
+                          >
                             {accommodation.price}
                           </p>
                         </div>
@@ -637,71 +1413,83 @@ export default function Home() {
               <div className="mb-4 text-center">
                 <p className="text-white/60 text-sm">
                   {hoveredRoomType
-                    ? `Viewing ${accommodations.find(acc => acc._id === hoveredRoomType)?.name || 'Accommodation'} Images`
+                    ? `Viewing ${
+                        accommodations.find(
+                          (acc) => acc._id === hoveredRoomType
+                        )?.name || "Accommodation"
+                      } Images`
                     : "Hover over accommodations to see images"}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {hoveredRoomType && accommodations.find(acc => acc._id === hoveredRoomType)?.images.length ? (
-                  accommodations.find(acc => acc._id === hoveredRoomType)!.images.map((image, idx) => {
-                    const accommodation = accommodations.find(acc => acc._id === hoveredRoomType)!;
-                    const IconComponent = getIconComponent(accommodation.iconType);
+                {hoveredRoomType &&
+                accommodations.find((acc) => acc._id === hoveredRoomType)
+                  ?.images.length
+                  ? accommodations
+                      .find((acc) => acc._id === hoveredRoomType)!
+                      .images.map((image, idx) => {
+                        const accommodation = accommodations.find(
+                          (acc) => acc._id === hoveredRoomType
+                        )!;
+                        const IconComponent = getIconComponent(
+                          accommodation.iconType
+                        );
 
-                    return (
+                        return (
+                          <motion.div
+                            key={`${hoveredRoomType}-${idx}`}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.4, delay: idx * 0.1 }}
+                            whileHover={{ scale: 1.05, y: -10 }}
+                            className="relative overflow-hidden rounded-2xl group"
+                          >
+                            <img
+                              src={image}
+                              alt={`${accommodation.name} ${idx + 1}`}
+                              className="w-full h-48 object-cover transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+
+                            {/* Image overlay with accommodation type label */}
+                            <div className="absolute bottom-3 left-3 right-3">
+                              <div
+                                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 bg-${accommodation.colorTheme}-500/80 text-white`}
+                              >
+                                <IconComponent className="w-3 h-3" />
+                                <span>{accommodation.name}</span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })
+                  : // Default images when no accommodation is hovered
+                    roomImages.default.map((image, idx) => (
                       <motion.div
-                        key={`${hoveredRoomType}-${idx}`}
+                        key={`default-${idx}`}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
                         whileHover={{ scale: 1.05, y: -10 }}
                         className="relative overflow-hidden rounded-2xl group"
                       >
                         <img
                           src={image}
-                          alt={`${accommodation.name} ${idx + 1}`}
+                          alt={`Accommodation ${idx + 1}`}
                           className="w-full h-48 object-cover transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-                        {/* Image overlay with accommodation type label */}
                         <div className="absolute bottom-3 left-3 right-3">
-                          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 bg-${accommodation.colorTheme}-500/80 text-white`}>
-                            <IconComponent className="w-3 h-3" />
-                            <span>{accommodation.name}</span>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white/80">
+                            <Hotel className="w-3 h-3" />
+                            <span>Our Accommodations</span>
                           </div>
                         </div>
                       </motion.div>
-                    );
-                  })
-                ) : (
-                  // Default images when no accommodation is hovered
-                  roomImages.default.map((image, idx) => (
-                    <motion.div
-                      key={`default-${idx}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}
-                      whileHover={{ scale: 1.05, y: -10 }}
-                      className="relative overflow-hidden rounded-2xl group"
-                    >
-                      <img
-                        src={image}
-                        alt={`Accommodation ${idx + 1}`}
-                        className="w-full h-48 object-cover transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white/80">
-                          <Hotel className="w-3 h-3" />
-                          <span>Our Accommodations</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
-                )}
+                    ))}
               </div>
 
               {/* Hover instruction */}
@@ -716,7 +1504,8 @@ export default function Home() {
                       Interactive Accommodation Gallery
                     </p>
                     <p className="text-white/80 text-sm">
-                      Hover over accommodations on the left to see specific images
+                      Hover over accommodations on the left to see specific
+                      images
                     </p>
                   </div>
                 </motion.div>
@@ -1167,6 +1956,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+        </>
+      )}
 
       <Footer />
     </div>
