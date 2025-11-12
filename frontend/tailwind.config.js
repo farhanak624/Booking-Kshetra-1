@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'monomaniac-one': ['var(--font-monomaniac-one)', 'sans-serif'],
+        'annie-telescope': ['var(--font-annie-use-your-telescope)', 'cursive'],
+        'water-brush': ['var(--font-water-brush)', 'cursive'],
+        'urbanist': ['var(--font-urbanist)', 'sans-serif'],
+      },
       colors: {
         primary: {
           50: '#f0f9ff',

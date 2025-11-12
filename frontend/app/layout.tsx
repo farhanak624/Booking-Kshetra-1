@@ -1,10 +1,30 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Monomaniac_One, Annie_Use_Your_Telescope, Water_Brush, Urbanist } from 'next/font/google'
 import './globals.css'
 import { YogaBookingProvider } from '../contexts/YogaBookingContext'
 import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
+const monomaniacOne = Monomaniac_One({ 
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-monomaniac-one'
+})
+const annieUseYourTelescope = Annie_Use_Your_Telescope({ 
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-annie-use-your-telescope'
+})
+const waterBrush = Water_Brush({ 
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-water-brush'
+})
+const urbanist = Urbanist({ 
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-urbanist'
+})
 
 export const metadata: Metadata = {
   title: 'Kshetra Retreat Resort - Book Your Perfect Stay',
@@ -18,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${monomaniacOne.variable} ${annieUseYourTelescope.variable} ${waterBrush.variable} ${urbanist.variable}`}>
       <body className={inter.className} suppressHydrationWarning={true}>
         <YogaBookingProvider>
           {children}

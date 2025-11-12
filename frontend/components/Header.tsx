@@ -10,62 +10,65 @@ export default function Header() {
   const pathname = usePathname();
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Yoga", href: "/yoga" },
+    { name: "Kshetra", href: "/" },
     { name: "Airport Transport", href: "/airport-transport" },
-    { name: "Adventure Sports", href: "/services" },
-    { name: "Track Booking", href: "/track-booking" },
+    { name: "Rent a Vehicle", href: "/services" },
     { name: "Contact", href: "/contact" },
   ];
 
+  // Check if we're on the home page to determine if navbar should be transparent
+  const isHomePage = pathname === '/';
+
   return (
-    <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <header 
+      className="sticky top-0 z-50 transition-all duration-300"
+      style={isHomePage ? { position: 'absolute', width: '100%', backgroundColor: 'transparent' } : {}}
+    >
 
       {/* Main header */}
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-10 relative">
-            <img src={"https://ik.imagekit.io/8xufknozx/logo_new.png?updatedAt=1760079531972"} className="w-12 h-12" />
-            <div className="hidden sm:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">KSHETRA</h1>
-              <p className="text-sm text-gray-600 font-light tracking-wider">
-                RETREAT
-              </p>
-            </div>
+            <img src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} className="w-24 h-16" />
+            
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 px-8">
-            <div className="flex items-center gap-6 xl:gap-8">
+          <nav className="hidden lg:flex items-center">
+            <div className="flex items-center gap-8">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`font-medium transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-sm xl:text-base ${
-                      isActive
-                        ? 'text-orange-500'
-                        : 'text-gray-700 hover:text-orange-500'
+                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-sm ${
+                      isHomePage
+                        ? 'text-gray-300 hover:text-white'
+                        : 'text-gray-700 hover:text-gray-900'
                     }`}
                   >
                     {item.name}
-                    <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
-                      isActive
-                        ? 'w-full'
-                        : 'w-0 group-hover:w-full'
-                    }`}></span>
                   </Link>
                 );
               })}
             </div>
           </nav>
 
+          {/* Pinkrooms Section */}
+          <div className="hidden lg:flex items-center gap-2">
+            <img 
+              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png?updatedAt=1762181371803" 
+              alt="Kshetra Pinkrooms"
+              className="w-28 h-12 object-contain"
+            />
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:text-gray-900 transition-colors z-10 relative"
+            className={`lg:hidden p-2 transition-colors z-10 relative ml-auto ${isHomePage ? 'text-white hover:text-pink-500' : 'text-gray-700 hover:text-gray-900'}`}
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />
@@ -78,7 +81,7 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg">
+        <div className={`lg:hidden border-t backdrop-blur-md shadow-lg ${isHomePage ? 'bg-purple-900/95 border-purple-700' : 'bg-white/95 border-gray-200'}`}>
           <nav className="container mx-auto px-4 py-4">
             <div className="flex flex-col gap-4">
               {navigation.map((item) => {
@@ -87,8 +90,12 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`font-medium py-2 transition-all duration-200 cursor-pointer ${
-                      isActive
+                    className={`font-monomaniac-one font-medium py-2 transition-all duration-200 cursor-pointer ${
+                      isHomePage
+                        ? isActive
+                          ? 'text-pink-500 border-l-2 border-pink-500 pl-4'
+                          : 'text-white hover:text-pink-500 hover:border-l-2 hover:border-pink-500 hover:pl-4'
+                        : isActive
                         ? 'text-orange-500 border-l-2 border-orange-500 pl-4'
                         : 'text-gray-700 hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-4'
                     }`}
