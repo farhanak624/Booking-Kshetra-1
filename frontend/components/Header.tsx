@@ -16,10 +16,12 @@ export default function Header() {
     { name: "Contact", href: "/contact" },
   ];
 
-  // Check if we're on the home page or yoga page to determine if navbar should be transparent
+  // Check if we're on the home page, yoga page, or payment pages to determine if navbar should be transparent
   const isHomePage = pathname === '/';
   const isYogaPage = pathname === '/yoga';
-  const isTransparentPage = isHomePage || isYogaPage;
+  const isPaymentPage = pathname?.includes('/yoga/booking/payment') || pathname?.includes('/booking/payment');
+  const isAirportTransportPage = pathname === '/airport-transport';
+  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage;
 
   return (
     <header 
@@ -33,7 +35,6 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-10 relative">
             <img src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} className="w-24 h-16" />
-            
           </Link>
 
           {/* Desktop Navigation */}

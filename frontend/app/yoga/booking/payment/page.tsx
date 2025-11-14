@@ -19,7 +19,9 @@ import {
   Activity,
   Heart,
   BookOpen,
-  Percent
+  Percent,
+  MapPin,
+  Building
 } from 'lucide-react'
 import Header from '../../../../components/Header'
 import { bookingAPI } from '../../../../lib/api'
@@ -61,7 +63,18 @@ type BookingData = {
 export default function YogaBookingPaymentPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [bookingData, setBookingData] = useState<BookingData | null>(null)
+  const [sessionData, setSessionData] = useState<SessionData | null>(null)
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+    experience: 'beginner'
+  })
+  const [errors, setErrors] = useState<Partial<FormData>>({})
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('')
@@ -80,12 +93,43 @@ export default function YogaBookingPaymentPage() {
 
     try {
       const data: BookingData = JSON.parse(storedData)
-      setBookingData(data)
+      setSessionData(data.session)
+      // Pre-fill form if user data exists
+      if (data.user) {
+        setFormData(data.user)
+      }
     } catch (error) {
       console.error('Error parsing booking data:', error)
       router.push('/yoga')
     }
   }, [router])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+    // Clear error for this field
+    if (errors[name as keyof FormData]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }))
+    }
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<FormData> = {}
+
+    if (!formData.name.trim()) newErrors.name = 'Name is required'
+    if (!formData.email.trim()) newErrors.email = 'Email is required'
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid'
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required'
+    else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) newErrors.phone = 'Phone number is invalid'
+    if (!formData.address.trim()) newErrors.address = 'Address is required'
+    if (!formData.city.trim()) newErrors.city = 'City is required'
+    if (!formData.state.trim()) newErrors.state = 'State is required'
+    if (!formData.pincode.trim()) newErrors.pincode = 'PIN code is required'
+    else if (!/^\d{6}$/.test(formData.pincode.trim())) newErrors.pincode = 'PIN code must be exactly 6 digits'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -103,7 +147,7 @@ export default function YogaBookingPaymentPage() {
   }
 
   const handleApplyCoupon = async () => {
-    if (!couponCode.trim() || !bookingData) return
+    if (!couponCode.trim() || !sessionData) return
 
     setValidatingCoupon(true)
     setCouponError('')
@@ -112,8 +156,8 @@ export default function YogaBookingPaymentPage() {
       const response = await validateCoupon({
         code: couponCode.trim(),
         serviceType: 'yoga',
-        orderValue: bookingData.session.price,
-        phoneNumber: bookingData.user.phone
+        orderValue: sessionData.price,
+        phoneNumber: formData.phone
       })
 
       if ((response.data as any)?.success && (response.data as any)?.data) {
@@ -138,12 +182,12 @@ export default function YogaBookingPaymentPage() {
   }
 
   const getFinalAmount = () => {
-    if (!bookingData) return 0
-    return bookingData.session.price - couponDiscount
+    if (!sessionData) return 0
+    return sessionData.price - couponDiscount
   }
 
   const createYogaBooking = async () => {
-    if (!bookingData) return null
+    if (!sessionData) return null
 
     try {
       console.log('🚀 Creating yoga booking...')
@@ -158,13 +202,13 @@ export default function YogaBookingPaymentPage() {
         checkIn: new Date().toISOString(),
         checkOut: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         primaryGuestInfo: {
-          name: bookingData.user.name,
-          email: bookingData.user.email,
-          phone: bookingData.user.phone,
-          address: bookingData.user.address,
-          city: bookingData.user.city,
-          state: bookingData.user.state,
-          pincode: bookingData.user.pincode,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
           emergencyContact: {
             name: '',
             phone: '',
@@ -172,7 +216,7 @@ export default function YogaBookingPaymentPage() {
           }
         },
         guests: [{
-          name: bookingData.user.name,
+          name: formData.name,
           age: 25,
           gender: 'Other' as const
           // Skip ID fields for yoga bookings - not needed
@@ -188,12 +232,12 @@ export default function YogaBookingPaymentPage() {
           airportFrom: 'Kochi'
         },
         selectedServices: [],
-        specialRequests: `Yoga Session: ${bookingData.session.name} - ${bookingData.session.description} - Experience Level: ${bookingData.user.experience}`,
-        totalAmount: bookingData.session.price,
+        specialRequests: `Yoga Session: ${sessionData.name} - ${sessionData.description} - Experience Level: ${formData.experience}`,
+        totalAmount: sessionData.price,
         couponCode: appliedCoupon ? couponCode : undefined,
         paymentStatus: 'pending',
         // Add yoga-specific data
-        yogaSessionId: bookingData.session.id,
+        yogaSessionId: sessionData.id,
         bookingType: 'yoga'
       }
 
@@ -229,12 +273,27 @@ export default function YogaBookingPaymentPage() {
     setLoading(false)
   }
 
-  const handlePayment = async () => {
-    if (!bookingData) return
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate form first
+    if (!validateForm()) {
+      return
+    }
+
+    if (!sessionData) return
 
     setLoading(true)
 
     try {
+      // Update localStorage with form data
+      const bookingData = {
+        session: sessionData,
+        user: formData,
+        timestamp: new Date().toISOString()
+      }
+      localStorage.setItem('yogaBookingData', JSON.stringify(bookingData))
+
       console.log('🚀 Starting yoga booking flow...')
 
       // Create booking first
@@ -247,9 +306,9 @@ export default function YogaBookingPaymentPage() {
         amount: getFinalAmount(),
         bookingId: createdBookingId,
         userDetails: {
-          name: bookingData.user.name,
-          email: bookingData.user.email,
-          phone: bookingData.user.phone,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
         },
         onSuccess: handlePaymentSuccess,
         onError: handlePaymentError
@@ -262,9 +321,9 @@ export default function YogaBookingPaymentPage() {
     }
   }
 
-  if (!bookingData) {
+  if (!sessionData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+      <div className="min-h-screen bg-transparent">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
@@ -276,331 +335,370 @@ export default function YogaBookingPaymentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+    <div className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center space-x-8">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                ✓
-              </div>
-              <span className="text-sm font-medium text-green-400">Details</span>
-            </div>
-            <div className="w-16 h-px bg-green-400"></div>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                2
-              </div>
-              <span className="text-sm font-medium text-orange-400">Payment</span>
-            </div>
-          </div>
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-screen overflow-hidden w-full">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full min-h-full">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png?updatedAt=1762969684085"
+            alt="Yoga Booking"
+            className="w-full h-full min-h-screen object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Booking Summary */}
-          <div>
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex flex-col py-12">
+          <div className="container mx-auto px-4 w-full flex-1 flex flex-col justify-center py-12">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope">
+                READY TO STRETCH,
+              </h1>
+              <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-4 font-water-brush">
+                Breathe & Feel Better?
+              </h2>
+              <p className="text-white/90 text-lg font-urbanist max-w-2xl mx-auto mb-0">
+                Reserve your spot and begin your path to balance, peace, and inner strength.
+              </p>
+            </motion.div>
+
+            {/* Payment Details Section */}
+            <div className="container mx-auto px-4 max-w-7xl">
+              <div className="grid lg:grid-cols-2 gap-8">
+            {/* Left Panel - Booking Details Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
+              className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20"
             >
-              <h3 className="text-2xl font-bold text-white mb-8">Booking Summary</h3>
+              <h3 className="text-2xl font-bold text-white mb-2 font-annie-telescope">
+                Booking Details
+              </h3>
+              <p className="text-white/70 mb-8 font-urbanist">
+                Complete your information to proceed
+              </p>
 
-              <div className="space-y-6">
-                {/* Session Icon */}
-                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl mx-auto">
-                  {bookingData.session.type === 'program' ? (
-                    <BookOpen className="w-10 h-10 text-white" />
-                  ) : bookingData.session.type === 'daily_therapy' ? (
-                    <Heart className="w-10 h-10 text-white" />
-                  ) : (
-                    <Activity className="w-10 h-10 text-white" />
-                  )}
-                </div>
-
-                {/* Session Details */}
-                <div className="bg-white/10 rounded-2xl p-6 space-y-4">
-                  <div className="text-center mb-4">
-                    <h4 className="text-xl font-semibold text-white">{bookingData.session.name}</h4>
-                    <p className="text-gray-300 text-sm mt-2">{bookingData.session.description}</p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-5 h-5 text-orange-400" />
-                      <div>
-                        <p className="text-white font-medium">Duration</p>
-                        <p className="text-gray-300 text-sm">{bookingData.session.duration}</p>
-                      </div>
+              <form onSubmit={handlePayment} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Column 1 */}
+                  <div className="space-y-6">
+                    {/* Full Name */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Full Name <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your full name"
+                      />
+                      {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
                     </div>
 
-                    {bookingData.session.schedule && (
-                      <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-orange-400" />
-                        <div>
-                          <p className="text-white font-medium">Schedule</p>
-                          <p className="text-gray-300 text-sm">{bookingData.session.schedule}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {bookingData.session.startDate && bookingData.session.endDate && (
-                      <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-orange-400" />
-                        <div>
-                          <p className="text-white font-medium">Program Dates</p>
-                          <p className="text-gray-300 text-sm">
-                            {formatDate(bookingData.session.startDate)} - {formatDate(bookingData.session.endDate)}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {bookingData.session.instructor && (
-                      <div className="flex items-center gap-3">
-                        <User className="w-5 h-5 text-orange-400" />
-                        <div>
-                          <p className="text-white font-medium">Instructor</p>
-                          <p className="text-gray-300 text-sm">{bookingData.session.instructor}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Customer Details */}
-                <div className="bg-white/10 rounded-2xl p-6">
-                  <h4 className="font-semibold text-white mb-4">Your Details</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <User className="w-4 h-4 text-orange-400" />
-                      <span className="text-gray-300">{bookingData.user.name}</span>
+                    {/* Phone Number */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Phone Number <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your phone number"
+                      />
+                      {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-orange-400" />
-                      <span className="text-gray-300">{bookingData.user.email}</span>
+
+                    {/* City */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        City <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your city"
+                      />
+                      {errors.city && <p className="text-red-400 text-sm mt-1">{errors.city}</p>}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="w-4 h-4 text-orange-400" />
-                      <span className="text-gray-300">{bookingData.user.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Activity className="w-4 h-4 text-orange-400" />
-                      <span className="text-gray-300 capitalize">{bookingData.user.experience} Level</span>
+
+                    {/* PIN Code */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        PIN Code <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleInputChange}
+                        maxLength={6}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter PIN code"
+                      />
+                      {errors.pincode && <p className="text-red-400 text-sm mt-1">{errors.pincode}</p>}
                     </div>
                   </div>
+
+                  {/* Column 2 */}
+                  <div className="space-y-6">
+                    {/* Email Address */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Email Address <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your email"
+                      />
+                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+                    </div>
+
+                    {/* Address */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Address <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your address"
+                      />
+                      {errors.address && <p className="text-red-400 text-sm mt-1">{errors.address}</p>}
+                    </div>
+
+                    {/* State */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        State <span className="text-[#B23092]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your state"
+                      />
+                      {errors.state && <p className="text-red-400 text-sm mt-1">{errors.state}</p>}
+                    </div>
+
+                    {/* Yoga Experience */}
+                    <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Yoga Experience
+                      </label>
+                      <select
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white focus:border-[#B23092] focus:outline-none font-urbanist appearance-none cursor-pointer"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23B23092' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', paddingRight: '2.5rem' }}
+                      >
+                        <option value="beginner" className="bg-black">Beginner</option>
+                        <option value="intermediate" className="bg-black">Intermediate</option>
+                        <option value="advanced" className="bg-black">Advanced</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Coupon Section */}
-                <div className="bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl p-6">
-                  <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
-                    <Percent className="w-5 h-5" />
-                    Have a Coupon Code?
-                  </h4>
-
-                  {!appliedCoupon ? (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                          placeholder="Enter coupon code"
-                          className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-green-400 focus:outline-none"
-                        />
-                        <button
-                          onClick={handleApplyCoupon}
-                          disabled={!couponCode.trim() || validatingCoupon}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                          {validatingCoupon ? (
-                            <Loader className="w-4 h-4 animate-spin" />
-                          ) : (
-                            'Apply'
-                          )}
-                        </button>
-                      </div>
-                      {couponError && (
-                        <p className="text-red-400 text-sm">{couponError}</p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-green-600/20 rounded-lg border border-green-400/30">
-                        <div>
-                          <p className="text-green-400 font-medium">{appliedCoupon.code}</p>
-                          <p className="text-green-300 text-sm">{appliedCoupon.description}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-green-400 font-bold">-{formatCurrency(couponDiscount)}</p>
-                          <button
-                            onClick={handleRemoveCoupon}
-                            className="text-red-400 text-sm hover:text-red-300"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Total Amount */}
-                <div className="bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-2xl p-6 text-center">
-                  {appliedCoupon && (
-                    <div className="mb-4 pb-4 border-b border-white/20">
-                      <div className="flex justify-between text-gray-300 text-sm mb-2">
-                        <span>Subtotal</span>
-                        <span>{formatCurrency(bookingData.session.price)}</span>
-                      </div>
-                      <div className="flex justify-between text-green-400 text-sm">
-                        <span>Coupon Discount</span>
-                        <span>-{formatCurrency(couponDiscount)}</span>
-                      </div>
-                    </div>
-                  )}
-                  <p className="text-gray-300 text-sm mb-2">
-                    {appliedCoupon ? 'Final Amount' : 'Total Amount'}
-                  </p>
-                  <p className="text-4xl font-bold text-white">{formatCurrency(getFinalAmount())}</p>
-                  {appliedCoupon && (
-                    <p className="text-green-400 text-sm mt-2">
-                      You saved {formatCurrency(couponDiscount)}!
-                    </p>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Payment Form */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-8">
+                {/* Proceed to Payment Button */}
                 <button
-                  onClick={() => router.back()}
-                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div>
-                  <h1 className="text-2xl font-bold text-white">Secure Payment</h1>
-                  <p className="text-gray-300">Complete your yoga booking</p>
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                {/* Payment Method */}
-                <div>
-                  <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-orange-400" />
-                    Payment Method
-                  </h2>
-
-                  <div className="border border-orange-400/30 rounded-2xl p-6 bg-orange-500/10">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-orange-500/20 rounded-xl">
-                        <CreditCard className="w-6 h-6 text-orange-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-white">Razorpay</h3>
-                        <p className="text-sm text-gray-300">Cards, UPI, Net Banking, Wallets</p>
-                      </div>
-                      <div className="w-5 h-5 border-2 border-orange-400 rounded-full bg-orange-400 flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Security Features */}
-                <div className="bg-white/10 rounded-2xl p-6">
-                  <h3 className="font-medium text-white mb-4 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-green-400" />
-                    Your Payment is Secure
-                  </h3>
-
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">SSL Encrypted</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">PCI DSS Compliant</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">Bank-grade Security</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">Trusted Platform</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Methods Icons */}
-                <div>
-                  <h3 className="font-medium text-white mb-4">Accepted Payment Methods</h3>
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <CreditCard className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                      <span className="text-xs text-gray-400">Cards</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <Smartphone className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                      <span className="text-xs text-gray-400">UPI</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <span className="text-xs text-gray-400">Net Banking</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <span className="text-xs text-gray-400">Wallets</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Terms */}
-                <div className="text-xs text-gray-400 bg-white/5 p-4 rounded-xl">
-                  <p className="mb-2">By proceeding with the payment, you agree to our:</p>
-                  <ul className="space-y-1 text-gray-500">
-                    <li>• Terms and Conditions</li>
-                    <li>• Privacy Policy</li>
-                    <li>• Cancellation and Refund Policy</li>
-                  </ul>
-                </div>
-
-                {/* Payment Button */}
-                <button
-                  onClick={handlePayment}
+                  type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-4 rounded-2xl font-bold text-lg hover:from-orange-600 hover:to-pink-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full bg-[#B23092] text-white py-4 rounded-full font-bold text-lg hover:bg-[#B23092]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 font-urbanist"
                 >
                   {loading ? (
                     <>
                       <Loader className="w-5 h-5 animate-spin" />
-                      Processing Payment...
+                      Processing...
                     </>
                   ) : (
-                    <>
-                      <Lock className="w-5 h-5" />
-                      Pay {formatCurrency(getFinalAmount())}
-                    </>
+                    'Proceed to Payment'
                   )}
                 </button>
+              </form>
+            </motion.div>
+
+            {/* Right Panel - Your Selection */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20"
+            >
+              <h3 className="text-2xl font-bold text-white mb-8 font-annie-telescope">
+                Your Selection
+              </h3>
+
+              <div className="space-y-6">
+                {/* Course Image and Title */}
+                <div className="flex items-start gap-4">
+                  <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
+                    <img
+                      src={sessionData.type === 'program' 
+                        ? 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+                        : 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+                      }
+                      alt={sessionData.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-xl font-bold text-white font-annie-telescope">
+                      {sessionData.name}
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Course Details - Three Columns */}
+                <div className="grid grid-cols-3 gap-4 py-4 border-y border-white/10">
+                  <div>
+                    <p className="text-white/60 text-sm mb-1 font-urbanist">Duration</p>
+                    <p className="text-white font-semibold font-urbanist">
+                      {sessionData.duration.includes('days') 
+                        ? sessionData.duration.split(' ')[0] + ' days'
+                        : sessionData.duration
+                      }
+                    </p>
+                  </div>
+                  {sessionData.startDate && sessionData.endDate ? (
+                    <div>
+                      <p className="text-white/60 text-sm mb-1 font-urbanist">Program Dates</p>
+                      <p className="text-white font-semibold text-xs font-urbanist leading-tight">
+                        {formatDate(sessionData.startDate)} - {formatDate(sessionData.endDate)}
+                      </p>
+                    </div>
+                  ) : sessionData.schedule ? (
+                    <div>
+                      <p className="text-white/60 text-sm mb-1 font-urbanist">Schedule</p>
+                      <p className="text-white font-semibold text-xs font-urbanist">
+                        {sessionData.schedule}
+                      </p>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                  {sessionData.instructor ? (
+                    <div>
+                      <p className="text-white/60 text-sm mb-1 font-urbanist">Instructor</p>
+                      <p className="text-white font-semibold text-sm font-urbanist">
+                        {sessionData.instructor}
+                      </p>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
+
+                {/* Course Description */}
+                <div>
+                  <p className="text-white/80 text-sm leading-relaxed font-urbanist">
+                    {sessionData.description}
+                  </p>
+                </div>
+
+                {/* Coupon Section */}
+                {!appliedCoupon ? (
+                  <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        placeholder="Have a coupon code?"
+                        className="flex-1 px-4 py-2 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyCoupon}
+                        disabled={!couponCode.trim() || validatingCoupon}
+                        className="px-4 py-2 bg-[#B23092] text-white rounded-lg hover:bg-[#B23092]/90 disabled:opacity-50 disabled:cursor-not-allowed font-urbanist text-sm"
+                      >
+                        {validatingCoupon ? (
+                          <Loader className="w-4 h-4 animate-spin" />
+                        ) : (
+                          'Apply'
+                        )}
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-red-400 text-sm mt-2">{couponError}</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-white/5 rounded-xl p-4 border border-green-400/30">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-green-400 font-medium text-sm">{appliedCoupon.code}</p>
+                        <p className="text-green-300 text-xs">{appliedCoupon.description}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveCoupon}
+                        className="text-red-400 text-xs hover:text-red-300"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Total Amount */}
+                <div className="pt-6 border-t border-white/10">
+                  <div className="mb-3">
+                    <p className="text-white/60 text-sm mb-2 font-urbanist">
+                      {appliedCoupon ? 'Final Amount' : 'Total Amount'}
+                    </p>
+                    {appliedCoupon && (
+                      <div className="mb-2 space-y-1">
+                        <div className="flex justify-between text-white/60 text-sm font-urbanist">
+                          <span>Subtotal</span>
+                          <span className="line-through">{formatCurrency(sessionData.price)}</span>
+                        </div>
+                        <div className="flex justify-between text-green-400 text-sm font-urbanist">
+                          <span>Coupon Discount</span>
+                          <span>-{formatCurrency(couponDiscount)}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[#B23092] font-bold text-4xl font-annie-telescope">
+                    {formatCurrency(getFinalAmount())}
+                  </p>
+                </div>
               </div>
             </motion.div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+    
     </div>
   )
 }
