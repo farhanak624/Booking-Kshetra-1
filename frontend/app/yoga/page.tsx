@@ -123,8 +123,46 @@ export default function YogaPage() {
 
   const handleBookSession = (session: YogaSession) => {
     console.log("Booking session:", session._id);
-    // Redirect to our internal booking system with program type and price
-    router.push(`/yoga/booking/details?session=${session._id}&type=program&price=${session.price}&name=${encodeURIComponent(session.batchName)}&description=${encodeURIComponent(session.description || '')}&instructor=${encodeURIComponent(session.instructor.name)}&startDate=${session.startDate}&endDate=${session.endDate}&duration=${Math.ceil((new Date(session.endDate).getTime() - new Date(session.startDate).getTime()) / (1000 * 60 * 60 * 24))}&sessionType=${session.type}`);
+    // Store session data in localStorage and redirect directly to payment page
+    const sessionData: {
+      id: string;
+      name: string;
+      type: 'program';
+      price: number;
+      duration: string;
+      description: string;
+      instructor: string;
+      startDate: string;
+      endDate: string;
+    } = {
+      id: session._id,
+      name: session.batchName,
+      type: 'program',
+      price: session.price,
+      duration: `${Math.ceil((new Date(session.endDate).getTime() - new Date(session.startDate).getTime()) / (1000 * 60 * 60 * 24))} days`,
+      description: session.description || 'Comprehensive yoga teacher training program',
+      instructor: session.instructor.name,
+      startDate: session.startDate,
+      endDate: session.endDate
+    };
+    
+    const bookingData = {
+      session: sessionData,
+      user: {
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        state: '',
+        pincode: '',
+        experience: 'beginner' as 'beginner' | 'intermediate' | 'advanced'
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    localStorage.setItem('yogaBookingData', JSON.stringify(bookingData));
+    router.push('/yoga/booking/payment');
   };
 
   const handleDailySessionBooking = () => {
@@ -155,10 +193,58 @@ export default function YogaPage() {
       return;
     }
 
-    // Redirect to booking with daily session details
-    router.push(
-      `/yoga/booking/details?session=${selectedDailySession}&type=daily&date=${selectedDate}`
-    );
+    // Create session data for daily sessions
+    const isRegular = selectedDailySession.includes('regular');
+    const timeSlots = isRegular
+      ? {
+          'regular-730': '7:30 AM - 9:00 AM',
+          'regular-900': '9:00 AM - 10:30 AM',
+          'regular-400': '4:00 PM - 5:30 PM'
+        }
+      : {
+          'therapy-1100': '11:00 AM - 12:30 PM',
+          'therapy-530': '5:30 PM - 7:00 PM'
+        };
+
+    const sessionData: {
+      id: string;
+      name: string;
+      type: 'daily_regular' | 'daily_therapy';
+      price: number;
+      duration: string;
+      description: string;
+      schedule: string;
+      instructor: string;
+    } = {
+      id: selectedDailySession,
+      name: isRegular ? 'Regular Yoga Session' : 'Yoga Therapy Session',
+      type: isRegular ? 'daily_regular' : 'daily_therapy',
+      price: isRegular ? 500 : 1500,
+      duration: '1.5 hours',
+      description: isRegular
+        ? 'Traditional Hatha Yoga, Pranayama (Breathing), Meditation Practice - Perfect for all levels'
+        : 'Personalized therapy approach, Healing-focused practices, One-on-one guidance, Therapeutic techniques',
+      schedule: timeSlots[selectedDailySession as keyof typeof timeSlots] || 'Selected time slot',
+      instructor: isRegular ? 'Daily Session Instructor' : 'Therapy Session Instructor'
+    };
+
+    const bookingData = {
+      session: sessionData,
+      user: {
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        state: '',
+        pincode: '',
+        experience: 'beginner' as const
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    localStorage.setItem('yogaBookingData', JSON.stringify(bookingData));
+    router.push('/yoga/booking/payment');
   };
 
   const handleExternalBooking = () => {

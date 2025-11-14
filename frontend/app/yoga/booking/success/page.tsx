@@ -134,12 +134,12 @@ function YogaBookingSuccessPageContent() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-black">
         <Header />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading booking details...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B23092] mx-auto mb-4"></div>
+            <p className="text-white/80 font-urbanist">Loading booking details...</p>
           </div>
         </div>
       </div>
@@ -149,18 +149,18 @@ function YogaBookingSuccessPageContent() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-black">
         <Header />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-12 h-12 text-red-600" />
+            <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-12 h-12 text-[#B23092]" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Error</h1>
-            <p className="text-red-600 mb-4">{error}</p>
+            <h1 className="text-3xl font-bold text-white mb-2 font-annie-telescope">Error</h1>
+            <p className="text-[#B23092] mb-4 font-urbanist">{error}</p>
             <button
               onClick={() => router.push('/yoga')}
-              className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700"
+              className="bg-[#B23092] text-white px-6 py-2 rounded-lg hover:bg-[#9a2578] font-urbanist"
             >
               Back to Yoga
             </button>
@@ -173,15 +173,15 @@ function YogaBookingSuccessPageContent() {
   // No booking data
   if (!bookingDetails) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-black">
         <Header />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Not Found</h1>
-            <p className="text-gray-600 mb-4">The booking details could not be found.</p>
+            <h1 className="text-3xl font-bold text-white mb-2 font-annie-telescope">Booking Not Found</h1>
+            <p className="text-white/80 mb-4 font-urbanist">The booking details could not be found.</p>
             <button
               onClick={() => router.push('/yoga')}
-              className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700"
+              className="bg-[#B23092] text-white px-6 py-2 rounded-lg hover:bg-[#9a2578] font-urbanist"
             >
               Back to Yoga
             </button>
@@ -192,7 +192,7 @@ function YogaBookingSuccessPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -203,13 +203,13 @@ function YogaBookingSuccessPageContent() {
           transition={{ duration: 0.5 }}
           className="text-center mb-8"
         >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-12 h-12 text-[#B23092]" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 font-annie-telescope">
             Booking Confirmed!
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-white/80 font-urbanist">
             Your yoga session has been successfully booked
           </p>
         </motion.div>
@@ -222,20 +222,20 @@ function YogaBookingSuccessPageContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="bg-white/5 backdrop-blur-md rounded-xl border border-white/20 p-6"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Booking Details</h2>
+                <h2 className="text-xl font-semibold text-white font-annie-telescope">Booking Details</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={handleShareBooking}
-                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <Share2 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={handleDownloadReceipt}
-                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <Download className="w-5 h-5" />
                   </button>
@@ -244,14 +244,14 @@ function YogaBookingSuccessPageContent() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div className="min-w-0">
-                  <span className="text-gray-600">Booking ID</span>
+                  <span className="text-white/60 font-urbanist">Booking ID</span>
                   <div className="flex items-start gap-2 mt-1">
-                    <p className="font-bold text-sm md:text-lg text-orange-600 font-mono break-all flex-1 leading-relaxed">
+                    <p className="font-bold text-sm md:text-lg text-[#B23092] font-mono break-all flex-1 leading-relaxed">
                       {bookingDetails._id}
                     </p>
                     <button
                       onClick={handleCopyBookingId}
-                      className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex-shrink-0 mt-0.5"
+                      className="p-1 text-white/60 hover:text-[#B23092] hover:bg-white/10 rounded transition-colors flex-shrink-0 mt-0.5"
                       title="Copy Booking ID"
                     >
                       <Copy className="w-4 h-4" />
@@ -259,16 +259,16 @@ function YogaBookingSuccessPageContent() {
                   </div>
                 </div>
                 <div>
-                  <span className="text-gray-600">Booking Date</span>
-                  <p className="font-medium text-gray-900">{formatDate(bookingDetails.createdAt)}</p>
+                  <span className="text-white/60 font-urbanist">Booking Date</span>
+                  <p className="font-medium text-white font-urbanist">{formatDate(bookingDetails.createdAt)}</p>
                 </div>
                 <div>
-                  <span className="text-gray-600">Payment ID</span>
-                  <p className="font-medium text-gray-900 font-mono text-xs">{bookingDetails.paymentId || paymentId || 'N/A'}</p>
+                  <span className="text-white/60 font-urbanist">Payment ID</span>
+                  <p className="font-medium text-white font-mono text-xs font-urbanist">{bookingDetails.paymentId || paymentId || 'N/A'}</p>
                 </div>
                 <div>
-                  <span className="text-gray-600">Amount Paid</span>
-                  <p className="font-bold text-lg text-green-600">{formatCurrency(bookingDetails.finalAmount || bookingDetails.totalAmount)}</p>
+                  <span className="text-white/60 font-urbanist">Amount Paid</span>
+                  <p className="font-bold text-lg text-[#B23092] font-annie-telescope">{formatCurrency(bookingDetails.finalAmount || bookingDetails.totalAmount)}</p>
                 </div>
               </div>
             </motion.div>
@@ -278,58 +278,58 @@ function YogaBookingSuccessPageContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="bg-white/5 backdrop-blur-md rounded-xl border border-white/20 p-6"
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Session Information</h2>
+              <h2 className="text-xl font-semibold text-white mb-6 font-annie-telescope">Session Information</h2>
 
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-6">
+              <div className="bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <Users className="w-6 h-6 text-orange-600" />
-                  <h3 className="text-lg font-semibold text-orange-900">
+                  <Users className="w-6 h-6 text-[#B23092]" />
+                  <h3 className="text-lg font-semibold text-white font-annie-telescope">
                     {bookingDetails.primaryService || 'Yoga Session'}
                   </h3>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-orange-600" />
-                    <span className="text-orange-800">
+                    <Calendar className="w-4 h-4 text-[#B23092]" />
+                    <span className="text-white/90 font-urbanist">
                       <strong>Date:</strong> {formatDate(bookingDetails.checkIn)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-orange-600" />
-                    <span className="text-orange-800">
+                    <Clock className="w-4 h-4 text-[#B23092]" />
+                    <span className="text-white/90 font-urbanist">
                       <strong>Duration:</strong> {bookingDetails.yogaSessionId?.type === 'daily' ? '90 minutes' : 'As scheduled'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-orange-600" />
-                    <span className="text-orange-800">
+                    <Users className="w-4 h-4 text-[#B23092]" />
+                    <span className="text-white/90 font-urbanist">
                       <strong>Instructor:</strong> {bookingDetails.yogaSessionId?.instructor || 'TBA'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-orange-600" />
-                    <span className="text-orange-800">
+                    <Users className="w-4 h-4 text-[#B23092]" />
+                    <span className="text-white/90 font-urbanist">
                       <strong>Participants:</strong> {bookingDetails.totalGuests} ({bookingDetails.adults} Adults, {bookingDetails.children} Children)
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-orange-200">
+                <div className="mt-4 pt-4 border-t border-[#B23092]/30">
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-orange-600 mt-1" />
-                    <span className="text-orange-800">
+                    <MapPin className="w-4 h-4 text-[#B23092] mt-1" />
+                    <span className="text-white/90 font-urbanist">
                       <strong>Location:</strong> {bookingDetails.yogaSessionId?.location || 'Kshetra Retreat Resort, Varkala'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-2">What's Next?</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                <h4 className="font-semibold text-white mb-2 font-annie-telescope">What's Next?</h4>
+                <ul className="text-sm text-white/80 space-y-1 font-urbanist">
                   <li>• You'll receive a confirmation email with detailed instructions</li>
                   <li>• Please arrive 15 minutes early for check-in</li>
                   <li>• Bring comfortable yoga clothes and a water bottle</li>
@@ -343,32 +343,32 @@ function YogaBookingSuccessPageContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="bg-white/5 backdrop-blur-md rounded-xl border border-white/20 p-6"
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Need Help?</h2>
+              <h2 className="text-xl font-semibold text-white mb-4 font-annie-telescope">Need Help?</h2>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                  <Mail className="w-5 h-5 text-blue-600" />
+                <div className="flex items-center gap-3 p-4 bg-white/5 rounded-lg border border-white/10">
+                  <Mail className="w-5 h-5 text-[#B23092]" />
                   <div>
-                    <p className="font-medium text-gray-900">Email Support</p>
-                    <p className="text-sm text-gray-600">info@kshetraretreat.com</p>
+                    <p className="font-medium text-white font-urbanist">Email Support</p>
+                    <p className="text-sm text-white/70 font-urbanist">info@kshetraretreat.com</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                  <Phone className="w-5 h-5 text-green-600" />
+                <div className="flex items-center gap-3 p-4 bg-white/5 rounded-lg border border-white/10">
+                  <Phone className="w-5 h-5 text-[#B23092]" />
                   <div>
-                    <p className="font-medium text-gray-900">Phone Support</p>
-                    <p className="text-sm text-gray-600">+91 XXXXXXXXXX</p>
+                    <p className="font-medium text-white font-urbanist">Phone Support</p>
+                    <p className="text-sm text-white/70 font-urbanist">+91 XXXXXXXXXX</p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
+              <div className="mt-4 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg">
+                <p className="text-sm text-white/90 font-urbanist">
                   <strong>Note:</strong> Please save your booking ID for future correspondence and tracking.
                 </p>
-                <p className="text-sm text-yellow-800 mt-2 font-mono break-all bg-yellow-100 p-2 rounded border">
+                <p className="text-sm text-[#B23092] mt-2 font-mono break-all bg-black/50 p-2 rounded border border-[#B23092]/30 font-urbanist">
                   <strong>{bookingDetails._id}</strong>
                 </p>
               </div>
@@ -377,13 +377,13 @@ function YogaBookingSuccessPageContent() {
 
           {/* Sidebar with Actions */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+            <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/20 p-6 sticky top-8">
+              <h3 className="text-lg font-semibold text-white mb-6 font-annie-telescope">Quick Actions</h3>
 
               <div className="space-y-4">
                 <button
                   onClick={handleTrackBooking}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#B23092] text-white rounded-lg hover:bg-[#9a2578] transition-colors font-urbanist"
                 >
                   <Package className="w-4 h-4" />
                   Track Booking
@@ -391,7 +391,7 @@ function YogaBookingSuccessPageContent() {
 
                 <button
                   onClick={handleDownloadReceipt}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#B23092] text-white rounded-lg hover:bg-[#9a2578] transition-colors font-urbanist"
                 >
                   <Download className="w-4 h-4" />
                   Download Receipt
@@ -399,7 +399,7 @@ function YogaBookingSuccessPageContent() {
 
                 <button
                   onClick={handleShareBooking}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors font-urbanist"
                 >
                   <Share2 className="w-4 h-4" />
                   Share Booking
@@ -407,7 +407,7 @@ function YogaBookingSuccessPageContent() {
 
                 <button
                   onClick={() => router.push('/yoga')}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors font-urbanist"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back to Yoga
@@ -415,7 +415,7 @@ function YogaBookingSuccessPageContent() {
 
                 <button
                   onClick={() => router.push('/')}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors font-urbanist"
                 >
                   <Home className="w-4 h-4" />
                   Back to Home
@@ -423,16 +423,16 @@ function YogaBookingSuccessPageContent() {
               </div>
 
               {/* Booking Status */}
-              <div className="mt-8 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+              <div className="mt-8 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg">
                 <div className="text-center">
-                  <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <h4 className="font-semibold text-gray-900 mb-2">Booking Status</h4>
-                  <p className="text-sm text-gray-600 mb-3">
+                  <CheckCircle2 className="w-8 h-8 text-[#B23092] mx-auto mb-2" />
+                  <h4 className="font-semibold text-white mb-2 font-annie-telescope">Booking Status</h4>
+                  <p className="text-sm text-white/80 mb-3 font-urbanist">
                     Your booking is confirmed and ready
                   </p>
                   <button
                     onClick={handleTrackBooking}
-                    className="text-sm text-green-600 font-medium hover:text-green-700"
+                    className="text-sm text-[#B23092] font-medium hover:text-[#9a2578] font-urbanist"
                   >
                     Track Progress
                   </button>
@@ -447,13 +447,13 @@ function YogaBookingSuccessPageContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-12 p-6 bg-green-50 border border-green-200 rounded-xl"
+          className="text-center mt-12 p-6 bg-[#B23092]/20 border border-[#B23092]/30 rounded-xl"
         >
-          <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
-          <p className="text-green-800 font-medium mb-2">
+          <CheckCircle className="w-8 h-8 text-[#B23092] mx-auto mb-3" />
+          <p className="text-white font-medium mb-2 font-annie-telescope">
             Thank you for choosing Kshetra Retreat Resort!
           </p>
-          <p className="text-sm text-green-700">
+          <p className="text-sm text-white/80 font-urbanist">
             We're excited to be part of your yoga journey. See you soon! 🧘‍♀️
           </p>
         </motion.div>
