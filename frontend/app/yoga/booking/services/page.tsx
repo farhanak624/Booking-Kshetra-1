@@ -363,7 +363,7 @@ export default function YogaBookingServicesPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 md:px-[100px] py-8">
           <div className="text-center">
             <p className="text-gray-600">Session not found</p>
           </div>
@@ -376,7 +376,7 @@ export default function YogaBookingServicesPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 md:px-[100px] py-8 max-w-6xl">
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-8">

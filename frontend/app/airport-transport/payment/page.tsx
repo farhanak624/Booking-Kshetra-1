@@ -297,11 +297,11 @@ function PaymentPageContent() {
 
   if (!bookingDetails) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+      <div className="min-h-screen bg-transparent">
         <Header />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 md:px-[100px] py-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B23092] mx-auto"></div>
           </div>
         </div>
       </div>
@@ -309,511 +309,421 @@ function PaymentPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center space-x-8">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                ✓
-              </div>
-              <span className="text-sm font-medium text-green-400">Service Details</span>
-            </div>
-            <div className="w-16 h-px bg-green-400"></div>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                ✓
-              </div>
-              <span className="text-sm font-medium text-green-400">Personal Info</span>
-            </div>
-            <div className="w-16 h-px bg-purple-400"></div>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                3
-              </div>
-              <span className="text-sm font-medium text-purple-400">Payment</span>
-            </div>
-          </div>
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-screen overflow-hidden w-full">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full min-h-full">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+            alt="Airport Transport Booking"
+            className="w-full h-full min-h-screen object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Booking Summary */}
-          <div>
+        {/* Hero Content */}
+        <div className="relative z-10 min-h-screen flex flex-col py-12">
+          <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
             >
-              <h3 className="text-2xl font-bold text-white mb-8">Booking Summary</h3>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope uppercase tracking-wider">
+                Smooth Transfers
+              </h1>
+              <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-6 font-water-brush">
+                Seamless Booking
+              </h2>
+              <p className="text-white/90 text-lg md:text-xl font-urbanist max-w-2xl mx-auto">
+                Choose your location, time, and vehicle — we'll handle the rest with care and precision.
+              </p>
+            </motion.div>
 
-              <div className="space-y-6">
-                {/* Service Icon */}
-                <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl mx-auto">
-                  <Car className="w-10 h-10 text-white" />
-                </div>
+            {/* Payment Details Section */}
+            <div className="container mx-auto px-4 md:px-[100px] max-w-7xl">
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* Left Panel - Booking Details Form */}
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20"
+                >
+                  <h3 className="text-2xl font-bold text-white mb-2 font-annie-telescope">
+                    Booking Details
+                  </h3>
+                  <p className="text-white/70 mb-8 font-urbanist">
+                    Complete your information to proceed
+                  </p>
 
-                {/* Airport Details */}
-                <div className="bg-white/10 rounded-2xl p-6 space-y-4">
-                  <div className="text-center mb-4">
-                    <h4 className="text-xl font-semibold text-white">Airport Transport Service</h4>
-                    <p className="text-gray-300 text-sm mt-2">Professional airport transfer service</p>
-                  </div>
-
-                  <div className="flex items-center gap-3 justify-center">
-                    <Plane className="w-5 h-5 text-purple-400" />
-                    <div className="text-center">
-                      <p className="text-white font-medium">
-                        {bookingDetails.airportLocation === 'kochi' ? 'Kochi Airport (COK)' : 'Trivandrum Airport (TRV)'}
-                      </p>
-                      <p className="text-gray-300 text-sm">
-                        {bookingDetails.airportLocation === 'kochi'
-                          ? 'Cochin International Airport'
-                          : 'Thiruvananthapuram International Airport'
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Services Selected */}
-                <div className="space-y-4">
-                  {bookingDetails.pickup && (
-                    <div className="bg-white/10 rounded-2xl p-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <h5 className="font-semibold text-green-400">Airport Pickup Service</h5>
-                      </div>
-                      <div className="space-y-2 text-sm ml-5">
-                        {bookingDetails.pickupDetails?.flightNumber && (
-                          <p className="text-gray-300">Flight: {bookingDetails.pickupDetails.flightNumber}</p>
-                        )}
-                        {bookingDetails.pickupDetails?.arrivalTime && (
-                          <p className="text-gray-300">Arrival: {formatDateTime(bookingDetails.pickupDetails.arrivalTime)}</p>
-                        )}
-                        {bookingDetails.pickupDetails?.terminal && (
-                          <p className="text-gray-300">Terminal: {bookingDetails.pickupDetails.terminal}</p>
-                        )}
-                        <p className="text-green-400 font-medium">₹1,500</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {bookingDetails.drop && (
-                    <div className="bg-white/10 rounded-2xl p-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                        <h5 className="font-semibold text-blue-400">Airport Drop Service</h5>
-                      </div>
-                      <div className="space-y-2 text-sm ml-5">
-                        {bookingDetails.dropDetails?.flightNumber && (
-                          <p className="text-gray-300">Flight: {bookingDetails.dropDetails.flightNumber}</p>
-                        )}
-                        {bookingDetails.dropDetails?.departureTime && (
-                          <p className="text-gray-300">Departure: {formatDateTime(bookingDetails.dropDetails.departureTime)}</p>
-                        )}
-                        {bookingDetails.dropDetails?.terminal && (
-                          <p className="text-gray-300">Terminal: {bookingDetails.dropDetails.terminal}</p>
-                        )}
-                        <p className="text-blue-400 font-medium">₹1,500</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Customer Details */}
-                <div className="bg-white/10 rounded-2xl p-6">
-                  <h4 className="font-semibold text-white mb-4">Your Details</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <User className="w-4 h-4 text-purple-400" />
-                      <span className="text-gray-300">{personalInfo.firstName} {personalInfo.lastName}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-purple-400" />
-                      <span className="text-gray-300">{personalInfo.email}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="w-4 h-4 text-purple-400" />
-                      <span className="text-gray-300">{personalInfo.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-4 h-4 text-purple-400" />
-                      <span className="text-gray-300">{personalInfo.city}, {personalInfo.state}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Coupon Section */}
-                <div className="bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl p-6">
-                  <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
-                    <Percent className="w-5 h-5" />
-                    Have a Coupon Code?
-                  </h4>
-
-                  {!appliedCoupon ? (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
+                  <form onSubmit={(e) => { e.preventDefault(); handlePayment(); }} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* First Name */}
+                      <div>
+                        <label className="block text-white mb-2 font-urbanist">
+                          First Name <span className="text-[#B23092]">*</span>
+                        </label>
                         <input
                           type="text"
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                          placeholder="Enter coupon code"
-                          className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-green-400 focus:outline-none"
+                          required
+                          value={personalInfo.firstName}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))}
+                          className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                          placeholder="Enter first name"
                         />
-                        <button
-                          onClick={handleApplyCoupon}
-                          disabled={!couponCode.trim() || validatingCoupon}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                          {validatingCoupon ? (
-                            <Loader className="w-4 h-4 animate-spin" />
-                          ) : (
-                            'Apply'
-                          )}
-                        </button>
                       </div>
-                      {couponError && (
-                        <p className="text-red-400 text-sm">{couponError}</p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-green-600/20 rounded-lg border border-green-400/30">
-                        <div>
-                          <p className="text-green-400 font-medium">{appliedCoupon.code}</p>
-                          <p className="text-green-300 text-sm">{appliedCoupon.description}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-green-400 font-bold">-{formatCurrency(couponDiscount)}</p>
-                          <button
-                            onClick={handleRemoveCoupon}
-                            className="text-red-400 text-sm hover:text-red-300"
-                          >
-                            Remove
-                          </button>
-                        </div>
+
+                      {/* Last Name */}
+                      <div>
+                        <label className="block text-white mb-2 font-urbanist">
+                          Last Name <span className="text-[#B23092]">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={personalInfo.lastName}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, lastName: e.target.value }))}
+                          className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                          placeholder="Enter last name"
+                        />
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {/* Total Amount */}
-                <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-2xl p-6 text-center">
-                  {appliedCoupon && (
-                    <div className="mb-4 pb-4 border-b border-white/20">
-                      <div className="flex justify-between text-gray-300 text-sm mb-2">
-                        <span>Subtotal</span>
-                        <span>{formatCurrency(bookingDetails.totalAmount)}</span>
-                      </div>
-                      <div className="flex justify-between text-green-400 text-sm">
-                        <span>Coupon Discount</span>
-                        <span>-{formatCurrency(couponDiscount)}</span>
-                      </div>
-                    </div>
-                  )}
-                  <p className="text-gray-300 text-sm mb-2">
-                    {appliedCoupon ? 'Final Amount' : 'Total Amount'}
-                  </p>
-                  <p className="text-4xl font-bold text-white">{formatCurrency(getFinalAmount())}</p>
-                  {appliedCoupon && (
-                    <p className="text-green-400 text-sm mt-2">
-                      You saved {formatCurrency(couponDiscount)}!
-                    </p>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Payment Form & Personal Info */}
-          <div className="space-y-8">
-            {/* Personal Information Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
-            >
-              <h3 className="text-xl font-bold text-white mb-6">Complete Your Information</h3>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">First Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={personalInfo.firstName}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="Enter first name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Last Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={personalInfo.lastName}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, lastName: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="Enter last name"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      value={personalInfo.email}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
-                    <input
-                      type="tel"
-                      required
-                      value={personalInfo.phone}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="+91 9876543210"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
-                  <textarea
-                    required
-                    value={personalInfo.address}
-                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, address: e.target.value }))}
-                    rows={2}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                    placeholder="Enter your full address"
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">City *</label>
-                    <input
-                      type="text"
-                      required
-                      value={personalInfo.city}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, city: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="City"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">State *</label>
-                    <input
-                      type="text"
-                      required
-                      value={personalInfo.state}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, state: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="State"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">PIN Code *</label>
-                    <input
-                      type="text"
-                      required
-                      value={personalInfo.pincode}
-                      onChange={(e) => setPersonalInfo(prev => ({ ...prev, pincode: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="123456"
-                    />
-                  </div>
-                </div>
-
-                <div className="border-t border-white/20 pt-4">
-                  <h4 className="text-sm font-semibold text-white mb-3">Emergency Contact</h4>
-                  <div className="grid grid-cols-3 gap-4">
+                    {/* Email */}
                     <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Email Address <span className="text-[#B23092]">*</span>
+                      </label>
                       <input
-                        type="text"
+                        type="email"
                         required
-                        value={personalInfo.emergencyContact.name}
-                        onChange={(e) => setPersonalInfo(prev => ({
-                          ...prev,
-                          emergencyContact: { ...prev.emergencyContact, name: e.target.value }
-                        }))}
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                        placeholder="Contact name"
+                        value={personalInfo.email}
+                        onChange={(e) => setPersonalInfo(prev => ({ ...prev, email: e.target.value }))}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="your.email@example.com"
                       />
                     </div>
+
+                    {/* Phone */}
                     <div>
+                      <label className="block text-white mb-2 font-urbanist">
+                        Phone Number <span className="text-[#B23092]">*</span>
+                      </label>
                       <input
                         type="tel"
                         required
-                        value={personalInfo.emergencyContact.phone}
-                        onChange={(e) => setPersonalInfo(prev => ({
-                          ...prev,
-                          emergencyContact: { ...prev.emergencyContact, phone: e.target.value }
-                        }))}
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                        placeholder="Contact phone"
+                        value={personalInfo.phone}
+                        onChange={(e) => setPersonalInfo(prev => ({ ...prev, phone: e.target.value }))}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="+91 9876543210"
                       />
                     </div>
+
+                    {/* Address */}
                     <div>
-                      <select
+                      <label className="block text-white mb-2 font-urbanist">
+                        Address <span className="text-[#B23092]">*</span>
+                      </label>
+                      <textarea
                         required
-                        value={personalInfo.emergencyContact.relation}
-                        onChange={(e) => setPersonalInfo(prev => ({
-                          ...prev,
-                          emergencyContact: { ...prev.emergencyContact, relation: e.target.value }
-                        }))}
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-purple-400 focus:outline-none"
-                      >
-                        <option className='text-black bg-gray-400 ' value="" disabled>Relationship</option>
-                        <option className='text-black bg-gray-400 ' value="spouse">Spouse</option>
-                        <option className='text-black bg-gray-400 ' value="parent">Parent</option>
-                        <option className='text-black bg-gray-400 ' value="sibling">Sibling</option>
-                        <option className='text-black bg-gray-400 ' value="friend">Friend</option>
-                        <option className='text-black bg-gray-400 ' value="relative">Relative</option>
-                      </select>
+                        value={personalInfo.address}
+                        onChange={(e) => setPersonalInfo(prev => ({ ...prev, address: e.target.value }))}
+                        rows={2}
+                        className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                        placeholder="Enter your full address"
+                      />
                     </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
 
-            {/* Payment Section */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-8">
-                <button
-                  onClick={() => router.back()}
-                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+                    {/* City, State, PIN */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-white mb-2 font-urbanist">
+                          City <span className="text-[#B23092]">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={personalInfo.city}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, city: e.target.value }))}
+                          className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                          placeholder="City"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-white mb-2 font-urbanist">
+                          State <span className="text-[#B23092]">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={personalInfo.state}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, state: e.target.value }))}
+                          className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                          placeholder="State"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-white mb-2 font-urbanist">
+                          PIN Code <span className="text-[#B23092]">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={personalInfo.pincode}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, pincode: e.target.value }))}
+                          className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                          placeholder="123456"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Emergency Contact */}
+                    <div className="border-t border-white/20 pt-6">
+                      <h4 className="text-sm font-semibold text-white mb-4 font-annie-telescope">Emergency Contact</h4>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <input
+                            type="text"
+                            required
+                            value={personalInfo.emergencyContact.name}
+                            onChange={(e) => setPersonalInfo(prev => ({
+                              ...prev,
+                              emergencyContact: { ...prev.emergencyContact, name: e.target.value }
+                            }))}
+                            className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                            placeholder="Contact name"
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="tel"
+                            required
+                            value={personalInfo.emergencyContact.phone}
+                            onChange={(e) => setPersonalInfo(prev => ({
+                              ...prev,
+                              emergencyContact: { ...prev.emergencyContact, phone: e.target.value }
+                            }))}
+                            className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                            placeholder="Contact phone"
+                          />
+                        </div>
+                        <div>
+                          <select
+                            required
+                            value={personalInfo.emergencyContact.relation}
+                            onChange={(e) => setPersonalInfo(prev => ({
+                              ...prev,
+                              emergencyContact: { ...prev.emergencyContact, relation: e.target.value }
+                            }))}
+                            className="w-full px-4 py-3 bg-white/10 border border-[#B23092]/30 rounded-lg text-white focus:border-[#B23092] focus:outline-none font-urbanist appearance-none"
+                          >
+                            <option className="bg-black text-white" value="" disabled>Relationship</option>
+                            <option className="bg-black text-white" value="spouse">Spouse</option>
+                            <option className="bg-black text-white" value="parent">Parent</option>
+                            <option className="bg-black text-white" value="sibling">Sibling</option>
+                            <option className="bg-black text-white" value="friend">Friend</option>
+                            <option className="bg-black text-white" value="relative">Relative</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-[#B23092] text-white py-4 rounded-full font-bold text-lg hover:bg-[#B23092]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 font-urbanist"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader className="w-5 h-5 animate-spin" />
+                          Processing Payment...
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-5 h-5" />
+                          Proceed to Payment
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </motion.div>
+
+                {/* Right Panel - Booking Summary */}
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20"
                 >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div>
-                  <h1 className="text-2xl font-bold text-white">Secure Payment</h1>
-                  <p className="text-gray-300">Complete your transport booking</p>
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                {/* Payment Method */}
-                <div>
-                  <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-purple-400" />
-                    Payment Method
-                  </h2>
-
-                  <div className="border border-purple-400/30 rounded-2xl p-6 bg-purple-500/10">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-purple-500/20 rounded-xl">
-                        <CreditCard className="w-6 h-6 text-purple-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-white">Razorpay</h3>
-                        <p className="text-sm text-gray-300">Cards, UPI, Net Banking, Wallets</p>
-                      </div>
-                      <div className="w-5 h-5 border-2 border-purple-400 rounded-full bg-purple-400 flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Security Features */}
-                <div className="bg-white/10 rounded-2xl p-6">
-                  <h3 className="font-medium text-white mb-4 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-green-400" />
-                    Your Payment is Secure
+                  <h3 className="text-2xl font-bold text-white mb-2 font-annie-telescope">
+                    Your Selection
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">SSL Encrypted</span>
+                  <div className="space-y-6 mt-8">
+                    {/* Service Icon */}
+                    <div className="flex items-center justify-center w-20 h-20 bg-[#B23092] rounded-2xl mx-auto">
+                      <Car className="w-10 h-10 text-white" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">PCI DSS Compliant</span>
+
+                    {/* Airport Details */}
+                    <div className="bg-white/5 rounded-2xl p-6 space-y-4 border border-white/10">
+                      <div className="text-center mb-4">
+                        <h4 className="text-xl font-semibold text-white font-annie-telescope">Airport Transport Service</h4>
+                        <p className="text-white/70 text-sm mt-2 font-urbanist">Professional airport transfer service</p>
+                      </div>
+
+                      <div className="flex items-center gap-3 justify-center">
+                        <Plane className="w-5 h-5 text-[#B23092]" />
+                        <div className="text-center">
+                          <p className="text-white font-medium font-urbanist">
+                            {bookingDetails.airportLocation === 'kochi' ? 'Kochi Airport (COK)' : 'Trivandrum Airport (TRV)'}
+                          </p>
+                          <p className="text-white/70 text-sm font-urbanist">
+                            {bookingDetails.airportLocation === 'kochi'
+                              ? 'Cochin International Airport'
+                              : 'Thiruvananthapuram International Airport'
+                            }
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">Bank-grade Security</span>
+
+                    {/* Services Selected */}
+                    <div className="space-y-4">
+                      {bookingDetails.pickup && (
+                        <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-2 h-2 bg-[#B23092] rounded-full"></div>
+                            <h5 className="font-semibold text-[#B23092] font-annie-telescope">Airport Pickup Service</h5>
+                          </div>
+                          <div className="space-y-2 text-sm ml-5 font-urbanist">
+                            {bookingDetails.pickupDetails?.flightNumber && (
+                              <p className="text-white/80">Flight: {bookingDetails.pickupDetails.flightNumber}</p>
+                            )}
+                            {bookingDetails.pickupDetails?.arrivalTime && (
+                              <p className="text-white/80">Arrival: {formatDateTime(bookingDetails.pickupDetails.arrivalTime)}</p>
+                            )}
+                            {bookingDetails.pickupDetails?.terminal && (
+                              <p className="text-white/80">Terminal: {bookingDetails.pickupDetails.terminal}</p>
+                            )}
+                            <p className="text-[#B23092] font-medium">₹1,500</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {bookingDetails.drop && (
+                        <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-2 h-2 bg-[#B23092] rounded-full"></div>
+                            <h5 className="font-semibold text-[#B23092] font-annie-telescope">Airport Drop Service</h5>
+                          </div>
+                          <div className="space-y-2 text-sm ml-5 font-urbanist">
+                            {bookingDetails.dropDetails?.flightNumber && (
+                              <p className="text-white/80">Flight: {bookingDetails.dropDetails.flightNumber}</p>
+                            )}
+                            {bookingDetails.dropDetails?.departureTime && (
+                              <p className="text-white/80">Departure: {formatDateTime(bookingDetails.dropDetails.departureTime)}</p>
+                            )}
+                            {bookingDetails.dropDetails?.terminal && (
+                              <p className="text-white/80">Terminal: {bookingDetails.dropDetails.terminal}</p>
+                            )}
+                            <p className="text-[#B23092] font-medium">₹1,500</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="text-gray-300">Trusted Platform</span>
+
+                    {/* Coupon Section */}
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <h4 className="text-white font-semibold mb-4 flex items-center gap-2 font-annie-telescope">
+                        <Percent className="w-5 h-5 text-[#B23092]" />
+                        Have a Coupon Code?
+                      </h4>
+
+                      {!appliedCoupon ? (
+                        <div className="space-y-3">
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={couponCode}
+                              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                              placeholder="Enter coupon code"
+                              className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/50 focus:border-[#B23092] focus:outline-none font-urbanist"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleApplyCoupon}
+                              disabled={!couponCode.trim() || validatingCoupon}
+                              className="px-4 py-2 bg-[#B23092] text-white rounded-lg hover:bg-[#B23092]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-urbanist"
+                            >
+                              {validatingCoupon ? (
+                                <Loader className="w-4 h-4 animate-spin" />
+                              ) : (
+                                'Apply'
+                              )}
+                            </button>
+                          </div>
+                          {couponError && (
+                            <p className="text-red-400 text-sm font-urbanist">{couponError}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-green-400/30">
+                            <div>
+                              <p className="text-green-400 font-medium font-urbanist">{appliedCoupon.code}</p>
+                              <p className="text-green-300 text-sm font-urbanist">{appliedCoupon.description}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-green-400 font-bold font-urbanist">-{formatCurrency(couponDiscount)}</p>
+                              <button
+                                type="button"
+                                onClick={handleRemoveCoupon}
+                                className="text-red-400 text-sm hover:text-red-300 font-urbanist"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Total Amount */}
+                    <div className="bg-white/5 rounded-2xl p-6 text-center border border-white/10">
+                      {appliedCoupon && (
+                        <div className="mb-4 pb-4 border-b border-white/20">
+                          <div className="flex justify-between text-white/80 text-sm mb-2 font-urbanist">
+                            <span>Subtotal</span>
+                            <span>{formatCurrency(bookingDetails.totalAmount)}</span>
+                          </div>
+                          <div className="flex justify-between text-green-400 text-sm font-urbanist">
+                            <span>Coupon Discount</span>
+                            <span>-{formatCurrency(couponDiscount)}</span>
+                          </div>
+                        </div>
+                      )}
+                      <p className="text-white/70 text-sm mb-2 font-urbanist">
+                        {appliedCoupon ? 'Final Amount' : 'Total Amount'}
+                      </p>
+                      <p className="text-[#B23092] font-bold text-4xl font-annie-telescope">{formatCurrency(getFinalAmount())}</p>
+                      {appliedCoupon && (
+                        <p className="text-green-400 text-sm mt-2 font-urbanist">
+                          You saved {formatCurrency(couponDiscount)}!
+                        </p>
+                      )}
                     </div>
                   </div>
-                </div>
-
-                {/* Payment Methods Icons */}
-                <div>
-                  <h3 className="font-medium text-white mb-4">Accepted Payment Methods</h3>
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <CreditCard className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                      <span className="text-xs text-gray-400">Cards</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <Smartphone className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                      <span className="text-xs text-gray-400">UPI</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <span className="text-xs text-gray-400">Net Banking</span>
-                    </div>
-                    <div className="bg-white/10 p-3 rounded-xl text-center">
-                      <span className="text-xs text-gray-400">Wallets</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Terms */}
-                <div className="text-xs text-gray-400 bg-white/5 p-4 rounded-xl">
-                  <p className="mb-2">By proceeding with the payment, you agree to our:</p>
-                  <ul className="space-y-1 text-gray-500">
-                    <li>• Terms and Conditions</li>
-                    <li>• Privacy Policy</li>
-                    <li>• Cancellation and Refund Policy</li>
-                  </ul>
-                </div>
-
-                {/* Payment Button */}
-                <button
-                  onClick={handlePayment}
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-indigo-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-                >
-                  {loading ? (
-                    <>
-                      <Loader className="w-5 h-5 animate-spin" />
-                      Processing Payment...
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-5 h-5" />
-                      Pay {formatCurrency(bookingDetails.totalAmount)}
-                    </>
-                  )}
-                </button>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 }

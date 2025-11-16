@@ -21,7 +21,8 @@ import {
   Fuel,
   Settings,
   IndianRupee,
-  Shield
+  Shield,
+  ChevronDown
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -495,164 +496,150 @@ const ServicesPage = () => {
       return basePrice + driverCharge;
     };
 
+    const mainImage = vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : '';
+
     return (
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 overflow-hidden">
-        <div className="p-4 sm:p-6">
-          {/* Vehicle Header */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-              <div className="p-2 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-lg flex-shrink-0">
-                <VehicleIcon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-lg sm:text-xl font-bold text-white truncate">{vehicle.name}</h3>
-                <p className="text-gray-300 text-xs sm:text-sm truncate">{vehicle.brand} {vehicle.vehicleModel}</p>
-              </div>
-            </div>
-            <button
-              onClick={() => {
-                setSelectedVehicleDetails(vehicle);
-                setShowVehicleModal(true);
-              }}
-              className="p-2 text-gray-400 hover:text-white transition-colors flex-shrink-0"
-            >
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </div>
-
-          {/* Vehicle Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4">
-            <div className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm">
-              <Users className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
-              <span>{vehicle.seatingCapacity} seats</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm">
-              <Fuel className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
-              <span>{vehicle.fuelType}</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm">
-              <Settings className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
-              <span>{vehicle.transmission}</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm">
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
-              <span className="truncate">{vehicle.location.pickupLocation}</span>
-            </div>
-          </div>
-
-          {/* Features */}
-          <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
-            {vehicle.features.slice(0, 3).map((feature, index) => (
-              <span key={index} className="px-2 py-1 bg-white/10 rounded-lg text-gray-300 text-xs">
-                {feature}
-              </span>
-            ))}
-            {vehicle.features.length > 3 && (
-              <span className="px-2 py-1 bg-white/10 rounded-lg text-gray-300 text-xs">
-                +{vehicle.features.length - 3} more
-              </span>
-            )}
-          </div>
-
-          {/* Price */}
-          <div className="bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-xl p-3 mb-4">
-            <div className="flex items-center gap-2">
-              <IndianRupee className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
-              <span className="text-lg sm:text-xl font-bold text-orange-400">
-                {vehicle.pricePerDay.toLocaleString()}
-              </span>
-              <span className="text-gray-300 text-xs sm:text-sm">per day</span>
-            </div>
-            {vehicle.driverOption.withDriver && vehicle.driverOption.driverChargePerDay && (
-              <div className="text-gray-400 text-xs mt-1">
-                +₹{vehicle.driverOption.driverChargePerDay.toLocaleString()}/day with driver
-              </div>
-            )}
-          </div>
-
-          {/* Rental Options */}
-          {quantity > 0 ? (
-            <div className="space-y-2 sm:space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-xs sm:text-sm">Rental Days:</span>
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <button
-                    onClick={() => {
-                      const newDays = Math.max(1, rentalDays - 1);
-                      setRentalDays(newDays);
-                      updateVehicleOptions(vehicle._id, newDays, withDriver);
-                    }}
-                    className="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center text-white"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="text-white font-medium w-6 sm:w-8 text-center text-sm">{rentalDays}</span>
-                  <button
-                    onClick={() => {
-                      const newDays = rentalDays + 1;
-                      setRentalDays(newDays);
-                      updateVehicleOptions(vehicle._id, newDays, withDriver);
-                    }}
-                    className="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center text-white"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-
-              {vehicle.driverOption.withDriver && (
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300 text-xs sm:text-sm">With Driver:</span>
-                  <button
-                    onClick={() => {
-                      const newWithDriver = !withDriver;
-                      setWithDriver(newWithDriver);
-                      updateVehicleOptions(vehicle._id, rentalDays, newWithDriver);
-                    }}
-                    className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      withDriver
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-white/10 text-gray-300'
-                    }`}
-                  >
-                    {withDriver ? 'Yes' : 'No'}
-                  </button>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-xs sm:text-sm">Quantity:</span>
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <button
-                    onClick={() => removeVehicle(vehicle._id)}
-                    className="w-6 h-6 bg-red-500/20 hover:bg-red-500/30 rounded flex items-center justify-center text-red-400"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="text-white font-medium w-6 sm:w-8 text-center text-sm">{quantity}</span>
-                  <button
-                    onClick={() => addVehicle(vehicle, rentalDays, withDriver)}
-                    className="w-6 h-6 bg-green-500/20 hover:bg-green-500/30 rounded flex items-center justify-center text-green-400"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-white/10">
-                <div className="text-orange-400 font-semibold text-sm">
-                  Total: ₹{(getTotalPrice() * quantity).toLocaleString()}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => addVehicle(vehicle, 1, false)}
-              className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
-            >
-              Add to Booking
-            </button>
+      <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-lg shadow-[#B23092]/50">
+        {/* Background Image with Dark Overlay */}
+        <div className="absolute inset-0">
+          {mainImage && (
+            <img
+              src={mainImage}
+              alt={vehicle.name}
+              className="w-full h-full object-cover blur-sm opacity-40 scale-110 group-hover:scale-105 transition-transform duration-300"
+            />
           )}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 p-6 h-full min-h-[400px] flex flex-col">
+          {/* Vehicle Image - Centered */}
+          {mainImage && (
+            <div className="flex-1 flex items-center justify-center mb-6">
+              <img
+                src={mainImage}
+                alt={vehicle.name}
+                className="max-w-full max-h-48 object-contain drop-shadow-2xl"
+              />
+            </div>
+          )}
+
+          {/* Bottom Section - Name, Price, Button */}
+          <div className="mt-auto">
+            {/* Vehicle Name - Bottom Left */}
+            <h3 className="text-white font-bold text-lg mb-3 font-urbanist">
+              {vehicle.name}
+            </h3>
+
+            {/* Price and Button Row */}
+            <div className="flex items-center justify-between">
+              {/* Price - Bottom Left */}
+              <div className="flex items-baseline gap-1">
+                <span className="text-[#B23092] font-bold text-xl font-urbanist">
+                  ₹{vehicle.pricePerDay.toLocaleString()}
+                </span>
+                <span className="text-white/70 text-sm font-urbanist">/day</span>
+              </div>
+
+              {/* View Details Button - Bottom Right */}
+              <button
+                onClick={() => {
+                  setSelectedVehicleDetails(vehicle);
+                  setShowVehicleModal(true);
+                }}
+                className="bg-black/60 hover:bg-black/80 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors font-urbanist"
+              >
+                View Details
+              </button>
+            </div>
+
+            {/* Rental Options (Hidden by default, shown when quantity > 0) */}
+            {quantity > 0 && (
+              <div className="mt-4 pt-4 border-t border-white/20 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80 text-xs font-urbanist">Rental Days:</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newDays = Math.max(1, rentalDays - 1);
+                        setRentalDays(newDays);
+                        updateVehicleOptions(vehicle._id, newDays, withDriver);
+                      }}
+                      className="w-6 h-6 bg-white/20 hover:bg-white/30 rounded flex items-center justify-center text-white"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="text-white font-medium w-8 text-center text-sm">{rentalDays}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newDays = rentalDays + 1;
+                        setRentalDays(newDays);
+                        updateVehicleOptions(vehicle._id, newDays, withDriver);
+                      }}
+                      className="w-6 h-6 bg-white/20 hover:bg-white/30 rounded flex items-center justify-center text-white"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
+                {vehicle.driverOption.withDriver && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/80 text-xs font-urbanist">With Driver:</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newWithDriver = !withDriver;
+                        setWithDriver(newWithDriver);
+                        updateVehicleOptions(vehicle._id, rentalDays, newWithDriver);
+                      }}
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors font-urbanist ${
+                        withDriver
+                          ? 'bg-[#B23092]/30 text-[#B23092] border border-[#B23092]/50'
+                          : 'bg-white/10 text-white/80'
+                      }`}
+                    >
+                      {withDriver ? 'Yes' : 'No'}
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80 text-xs font-urbanist">Quantity:</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeVehicle(vehicle._id);
+                      }}
+                      className="w-6 h-6 bg-red-500/30 hover:bg-red-500/40 rounded flex items-center justify-center text-white"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="text-white font-medium w-8 text-center text-sm">{quantity}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addVehicle(vehicle, rentalDays, withDriver);
+                      }}
+                      className="w-6 h-6 bg-green-500/30 hover:bg-green-500/40 rounded flex items-center justify-center text-white"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-white/20">
+                  <div className="text-[#B23092] font-semibold text-sm font-urbanist">
+                    Total: ₹{(getTotalPrice() * quantity).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -664,109 +651,120 @@ const ServicesPage = () => {
       <Header />
 
       {/* Hero Section with Background */}
-      <section className="relative py-32 overflow-hidden">
-        <motion.div
-          style={{ y }}
-          className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-pink-500/5 to-purple-500/10"
-        />
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/rentbike.png"
+            alt="Rent a Vehicle Hero"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            {/* Pre-title */}
-            <div className="inline-flex items-center gap-2 text-orange-400 text-sm font-medium uppercase tracking-wider mb-6">
-              <div className="w-8 h-px bg-orange-400" />
-              <span>Adventure & Services</span>
-              <div className="w-8 h-px bg-orange-400" />
-            </div>
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex items-center">
+          <div className="container mx-auto px-4 md:px-[100px]">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="max-w-3xl text-white"
+            >
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
+                  FIND YOUR
+                </span>
+                <span className="block text-5xl md:text-6xl lg:text-7xl font-water-brush italic mt-4">
+                  Perfect <span className="text-[#B23092]">Ride</span>
+                </span>
+              </h1>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Premium
-              <span className="block text-orange-400">Experiences</span>
-            </h1>
+              {/* Description */}
+              <p className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-urbanist">
+                Choose from a wide range of vehicles for any journey, anytime.
+              </p>
 
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Elevate your stay with our curated collection of luxury services and thrilling adventures,
-              designed to create unforgettable memories.
-            </p>
-          </motion.div>
+              {/* CTA Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  const vehicleSection = document.getElementById('vehicle-rental-section');
+                  if (vehicleSection) {
+                    vehicleSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-[#B23092] hover:bg-[#9a2578] text-white px-8 py-4 rounded-full transition-colors font-urbanist text-lg font-semibold"
+              >
+                View Details
+                <ChevronDown className="w-5 h-5" />
+              </motion.button>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      <div className="bg-gradient-to-b from-gray-900 to-slate-800">
-        <div className="container mx-auto px-4 py-20">
+      <div className="bg-black">
+        <div className="container mx-auto px-4 md:px-[100px] py-20">
           {/* Vehicle Rental Section */}
-          <div>
+          <div id="vehicle-rental-section">
+            {/* Header Section */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-12"
+              className="flex flex-col md:flex-row md:items-start md:justify-between mb-12 gap-6"
             >
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">Vehicle Rentals</h2>
-              <p className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto">
-                Explore Varkala and beyond with our premium vehicle rental service. From scooters to luxury cars.
-              </p>
-            </motion.div>
-
-            {/* Vehicle Type Filter */}
-            <div className="flex justify-center mb-8">
-              <div className="flex bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 overflow-hidden">
-                <button
-                  onClick={() => setVehicleTypeFilter('all')}
-                  className={`px-3 sm:px-6 py-2 sm:py-3 font-medium transition-all text-sm sm:text-base ${
-                    vehicleTypeFilter === 'all'
-                      ? 'bg-orange-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Filter className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">All Vehicles</span>
-                  <span className="sm:hidden">All</span>
-                </button>
-                <button
-                  onClick={() => setVehicleTypeFilter('2-wheeler')}
-                  className={`px-3 sm:px-6 py-2 sm:py-3 font-medium transition-all text-sm sm:text-base ${
-                    vehicleTypeFilter === '2-wheeler'
-                      ? 'bg-orange-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Bike className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
-                  2-Wheeler
-                </button>
-                <button
-                  onClick={() => setVehicleTypeFilter('4-wheeler')}
-                  className={`px-3 sm:px-6 py-2 sm:py-3 font-medium transition-all text-sm sm:text-base ${
-                    vehicleTypeFilter === '4-wheeler'
-                      ? 'bg-orange-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Car className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
-                  4-Wheeler
-                </button>
+              {/* Left Side - Title and Description */}
+              <div className="flex-1">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                  <span className="uppercase font-annie-telescope">VEHICLE</span>{' '}
+                  <span className="text-[#B23092] font-water-brush text-4xl sm:text-5xl lg:text-6xl">Rentals</span>
+                </h2>
+                <p className="text-white/90 text-base sm:text-lg max-w-2xl font-urbanist">
+                  Explore Varkala and beyond with our premium vehicle rental service. From scooters to luxury cars.
+                </p>
               </div>
-            </div>
+
+              {/* Right Side - Filter Dropdown */}
+              <div className="flex justify-end">
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      // Toggle between filters
+                      if (vehicleTypeFilter === 'all') setVehicleTypeFilter('2-wheeler');
+                      else if (vehicleTypeFilter === '2-wheeler') setVehicleTypeFilter('4-wheeler');
+                      else setVehicleTypeFilter('all');
+                    }}
+                    className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 px-4 py-3 text-white hover:bg-white/20 transition-colors font-urbanist"
+                  >
+                    <Car className="w-5 h-5 text-white" />
+                    <span className="font-medium">
+                      {vehicleTypeFilter === 'all' ? 'All Vehicle' : vehicleTypeFilter === '2-wheeler' ? '2-Wheeler' : '4-Wheeler'}
+                    </span>
+                    <ChevronDown className="w-5 h-5 text-white" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Vehicles Grid */}
             {loading ? (
               <div className="text-center py-12">
-                <div className="inline-block w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-300 mt-4">Loading vehicles...</p>
+                <div className="inline-block w-8 h-8 border-4 border-[#B23092] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-white/80 mt-4 font-urbanist">Loading vehicles...</p>
               </div>
             ) : vehicles.length === 0 ? (
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-12 text-center">
-                <Car className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">No vehicles available</h3>
-                <p className="text-gray-300">Check back later for vehicle rental options.</p>
+                <Car className="w-16 h-16 text-[#B23092] mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2 font-annie-telescope">No vehicles available</h3>
+                <p className="text-white/80 font-urbanist">Check back later for vehicle rental options.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {vehicles.map((vehicle, index) => (
                   <motion.div
                     key={vehicle._id}
@@ -906,7 +904,7 @@ const ServicesPage = () => {
       {/* Empty State */}
       {selectedServices.length === 0 && selectedVehicles.length === 0 && (
         <div className="bg-slate-800 py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 md:px-[100px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}

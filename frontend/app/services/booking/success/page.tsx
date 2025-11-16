@@ -92,7 +92,7 @@ function ServicesBookingSuccessPageContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
       <Header />
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 md:px-[100px] py-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}

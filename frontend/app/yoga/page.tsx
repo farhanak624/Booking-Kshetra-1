@@ -388,7 +388,7 @@ export default function YogaPage() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 md:px-[100px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -449,7 +449,7 @@ export default function YogaPage() {
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/50 z-0"></div>
         
-        <div className="relative z-10 container mx-auto px-4">
+        <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -601,7 +601,7 @@ export default function YogaPage() {
         {/* Dark Overlay for readability */}
         <div className="absolute inset-0 bg-black/40 z-[3]"></div>
         
-        <div className="relative z-10 container mx-auto px-4">
+        <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -771,7 +771,7 @@ export default function YogaPage() {
         id="daily-sessions-section"
         className="py-20 bg-black"
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-[100px]">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Side - Book Your Session */}
             <motion.div
@@ -996,7 +996,7 @@ export default function YogaPage() {
             <div className="absolute inset-0 bg-black/50"></div>
           </div>
 
-          <div className="relative z-10 container mx-auto px-4">
+          <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1083,7 +1083,7 @@ export default function YogaPage() {
 
       {/* CTA Section */}
       {/* <section className="py-16 bg-gradient-to-r from-orange-600 to-pink-600">
-        <div className="container mx-auto px-4 text-center text-white">
+        <div className="container mx-auto px-4 md:px-[100px] text-center text-white">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

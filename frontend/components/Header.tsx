@@ -10,7 +10,7 @@ export default function Header() {
   const pathname = usePathname();
 
   const navigation = [
-    { name: "Kshetra", href: "/" },
+    { name: "Kshetra", href: "/rooms" },
     { name: "Airport Transport", href: "/airport-transport" },
     { name: "Rent a Vehicle", href: "/services" },
     { name: "Contact", href: "/contact" },
@@ -21,8 +21,11 @@ export default function Header() {
   const isYogaPage = pathname === '/yoga';
   const isPaymentPage = pathname?.includes('/yoga/booking/payment') || pathname?.includes('/booking/payment');
   const isAirportTransportPage = pathname === '/airport-transport';
-  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage;
-
+  const isAirportTransportPaymentPage = pathname === '/airport-transport/payment';
+  const isServicesPage = pathname === '/services';
+  const isContactPage = pathname === '/contact';
+  const isRoomsPage = pathname === '/rooms';
+  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isContactPage || isRoomsPage;
   return (
     <header 
       className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-transparent' : 'sticky top-0 z-50 bg-black backdrop-blur-md shadow-sm'}`}
@@ -30,11 +33,11 @@ export default function Header() {
     >
 
       {/* Main header */}
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 md:px-[100px] py-4">
         <div className="flex items-center gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-10 relative">
-            <img src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} className="w-24 h-16" />
+            <img src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} className="w-24 h-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -46,10 +49,10 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-sm ${
+                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-md ${
                       isTransparentPage
                         ? 'text-gray-300 hover:text-white'
-                        : 'text-gray-700 hover:text-gray-900'
+                        : isActive ? 'text-[#B23092]' : 'text-gray-700 hover:text-gray-900'
                     }`}
                   >
                     {item.name}
@@ -85,7 +88,7 @@ export default function Header() {
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className={`lg:hidden border-t backdrop-blur-md shadow-lg ${isTransparentPage ? 'bg-purple-900/95 border-purple-700' : 'bg-white/95 border-gray-200'}`}>
-          <nav className="container mx-auto px-4 py-4">
+          <nav className="container mx-auto px-4 md:px-[100px] py-4">
             <div className="flex flex-col gap-4">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;

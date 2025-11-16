@@ -1908,7 +1908,7 @@ const BookingPageContent = () => {
 
       {/* Hero Section */}
       <section className="bg-blue-600 text-white py-16">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 md:px-[100px] text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1922,7 +1922,7 @@ const BookingPageContent = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-[100px] py-8">
         {/* Step Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-8">
