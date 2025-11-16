@@ -156,8 +156,16 @@ export const createAdventureSport = async (req: Request, res: Response) => {
 // Update adventure sport (admin only)
 export const updateAdventureSport = async (req: Request, res: Response) => {
   try {
+    console.log('\n=== UPDATE ADVENTURE SPORT DEBUG ===');
+    console.log('Request Method:', req.method);
+    console.log('Request Params:', req.params);
+    console.log('Request Body:', JSON.stringify(req.body, null, 2));
+    console.log('Request Body Type:', typeof req.body);
+    console.log('Request Body Keys:', Object.keys(req.body || {}));
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation Errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
@@ -166,19 +174,90 @@ export const updateAdventureSport = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
+    console.log('Adventure Sport ID:', id);
 
-    const sport = await AdventureSport.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!sport) {
+    // Check if sport exists before update
+    const existingSport = await AdventureSport.findById(id);
+    if (!existingSport) {
+      console.log('ERROR: Adventure sport not found with ID:', id);
       return res.status(404).json({
         success: false,
         message: 'Adventure sport not found'
       });
     }
+    console.log('Existing Sport Images:', existingSport.images);
+    console.log('Existing Sport Data:', JSON.stringify(existingSport.toObject(), null, 2));
+
+    // Support flexible image updates:
+    // - imageUrl: string -> append single URL to images
+    // - images: string[] with appendImages=true -> append many
+    // - images: string[] with appendImages not set -> replace images
+    const { imageUrl, images, appendImages } = req.body as any;
+    console.log('Extracted Values:');
+    console.log('  - imageUrl:', imageUrl);
+    console.log('  - images:', images);
+    console.log('  - appendImages:', appendImages);
+
+    // Build update object
+    let update: any = { ...req.body };
+    delete update.imageUrl;
+    delete update.appendImages;
+    console.log('Update Object (before image processing):', JSON.stringify(update, null, 2));
+
+    // Handle image updates - only update if explicitly provided
+    if (imageUrl) {
+      console.log('Processing single imageUrl:', imageUrl);
+      update.$addToSet = { ...(update.$addToSet || {}), images: imageUrl };
+      delete update.images; // avoid accidental replacement
+      console.log('Using $addToSet for single image');
+    } else if (Array.isArray(images)) {
+      if (images.length > 0 && appendImages) {
+        console.log('Processing images array with appendImages=true (appending', images.length, 'images)');
+        update.$addToSet = { ...(update.$addToSet || {}), images: { $each: images } };
+        delete update.images; // do not replace when appending
+        console.log('Using $addToSet with $each for multiple images');
+      } else if (images.length > 0 && !appendImages) {
+        console.log('Processing images array to REPLACE (appendImages=false or not set,', images.length, 'images)');
+        console.log('Images to set:', images);
+        // Explicitly set images array - this will replace the entire array
+        update.images = images;
+        // Make sure we're not using $addToSet for this case
+        if (update.$addToSet) {
+          delete update.$addToSet.images;
+        }
+        console.log('Set update.images to:', update.images);
+      } else if (images.length === 0) {
+        console.log('WARNING: Empty images array received - PRESERVING existing images (not updating images field)');
+        delete update.images; // Don't update images field if empty array - preserve existing
+      }
+    } else if (req.body.images && !Array.isArray(req.body.images)) {
+      console.log('WARNING: images is not an array, converting to array');
+      update.images = [req.body.images];
+    } else {
+      // No images field in request - preserve existing
+      console.log('No images field in request - preserving existing images');
+      delete update.images;
+    }
+
+    console.log('Final Update Object:', JSON.stringify(update, null, 2));
+    console.log('Update Object Keys:', Object.keys(update));
+
+    const sport = await AdventureSport.findByIdAndUpdate(id, update, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!sport) {
+      console.log('ERROR: Sport not found after update');
+      return res.status(404).json({
+        success: false,
+        message: 'Adventure sport not found'
+      });
+    }
+
+    console.log('Updated Sport Images:', sport.images);
+    console.log('Updated Sport Data:', JSON.stringify(sport.toObject(), null, 2));
+    console.log('=== END UPDATE DEBUG ===\n');
 
     res.status(200).json({
       success: true,
@@ -187,6 +266,7 @@ export const updateAdventureSport = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Update adventure sport error:', error);
+    console.error('Error Stack:', error.stack);
 
     if (error.name === 'ValidationError') {
       return res.status(400).json({

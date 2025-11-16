@@ -23,6 +23,7 @@ import {
 import Header from "../../components/Header";
 import { accommodationAPI } from "../../lib/api";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 
 interface Room {
   _id: string;
@@ -467,6 +468,7 @@ const RoomsPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
