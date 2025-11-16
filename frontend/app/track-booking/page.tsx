@@ -256,7 +256,7 @@ const TrackBookingPage = () => {
       <main className="pt-20">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
-          <div className="container mx-auto px-4 text-center">
+          <div className="container mx-auto px-4 md:px-[100px] text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -276,7 +276,7 @@ const TrackBookingPage = () => {
 
         {/* Search Section */}
         <section className="py-16">
-          <div className="container mx-auto px-4 max-w-4xl">
+          <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

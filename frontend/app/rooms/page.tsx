@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -21,6 +21,7 @@ import {
   Mountain
 } from "lucide-react";
 import Header from "../../components/Header";
+import { accommodationAPI } from "../../lib/api";
 import { useRouter } from "next/navigation";
 
 interface Room {
@@ -135,6 +136,29 @@ const RoomsPage = () => {
     capacity: "all",
   });
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Dynamic accommodations (admin-managed)
+  const [accommodations, setAccommodations] = useState<any[]>([]);
+  const [loadingAccommodations, setLoadingAccommodations] = useState(true);
+
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const response = await accommodationAPI.getAllAccommodations();
+        if (response.data?.success) {
+          setAccommodations(response.data.data.accommodations || []);
+        } else if (response.data?.data?.accommodations) {
+          // Some endpoints return without success flag
+          setAccommodations(response.data.data.accommodations);
+        }
+      } catch (err) {
+        console.error("Failed to fetch accommodations:", err);
+      } finally {
+        setLoadingAccommodations(false);
+      }
+    };
+    fetchAccommodations();
+  }, []);
 
   const filteredRooms = staticRooms.filter((room) => {
     const matchesSearch =
@@ -309,108 +333,139 @@ const RoomsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-blue-600 text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-light mb-4">Our Rooms</h1>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto">
-              Choose from our carefully designed accommodations, each offering
-              comfort and tranquility
-            </p>
-          </motion.div>
+      {/* Hero Section - Rooms */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/hotel.png?updatedAt=1763030443251"
+            alt="Kshetra Rooms"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex items-center">
+          <div className="container mx-auto px-4 md:px-[100px]">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="max-w-2xl text-white"
+            >
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                <span className="block font-annie-telescope">EXPERIENCE COMFORT</span>
+                <span className="block text-5xl md:text-6xl lg:text-7xl font-water-brush italic mt-4">
+                  in <span className="text-[#B23092]">Every Corner</span>
+                </span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-white/90 font-urbanist max-w-xl leading-relaxed mb-8">
+                Indulge in comfort and charm — from our grand King Rooms to the cozy Queen stays,
+                every space is thoughtfully designed to make your experience memorable, peaceful,
+                and perfectly tailored to your style.
+              </p>
+
+              {/* CTA Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  const list = document.getElementById('rooms-list');
+                  if (list) list.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-full font-urbanist font-semibold"
+              >
+                Start Your Booking
+              </motion.button>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl shadow-sm p-6 mb-8"
-        >
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search rooms..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              />
+      <div className="container mx-auto px-4 md:px-[100px] py-8" id="rooms-list"
+      style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}
+      >
+        {/* NOTE: Old static filter + listing commented out as per request */}
+     
+
+        {/* Dynamic room-type sections (admin-managed) */}
+        <div className="space-y-16">
+          {loadingAccommodations && (
+            <div className="text-center py-20">
+              <div className="inline-block w-10 h-10 border-4 border-[#B23092] border-t-transparent rounded-full animate-spin" />
+              <p className="text-white/70 mt-4 font-urbanist">Loading room types...</p>
             </div>
+          )}
 
-            {/* Filters */}
-            <div className="flex gap-4">
-              <select
-                value={filters.roomType}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, roomType: e.target.value }))
-                }
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Types</option>
-                <option value="AC">AC Rooms</option>
-                <option value="Non-AC">Non-AC Rooms</option>
-              </select>
+          {!loadingAccommodations && accommodations.map((acc, idx) => (
+            <section key={acc._id || idx} className="bg-transparent rounded-3xl p-6 sm:p-8 "
+            style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}
+            >
+              {/* Header */}
+              <div className="text-center mb-6 sm:mb-8">
+                <div className="text-xs tracking-widest text-white/70 font-urbanist uppercase mb-2">{acc.name?.toUpperCase()} ROOMS</div>
+                <h3 className="text-3xl sm:text-4xl font-bold text-white">
+                  <span className="font-annie-telescope">Luxury and space</span>{' '}
+                  <span className="font-water-brush text-[#B23092]">redefined</span>
+                </h3>
+                <p className="text-white/80 mt-4 max-w-3xl mx-auto font-urbanist text-sm sm:text-base">
+                  {acc.description || "Step into a world where royal comfort meets sophistication. Thoughtfully designed with plush bedding, premium interiors, and a warm ambience."}
+                </p>
+                <button
+                  onClick={() => {
+                    const url = acc.externalLink || "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala";
+                    window.open(url, "_blank");
+                  }}
+                  className="mt-5 inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#B23092] text-white font-urbanist font-semibold hover:bg-[#9a2578] transition-colors"
+                >
+                  Book Now
+                </button>
+              </div>
 
-              <select
-                value={filters.priceRange}
-                onChange={(e) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    priceRange: e.target.value,
-                  }))
-                }
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Prices</option>
-                <option value="budget">Under ₹2,000</option>
-                <option value="mid">₹2,000 - ₹4,000</option>
-                <option value="luxury">Above ₹4,000</option>
-              </select>
+              {/* Main Image */}
+              <div className="rounded-2xl overflow-hidden bg-transparent">
+                <img
+                  src={(acc.images && acc.images[0]) || "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=2048&q=60"}
+                  alt={acc.name}
+                  className="w-full h-[380px] sm:h-[460px] object-cover"
+                />
+                <div className="border-t border-white/10 px-4 sm:px-6 py-3 sm:py-4 text-white/80 text-xs sm:text-sm font-urbanist flex flex-wrap gap-x-6 gap-y-2">
+                  <span>• Premium Interiors</span>
+                  <span>• Large Bed</span>
+                  <span>• Balcony View</span>
+                  <span>• Wi‑Fi</span>
+                </div>
+              </div>
 
-              <select
-                value={filters.capacity}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, capacity: e.target.value }))
-                }
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">Any Capacity</option>
-                <option value="1">1 Guest</option>
-                <option value="2">2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4+ Guests</option>
-              </select>
+              {/* Thumbnails */}
+              <div className="mt-6 grid sm:grid-cols-3 gap-4">
+                {(acc.images && acc.images.slice(1, 4).length > 0 ? acc.images.slice(1, 4) : [
+                  "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=60",
+                  "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=60",
+                  "https://images.unsplash.com/photo-1559599101-f09722fb4948?auto=format&fit=crop&w=1200&q=60",
+                ]).map((img: string, i: number) => (
+                  <div key={i} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 ">
+                    <img src={img} alt={`${acc.name} ${i+2}`} className="w-full sm:h-48" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+
+          {!loadingAccommodations && accommodations.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-white/70 font-urbanist">No room types available yet.</p>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Rooms Grid */}
-        {filteredRooms.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRooms.map((room) => (
-              <RoomCard key={room._id} room={room} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="text-gray-400 text-xl mb-2">No rooms found</div>
-            <p className="text-gray-600">
-              Try adjusting your filters or search criteria
-            </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

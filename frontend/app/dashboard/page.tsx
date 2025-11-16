@@ -365,7 +365,7 @@ const DashboardPage = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="container mx-auto px-4 py-20 text-center">
+        <div className="container mx-auto px-4 md:px-[100px] py-20 text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <div className="text-red-500 text-xl mb-4">Error: {error}</div>
           <button 
@@ -383,7 +383,7 @@ const DashboardPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-[100px] py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-light text-gray-900 mb-4">My Bookings</h1>
           <p className="text-gray-600">Manage and track your resort bookings</p>

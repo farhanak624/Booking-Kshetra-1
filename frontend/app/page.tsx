@@ -41,6 +41,7 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { accommodationAPI } from "../lib/api";
+import Link from "next/link";
 
 interface Accommodation {
   _id: string;
@@ -81,6 +82,7 @@ export default function Home() {
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel1.png",
       visualAlt: "Meditating monk at sunrise over lotus pond",
       ctaLabel: "Explore Now",
+      ctaLink: "/yoga",
       highlightColor: "#B23092",
       metaLabel: "WELLNESS & EXPERIENCES HIGHLIGHT",
     },
@@ -99,6 +101,7 @@ export default function Home() {
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel2.png",
       visualAlt: "Therapist preparing ayurvedic treatment",
       ctaLabel: "Explore Now",
+      ctaLink: "/services",
       highlightColor: "#F472B6",
       metaLabel: "CULINARY PREVIEW",
     },
@@ -118,6 +121,7 @@ export default function Home() {
       visualAlt: "Glasshouse wellness pavilion under palm trees",
       ctaLabel: "Explore Now",
       highlightColor: "#F97316",
+      ctaLink: "/services",
       metaLabel: "NEARBY ATTRACTIONS SNAPSHOT",
     },
     {
@@ -136,6 +140,7 @@ export default function Home() {
       visualAlt: "Guest enjoying detox herbal infusion in garden",
       ctaLabel: "Explore Now",
       highlightColor: "#22D3EE",
+      ctaLink: "/yoga",
       metaLabel: "YOGA & WELLNESS HIGHLIGHT",
     },
   ];
@@ -456,7 +461,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 md:px-[100px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -469,7 +474,7 @@ export default function Home() {
                   BOOK ROOMS & SERVICES
                 </span>
                 <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4">
-                  All In <span className="text-pink-500">One</span> Place
+                  All In <span className="text-[#B23092]">One</span> Place
                 </span>
               </h1>
 
@@ -489,7 +494,7 @@ export default function Home() {
                     "_blank"
                   )
                 }
-                className="bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg px-10 py-4 rounded-2xl transition-all duration-300 shadow-lg font-urbanist"
+                className="bg-[#B23092] hover:bg-[#B23092]/80 text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist"
               >
                 Start Your Booking
               </motion.button>
@@ -511,7 +516,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 md:px-[100px]">
             <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
               {/* Left Side - Text Content */}
               <motion.div
@@ -526,7 +531,7 @@ export default function Home() {
                 </h1>
                 <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight font-water-brush">
                   <span className="text-white">Meets</span>{" "}
-                  <span className="text-pink-500">Coastal Serenity</span>
+                  <span className="text-[#B23092]">Coastal Serenity</span>
                 </h2>
 
                 <div className="space-y-6 text-lg md:text-xl leading-relaxed font-urbanist text-white/90">
@@ -562,7 +567,7 @@ export default function Home() {
       </section>
 
       {/* Why Varkala Section */}
-      <section className="relative min-h-screen overflow-hidden bg-black">
+      <section className="relative min-h-screen py-20 overflow-hidden bg-black">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -574,7 +579,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-end">
-          <div className="container mx-auto px-4 pb-20">
+          <div className="container mx-auto px-4 md:px-[100px] pb-20">
             <div className="max-w-4xl mx-auto text-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -602,7 +607,7 @@ export default function Home() {
 
       {/* Attractions Grid Section */}
       <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-[100px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Card 1: Beaches */}
             <motion.div
@@ -940,12 +945,14 @@ export default function Home() {
 
         {/* Explore Now Button */}
         <div className="absolute top-8 right-8 z-20">
+          <Link href={activeWellnessSlide.ctaLink}>
           <button className="bg-[#B23092] text-white px-6 py-3 rounded-lg font-urbanist font-semibold hover:bg-[#9a2779] transition-colors duration-200">
-            {activeWellnessSlide.ctaLabel}
-          </button>
+              {activeWellnessSlide.ctaLabel}
+            </button>
+          </Link>
         </div>
 
-        <div className="container mx-auto px-4 py-16 lg:py-20">
+        <div className="container mx-auto px-4 md:px-[100px] py-16 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[420px]">
             {/* Left Side - Text Content */}
             <motion.div
@@ -989,15 +996,6 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="relative h-full min-h-[600px] flex items-center justify-center"
             >
-              {/* <div className="relative w-full h-full">
-                {activeWellnessSlide.visualImage && (
-                  <img
-                    src={activeWellnessSlide.visualImage}
-                    alt={activeWellnessSlide.visualAlt}
-                    className="w-full h-full object-contain drop-shadow-2xl"
-                  />
-                )}
-              </div> */}
             </motion.div>
           </div>
 
@@ -1088,7 +1086,7 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-[100px]">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
@@ -1165,7 +1163,7 @@ export default function Home() {
             backgroundPosition: "center",
         }}
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-[100px]">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
@@ -1264,7 +1262,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-black/60 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4">
+        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1534,7 +1532,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-gradient-to-r from-orange-900/70 via-pink-900/70 to-purple-900/70 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4">
+        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1707,7 +1705,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 via-yellow-900/80 to-orange-900/80 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4">
+        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1875,7 +1873,7 @@ export default function Home() {
 
       {/* Resort Amenities Section */}
       <section className="py-32 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-[100px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
