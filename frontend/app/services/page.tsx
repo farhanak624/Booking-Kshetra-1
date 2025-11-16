@@ -780,35 +780,8 @@ const ServicesPage = () => {
             )}
           </div>
 
-          {/* Adventure Sports Section */}
-          <div className="mt-16">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">Adventure Sports</h2>
-              <p className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto">
-                Experience thrilling adventures and premium services designed to create unforgettable memories.
-              </p>
-            </motion.div>
-
-            {/* Services Grid */}
-            <div className="grid gap-8 max-w-4xl mx-auto">
-              {adventureSports.map((service, index) => (
-                <motion.div
-                  key={service._id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <ServiceCard service={service} />
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          {/* Adventure Sports Section moved to /adventure */}
+          {false && <div />}
         </div>
       </div>
 

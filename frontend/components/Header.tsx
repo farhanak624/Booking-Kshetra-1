@@ -13,6 +13,7 @@ export default function Header() {
     { name: "Kshetra", href: "/rooms" },
     { name: "Airport Transport", href: "/airport-transport" },
     { name: "Rent a Vehicle", href: "/services" },
+    { name: "Adventure Sports", href: "/adventure" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -25,7 +26,8 @@ export default function Header() {
   const isServicesPage = pathname === '/services';
   const isContactPage = pathname === '/contact';
   const isRoomsPage = pathname === '/rooms';
-  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isContactPage || isRoomsPage;
+  const isAdventurePage = pathname === '/adventure';
+  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isContactPage || isRoomsPage || isAdventurePage;
   return (
     <header 
       className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-transparent' : 'sticky top-0 z-50 bg-black backdrop-blur-md shadow-sm'}`}

@@ -5,6 +5,7 @@ import { Upload, X, Image, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface ImageUploadProps {
   onUpload: (file: File) => Promise<void>;
+  onRemove?: () => void;
   currentImageUrl?: string;
   accept?: string;
   maxSizeMB?: number;
@@ -17,6 +18,7 @@ interface ImageUploadProps {
 
 interface ImageUploadMultipleProps extends Omit<ImageUploadProps, 'onUpload' | 'currentImageUrl' | 'variant'> {
   onUpload: (files: File[]) => Promise<void>;
+  onRemove?: (index: number) => void;
   currentImageUrls?: string[];
   maxFiles?: number;
   variant: 'multiple';
@@ -44,6 +46,8 @@ export default function ImageUpload(props: ImageUploadCombinedProps) {
   const currentImageUrl = variant === 'single' ? (props as ImageUploadProps).currentImageUrl : undefined;
   const currentImageUrls = variant === 'multiple' ? (props as ImageUploadMultipleProps).currentImageUrls || [] : [];
   const maxFiles = variant === 'multiple' ? (props as ImageUploadMultipleProps).maxFiles || 10 : 1;
+  const onRemoveSingle = variant === 'single' ? (props as ImageUploadProps).onRemove : undefined;
+  const onRemoveMultiple = variant === 'multiple' ? (props as ImageUploadMultipleProps).onRemove : undefined;
 
   const validateFile = (file: File): string | null => {
     if (!file.type.startsWith('image/')) {
@@ -126,9 +130,11 @@ export default function ImageUpload(props: ImageUploadCombinedProps) {
   };
 
   const removeImage = (index?: number) => {
-    // This would need to be implemented by parent component
-    // For now, just log the action
-    console.log('Remove image at index:', index);
+    if (variant === 'single' && onRemoveSingle) {
+      onRemoveSingle();
+    } else if (variant === 'multiple' && onRemoveMultiple && index !== undefined) {
+      onRemoveMultiple(index);
+    }
   };
 
   return (
