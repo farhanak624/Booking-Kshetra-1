@@ -131,7 +131,34 @@ export default function ServicesBookingPaymentPage() {
 
   const getServiceType = (): 'rental' | 'adventure' => {
     if (!bookingData) return 'adventure'
-    return bookingData.services.some(s => s.category === 'vehicle_rental') ? 'rental' : 'adventure'
+    
+    // Check if any service is a vehicle rental
+    const hasVehicleRental = bookingData.services.some(s => s.category === 'vehicle_rental')
+    if (hasVehicleRental) {
+      return 'rental'
+    }
+    
+    // Check if any service is an adventure sport (adventure, surfing, diving, trekking)
+    const hasAdventure = bookingData.services.some(s => {
+      const category = s.category
+      return category === 'adventure' || 
+             category === 'surfing' || 
+             category === 'diving' || 
+             category === 'trekking'
+    })
+    
+    // Default to adventure if it has adventure categories, otherwise check by service name
+    if (hasAdventure) {
+      return 'adventure'
+    }
+    
+    // Fallback: Check if services came from adventure page by checking service names
+    const adventureKeywords = ['adventure', 'surfing', 'diving', 'trekking', 'climbing', 'safari', 'paddle', 'roller', 'cycle', 'jet ski', 'quad', 'atv', 'water']
+    const hasAdventureName = bookingData.services.some(s => 
+      adventureKeywords.some(keyword => s.name?.toLowerCase().includes(keyword))
+    )
+    
+    return hasAdventureName ? 'adventure' : 'rental'
   }
 
   const handleApplyCoupon = async () => {
@@ -294,37 +321,103 @@ export default function ServicesBookingPaymentPage() {
 
   if (!bookingData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+      <div className="min-h-screen bg-black">
         <Header />
         <div className="container mx-auto px-4 md:px-[100px] py-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-400 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B23092] mx-auto"></div>
           </div>
         </div>
       </div>
     )
   }
 
+  const isAdventureBooking = getServiceType() === 'adventure'
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="container mx-auto px-4 md:px-[100px] py-8 max-w-6xl">
+      {/* Adventure Hero Section */}
+      {isAdventureBooking && (
+        <section className="relative overflow-hidden h-[60vh] sm:h-[70vh]">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img
+              src={'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/adventure.jpg?updatedAt=1763305822583'}
+              alt={'Adventure Sports'}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+          <div className="relative z-10 h-full flex items-center">
+            <div className="container mx-auto px-4 md:px-[100px]">
+              <div className="max-w-3xl">
+                <h1 className="text-white mb-4">
+                  <span className="block text-2xl sm:text-3xl md:text-4xl font-annie-telescope">
+                    WHERE EVERY MOMENT
+                  </span>
+                  <span className="block text-4xl sm:text-5xl md:text-6xl font-water-brush text-[#B23092] mt-2">
+                    Sparks Adventure
+                  </span>
+                </h1>
+                <p className="text-white/90 font-urbanist text-sm sm:text-base max-w-2xl">
+                  Complete your booking and secure your spot for an unforgettable adventure experience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Vehicle Rental Hero Section */}
+      {!isAdventureBooking && (
+        <section className="relative overflow-hidden h-[60vh] sm:h-[70vh]">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img
+              src={'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/rentbike.png'}
+              alt={'Vehicle Rental'}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+          <div className="relative z-10 h-full flex items-center">
+            <div className="container mx-auto px-4 md:px-[100px]">
+              <div className="max-w-3xl">
+                <h1 className="text-white mb-4">
+                  <span className="block text-2xl sm:text-3xl md:text-4xl font-annie-telescope">
+                    SECURE YOUR
+                  </span>
+                  <span className="block text-4xl sm:text-5xl md:text-6xl font-water-brush text-[#B23092] mt-2">
+                    Perfect Ride
+                  </span>
+                </h1>
+                <p className="text-white/90 font-urbanist text-sm sm:text-base max-w-2xl">
+                  Complete your payment and secure your vehicle rental for an amazing journey ahead.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className={`container mx-auto px-4 md:px-[100px] py-8 ${isAdventureBooking ? '' : 'max-w-6xl'}`}>
         {/* Progress Steps */}
         <div className="mb-12">
           <div className="flex items-center justify-center space-x-8">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-[#B23092] text-white rounded-full flex items-center justify-center text-sm font-medium">
                 ✓
               </div>
-              <span className="text-sm font-medium text-green-400">Details</span>
+              <span className="text-sm font-medium text-[#B23092]">Details</span>
             </div>
-            <div className="w-16 h-px bg-green-400"></div>
+            <div className="w-16 h-px bg-[#B23092]"></div>
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-[#B23092] text-white rounded-full flex items-center justify-center text-sm font-medium">
                 2
               </div>
-              <span className="text-sm font-medium text-orange-400">Payment</span>
+              <span className="text-sm font-medium text-[#B23092]">Payment</span>
             </div>
           </div>
         </div>
@@ -337,12 +430,12 @@ export default function ServicesBookingPaymentPage() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-white/10 backdrop-blur-lg rounded-3xl p-8"
             >
-              <h3 className="text-2xl font-bold text-white mb-8">Booking Summary</h3>
+              <h3 className="text-2xl font-bold text-white mb-8 font-annie-telescope">Booking Summary</h3>
 
               <div className="space-y-6">
                 {/* Service Date */}
                 <div className="bg-white/10 rounded-2xl p-6 text-center">
-                  <div className="flex items-center justify-center gap-2 text-orange-400 mb-2">
+                  <div className="flex items-center justify-center gap-2 text-[#B23092] mb-2">
                     <Calendar className="w-5 h-5" />
                     <span className="font-medium">Service Date</span>
                   </div>
@@ -358,14 +451,14 @@ export default function ServicesBookingPaymentPage() {
                     return (
                       <div key={service._id} className="bg-white/10 rounded-2xl p-6">
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="p-3 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-xl">
-                            <ServiceIcon className="w-6 h-6 text-orange-400" />
+                          <div className="p-3 bg-[#B23092]/20 rounded-xl">
+                            <ServiceIcon className="w-6 h-6 text-[#B23092]" />
                           </div>
                           <div className="flex-1">
                             <h4 className="text-lg font-semibold text-white">{service.name}</h4>
                             <p className="text-gray-300 text-sm">Quantity: {service.quantity}</p>
                           </div>
-                          <div className="text-orange-400 font-bold">
+                          <div className="text-[#B23092] font-bold">
                             {formatCurrency(service.price * service.quantity)}
                           </div>
                         </div>
@@ -379,20 +472,20 @@ export default function ServicesBookingPaymentPage() {
                   <h4 className="font-semibold text-white mb-4">Your Details</h4>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <User className="w-4 h-4 text-orange-400" />
+                      <User className="w-4 h-4 text-[#B23092]" />
                       <span className="text-gray-300">{bookingData.user.name}</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-orange-400" />
+                      <Mail className="w-4 h-4 text-[#B23092]" />
                       <span className="text-gray-300">{bookingData.user.email}</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Phone className="w-4 h-4 text-orange-400" />
+                      <Phone className="w-4 h-4 text-[#B23092]" />
                       <span className="text-gray-300">{bookingData.user.phone}</span>
                     </div>
                     {bookingData.user.specialRequests && (
                       <div className="flex items-start gap-3 mt-4 pt-4 border-t border-white/20">
-                        <Activity className="w-4 h-4 text-orange-400 mt-0.5" />
+                        <Activity className="w-4 h-4 text-[#B23092] mt-0.5" />
                         <div>
                           <div className="text-white font-medium mb-1">Special Requests</div>
                           <span className="text-gray-300 text-sm">{bookingData.user.specialRequests}</span>
@@ -405,7 +498,7 @@ export default function ServicesBookingPaymentPage() {
                 {/* Coupon Section */}
                 <div className="bg-white/10 rounded-2xl p-6">
                   <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
-                    <Percent className="w-5 h-5 text-orange-400" />
+                    <Percent className="w-5 h-5 text-[#B23092]" />
                     Apply Coupon
                   </h4>
 
@@ -416,12 +509,12 @@ export default function ServicesBookingPaymentPage() {
                         placeholder="Enter coupon code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                        className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#B23092] focus:border-transparent"
                       />
                       <button
                         onClick={handleApplyCoupon}
                         disabled={!couponCode.trim() || validatingCoupon}
-                        className="px-6 py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-3 bg-[#B23092] hover:bg-[#9a2578] text-white rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {validatingCoupon ? (
                           <Loader className="w-4 h-4 animate-spin" />
@@ -475,7 +568,7 @@ export default function ServicesBookingPaymentPage() {
                     <div className="border-t border-white/20 pt-3">
                       <div className="flex justify-between">
                         <span className="text-lg font-semibold text-white">Total Amount</span>
-                        <span className="text-lg font-bold text-orange-400">{formatCurrency(getFinalAmount())}</span>
+                        <span className="text-lg font-bold text-[#B23092]">{formatCurrency(getFinalAmount())}</span>
                       </div>
                     </div>
                   </div>
@@ -499,7 +592,7 @@ export default function ServicesBookingPaymentPage() {
                   <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">Secure Payment</h1>
+                  <h1 className="text-2xl font-bold text-white font-annie-telescope">Secure Payment</h1>
                   <p className="text-gray-300">Complete your services booking</p>
                 </div>
               </div>
@@ -508,20 +601,20 @@ export default function ServicesBookingPaymentPage() {
                 {/* Payment Method */}
                 <div>
                   <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-orange-400" />
+                    <CreditCard className="w-5 h-5 text-[#B23092]" />
                     Payment Method
                   </h2>
 
-                  <div className="border border-orange-400/30 rounded-2xl p-6 bg-orange-500/10">
+                  <div className="border border-[#B23092]/30 bg-[#B23092]/10 rounded-2xl p-6">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-orange-500/20 rounded-xl">
-                        <CreditCard className="w-6 h-6 text-orange-400" />
+                      <div className="p-3 bg-[#B23092]/20 rounded-xl">
+                        <CreditCard className="w-6 h-6 text-[#B23092]" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-white">Razorpay</h3>
                         <p className="text-sm text-gray-300">Cards, UPI, Net Banking, Wallets</p>
                       </div>
-                      <div className="w-5 h-5 border-2 border-orange-400 rounded-full bg-orange-400 flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-[#B23092] bg-[#B23092] rounded-full flex items-center justify-center">
                         <div className="w-2 h-2 bg-white rounded-full"></div>
                       </div>
                     </div>
@@ -590,7 +683,7 @@ export default function ServicesBookingPaymentPage() {
                 <button
                   onClick={handlePayment}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-4 rounded-2xl font-bold text-lg hover:from-orange-600 hover:to-pink-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full bg-[#B23092] hover:bg-[#9a2578] text-white py-4 rounded-2xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>

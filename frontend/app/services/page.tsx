@@ -22,7 +22,9 @@ import {
   Settings,
   IndianRupee,
   Shield,
-  ChevronDown
+  ChevronDown,
+  X,
+  Star
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -139,6 +141,9 @@ const ServicesPage = () => {
   const [vehicleTypeFilter, setVehicleTypeFilter] = useState<'all' | '2-wheeler' | '4-wheeler'>('all');
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState<Vehicle | null>(null);
   const [showVehicleModal, setShowVehicleModal] = useState(false);
+  const [selectedVehicleImageIndex, setSelectedVehicleImageIndex] = useState(0);
+  const [modalRentalDays, setModalRentalDays] = useState(1);
+  const [modalWithDriver, setModalWithDriver] = useState(false);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<Service | null>(null);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -506,16 +511,16 @@ const ServicesPage = () => {
             <img
               src={mainImage}
               alt={vehicle.name}
-              className="w-full h-full object-cover blur-sm opacity-40 scale-110 group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80"></div>
         </div>
 
         {/* Content */}
         <div className="relative z-10 p-6 h-full min-h-[400px] flex flex-col">
           {/* Vehicle Image - Centered */}
-          {mainImage && (
+          {/* {mainImage && (
             <div className="flex-1 flex items-center justify-center mb-6">
               <img
                 src={mainImage}
@@ -523,7 +528,7 @@ const ServicesPage = () => {
                 className="max-w-full max-h-48 object-contain drop-shadow-2xl"
               />
             </div>
-          )}
+          )} */}
 
           {/* Bottom Section - Name, Price, Button */}
           <div className="mt-auto">
@@ -546,6 +551,10 @@ const ServicesPage = () => {
               <button
                 onClick={() => {
                   setSelectedVehicleDetails(vehicle);
+                  setSelectedVehicleImageIndex(0);
+                  const existingVehicle = selectedVehicles.find(v => v._id === vehicle._id);
+                  setModalRentalDays(existingVehicle?.rentalDays || 1);
+                  setModalWithDriver(existingVehicle?.withDriver || false);
                   setShowVehicleModal(true);
                 }}
                 className="bg-black/60 hover:bg-black/80 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors font-urbanist"
@@ -787,9 +796,9 @@ const ServicesPage = () => {
 
       {/* Selected Services Summary & Booking */}
       {(selectedServices.length > 0 || selectedVehicles.length > 0) && (
-        <div className="bg-white border-t border-gray-200 sticky bottom-0 z-20 shadow-lg">
-          <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-            <div className="max-w-4xl mx-auto">
+        <div className="bg-black/95 backdrop-blur-md border-t border-white/20 sticky bottom-0 z-20 shadow-2xl">
+          <div className="container mx-auto px-4 md:px-[100px] py-4 sm:py-6">
+            <div className="max-w-6xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -800,16 +809,23 @@ const ServicesPage = () => {
                   <div className="space-y-3 sm:space-y-4">
                     {selectedServices.length > 0 && (
                       <div>
-                        <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
-                          Services ({selectedServices.length})
+                        <h4 className="text-base sm:text-lg font-annie-telescope font-bold text-white mb-3">
+                          Services <span className="text-[#B23092]">({selectedServices.length})</span>
                         </h4>
-                        <div className="flex gap-2 overflow-x-auto pb-2">
+                        <div className="flex gap-2 overflow-x-auto pb-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092]"
+                          style={{
+                            scrollbarWidth: 'thin',
+                            scrollbarColor: '#B2309280 transparent'
+                          }}
+                        >
                           {selectedServices.map(service => (
-                            <div key={service._id} className="flex items-center gap-1 sm:gap-2 bg-orange-50 rounded-lg px-2 sm:px-3 py-1 min-w-fit">
-                              <div className="p-1 bg-orange-100 rounded">
-                                {React.createElement(getServiceIcon(service.category), { className: "w-3 h-3 text-orange-600" })}
+                            <div key={service._id} className="flex items-center gap-2 bg-[#B23092]/20 border border-[#B23092]/30 rounded-xl px-3 sm:px-4 py-2 min-w-fit backdrop-blur-sm">
+                              <div className="p-1.5 bg-[#B23092]/30 rounded-lg">
+                                {React.createElement(getServiceIcon(service.category), { className: "w-4 h-4 text-[#B23092]" })}
                               </div>
-                              <span className="text-xs sm:text-sm font-medium text-gray-900 whitespace-nowrap">{service.quantity}x {service.name}</span>
+                              <span className="text-xs sm:text-sm font-urbanist font-medium text-white whitespace-nowrap">
+                                {service.quantity}x {service.name}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -818,17 +834,22 @@ const ServicesPage = () => {
 
                     {selectedVehicles.length > 0 && (
                       <div>
-                        <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
-                          Vehicles ({selectedVehicles.length})
+                        <h4 className="text-base sm:text-lg font-annie-telescope font-bold text-white mb-3">
+                          Vehicles <span className="text-[#B23092]">({selectedVehicles.length})</span>
                         </h4>
-                        <div className="flex gap-2 overflow-x-auto pb-2">
+                        <div className="flex gap-2 overflow-x-auto pb-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092]"
+                          style={{
+                            scrollbarWidth: 'thin',
+                            scrollbarColor: '#B2309280 transparent'
+                          }}
+                        >
                           {selectedVehicles.map(vehicle => (
-                            <div key={vehicle._id} className="flex items-center gap-1 sm:gap-2 bg-blue-50 rounded-lg px-2 sm:px-3 py-1 min-w-fit">
-                              <div className="p-1 bg-blue-100 rounded">
-                                {React.createElement(vehicle.type === '2-wheeler' ? Bike : Car, { className: "w-3 h-3 text-blue-600" })}
+                            <div key={vehicle._id} className="flex items-center gap-2 bg-[#B23092]/20 border border-[#B23092]/30 rounded-xl px-3 sm:px-4 py-2 min-w-fit backdrop-blur-sm">
+                              <div className="p-1.5 bg-[#B23092]/30 rounded-lg">
+                                {React.createElement(vehicle.type === '2-wheeler' ? Bike : Car, { className: "w-4 h-4 text-[#B23092]" })}
                               </div>
-                              <span className="text-xs sm:text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {vehicle.quantity}x {vehicle.name} ({vehicle.rentalDays}d)
+                              <span className="text-xs sm:text-sm font-urbanist font-medium text-white whitespace-nowrap">
+                                {vehicle.quantity}x {vehicle.name} <span className="text-white/70">({vehicle.rentalDays}d)</span>
                               </span>
                             </div>
                           ))}
@@ -839,21 +860,21 @@ const ServicesPage = () => {
                 </div>
 
                 {/* Date Selection & Booking */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 border-t border-white/20">
                   <div className="flex-1 sm:flex-initial">
-                    <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1">Service Date</label>
+                    <label className="block text-white/80 font-urbanist text-xs sm:text-sm font-medium mb-2">Service Date</label>
                     <input
                       type="date"
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                      className="w-full px-3 sm:px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-[#B23092] focus:outline-none focus:ring-2 focus:ring-[#B23092]/20 text-sm font-urbanist"
                     />
                   </div>
 
-                  <div className="text-center sm:text-left flex-1 sm:flex-initial">
-                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Total</div>
-                    <div className="text-lg sm:text-xl font-bold text-orange-600">
+                  <div className="text-center sm:text-left flex-1 sm:flex-initial bg-white/5 rounded-xl px-4 sm:px-6 py-3 border border-white/10">
+                    <div className="text-xs sm:text-sm text-white/70 font-urbanist mb-1">Total Amount</div>
+                    <div className="text-xl sm:text-2xl font-annie-telescope font-bold text-[#B23092]">
                       ₹{getTotalAmount().toLocaleString()}
                     </div>
                   </div>
@@ -861,7 +882,7 @@ const ServicesPage = () => {
                   <button
                     onClick={handleBookServices}
                     disabled={(selectedServices.length === 0 && selectedVehicles.length === 0) || !selectedDate}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md text-sm sm:text-base"
+                    className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 sm:px-8 py-3 rounded-xl font-urbanist font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#B23092]/30 text-sm sm:text-base"
                   >
                     <Calendar className="w-4 h-4" />
                     Book Now
@@ -876,8 +897,8 @@ const ServicesPage = () => {
 
       {/* Empty State */}
       {selectedServices.length === 0 && selectedVehicles.length === 0 && (
-        <div className="bg-slate-800 py-20">
-          <div className="container mx-auto px-4 md:px-[100px]">
+        <div className="bg-black py-20">
+          <div className="container mx-auto px-4 md:px-[100px] bg-black">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1117,127 +1138,251 @@ const ServicesPage = () => {
 
       {/* Vehicle Details Modal */}
       {showVehicleModal && selectedVehicleDetails && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-                  <div className="p-2 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-lg flex-shrink-0">
-                    {React.createElement(selectedVehicleDetails.type === '2-wheeler' ? Bike : Car, { className: "w-5 h-5 sm:w-6 sm:h-6 text-orange-600" })}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">{selectedVehicleDetails.name}</h2>
-                    <p className="text-gray-600 text-sm truncate">{selectedVehicleDetails.brand} {selectedVehicleDetails.vehicleModel} ({selectedVehicleDetails.year})</p>
-                  </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShowVehicleModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-black/90 backdrop-blur-md border border-white/20 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092]"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#B2309280 transparent'
+            }}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-black/95 backdrop-blur-md border-b border-white/20 p-6 flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="p-2 bg-[#B23092]/20 rounded-lg flex-shrink-0">
+                  {React.createElement(selectedVehicleDetails.type === '2-wheeler' ? Bike : Car, { className: "w-5 h-5 sm:w-6 sm:h-6 text-[#B23092]" })}
                 </div>
-                <button
-                  onClick={() => setShowVehicleModal(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
-                >
-                  ✕
-                </button>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-2xl font-annie-telescope text-white truncate">{selectedVehicleDetails.name}</h3>
+                  <p className="text-white/60 text-sm truncate font-urbanist">{selectedVehicleDetails.brand} {selectedVehicleDetails.vehicleModel} ({selectedVehicleDetails.year})</p>
+                </div>
               </div>
+              <button
+                onClick={() => setShowVehicleModal(false)}
+                className="p-2 rounded-full hover:bg-white/10 text-white transition-colors flex-shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-              {/* Vehicle Images */}
-              {selectedVehicleDetails.images.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Photos</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {selectedVehicleDetails.images.slice(0, 4).map((image, index) => (
-                      <div key={index} className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                        <img src={image} alt={`${selectedVehicleDetails.name} ${index + 1}`} className="w-full h-full object-cover" />
-                      </div>
-                    ))}
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Image Gallery */}
+              {selectedVehicleDetails.images && selectedVehicleDetails.images.length > 0 && (
+                <div className="space-y-3">
+                  {/* Main Image */}
+                  <div className="relative h-64 sm:h-80 rounded-xl overflow-hidden bg-white/5 group">
+                    <img
+                      src={selectedVehicleDetails.images[selectedVehicleImageIndex]}
+                      alt={selectedVehicleDetails.name}
+                      className="w-full h-full object-cover transition-opacity duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Navigation Arrows (if multiple images) */}
+                    {selectedVehicleDetails.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedVehicleImageIndex((prev) => 
+                              prev === 0 ? selectedVehicleDetails.images.length - 1 : prev - 1
+                            )
+                          }}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <ArrowRight className="w-5 h-5 rotate-180" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedVehicleImageIndex((prev) => 
+                              prev === selectedVehicleDetails.images.length - 1 ? 0 : prev + 1
+                            )
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </button>
+                        
+                        {/* Image Counter */}
+                        <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur text-white text-xs font-urbanist">
+                          {selectedVehicleImageIndex + 1} / {selectedVehicleDetails.images.length}
+                        </div>
+                      </>
+                    )}
                   </div>
+                  
+                  {/* Thumbnail Gallery (if multiple images) */}
+                  {selectedVehicleDetails.images.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092]"
+                      style={{
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#B2309280 transparent'
+                      }}
+                    >
+                      {selectedVehicleDetails.images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedVehicleImageIndex(index)}
+                          className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                            selectedVehicleImageIndex === index
+                              ? 'border-[#B23092] ring-2 ring-[#B23092]/50'
+                              : 'border-transparent hover:border-white/30'
+                          }`}
+                        >
+                          <img
+                            src={image}
+                            alt={`${selectedVehicleDetails.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Description */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-                <p className="text-gray-600 leading-relaxed">{selectedVehicleDetails.description}</p>
+                <h4 className="text-lg font-urbanist font-semibold text-white mb-2">Description</h4>
+                <p className="text-white/80 font-urbanist leading-relaxed">{selectedVehicleDetails.description}</p>
               </div>
 
               {/* Specifications */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
+                <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Specifications</h4>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">{selectedVehicleDetails.seatingCapacity} passengers</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Users className="w-4 h-4 text-[#B23092]" />
+                    <span className="font-urbanist text-sm">{selectedVehicleDetails.seatingCapacity} passengers</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Fuel className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">{selectedVehicleDetails.fuelType}</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Fuel className="w-4 h-4 text-[#B23092]" />
+                    <span className="font-urbanist text-sm">{selectedVehicleDetails.fuelType}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Settings className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">{selectedVehicleDetails.transmission}</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Settings className="w-4 h-4 text-[#B23092]" />
+                    <span className="font-urbanist text-sm">{selectedVehicleDetails.transmission}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">{selectedVehicleDetails.location.pickupLocation}</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <MapPin className="w-4 h-4 text-[#B23092]" />
+                    <span className="font-urbanist text-sm truncate">{selectedVehicleDetails.location.pickupLocation}</span>
                   </div>
                   {selectedVehicleDetails.specifications.mileage && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">⛽</span>
-                      <span className="text-gray-600">{selectedVehicleDetails.specifications.mileage}</span>
+                    <div className="flex items-center gap-2 text-white/80">
+                      <Fuel className="w-4 h-4 text-[#B23092]" />
+                      <span className="font-urbanist text-sm">{selectedVehicleDetails.specifications.mileage}</span>
                     </div>
                   )}
                   {selectedVehicleDetails.specifications.engine && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400">🔧</span>
-                      <span className="text-gray-600">{selectedVehicleDetails.specifications.engine}</span>
+                    <div className="flex items-center gap-2 text-white/80">
+                      <Settings className="w-4 h-4 text-[#B23092]" />
+                      <span className="font-urbanist text-sm">{selectedVehicleDetails.specifications.engine}</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Features */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Features</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {selectedVehicleDetails.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-600 text-sm">{feature}</span>
-                    </div>
-                  ))}
+              {selectedVehicleDetails.features && selectedVehicleDetails.features.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Features</h4>
+                  <div className="space-y-2">
+                    {selectedVehicleDetails.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-white/80">
+                        <CheckCircle className="w-4 h-4 text-[#B23092] flex-shrink-0" />
+                        <span className="font-urbanist text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Pricing */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Pricing & Options</h3>
-                <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <IndianRupee className="w-5 h-5 text-orange-600" />
-                    <span className="text-2xl font-bold text-orange-600">
+              <div className="pt-4 border-t border-white/20">
+                <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Pricing & Options</h4>
+                <div className="bg-[#B23092]/20 rounded-xl p-4 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <IndianRupee className="w-5 h-5 text-[#B23092]" />
+                    <span className="text-2xl font-annie-telescope font-bold text-[#B23092]">
                       ₹{selectedVehicleDetails.pricePerDay.toLocaleString()}
                     </span>
-                    <span className="text-gray-600">per day</span>
+                    <span className="text-white/60 font-urbanist text-sm">per day</span>
                   </div>
-                  {selectedVehicleDetails.driverOption.withDriver && selectedVehicleDetails.driverOption.driverChargePerDay && (
-                    <div className="text-gray-600 text-sm">
-                      Driver available: +₹{selectedVehicleDetails.driverOption.driverChargePerDay.toLocaleString()}/day
+                  
+                  {/* Rental Days Selector */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                    <span className="text-white/80 font-urbanist">Rental Days:</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setModalRentalDays(prev => Math.max(1, prev - 1))}
+                        className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="text-white font-urbanist font-medium w-10 text-center">{modalRentalDays}</span>
+                      <button
+                        onClick={() => setModalRentalDays(prev => prev + 1)}
+                        className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
                     </div>
+                  </div>
+
+                  {/* Driver Option */}
+                  {selectedVehicleDetails.driverOption.withDriver && selectedVehicleDetails.driverOption.driverChargePerDay && (
+                    <>
+                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                        <span className="text-white/80 font-urbanist">With Driver:</span>
+                        <button
+                          onClick={() => setModalWithDriver(prev => !prev)}
+                          className={`px-4 py-2 rounded-lg text-sm font-urbanist font-medium transition-colors ${
+                            modalWithDriver
+                              ? 'bg-[#B23092] text-white'
+                              : 'bg-white/10 text-white/80 hover:bg-white/15'
+                          }`}
+                        >
+                          {modalWithDriver ? 'Yes' : 'No'}
+                        </button>
+                      </div>
+                      {modalWithDriver && (
+                        <div className="text-white/80 font-urbanist text-sm pl-2">
+                          +₹{selectedVehicleDetails.driverOption.driverChargePerDay.toLocaleString()}/day
+                        </div>
+                      )}
+                    </>
                   )}
-                  <div className="text-gray-600 text-sm mt-2">
+                  
+                  <div className="text-white/80 font-urbanist text-sm pt-2 border-t border-white/10">
                     Security deposit: ₹{selectedVehicleDetails.depositAmount.toLocaleString()}
+                  </div>
+                  
+                  {/* Total Price */}
+                  <div className="pt-2 border-t border-white/10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-white font-urbanist font-semibold">Total per unit:</span>
+                      <span className="text-xl font-annie-telescope font-bold text-[#B23092]">
+                        ₹{((selectedVehicleDetails.pricePerDay * modalRentalDays) + (modalWithDriver && selectedVehicleDetails.driverOption.driverChargePerDay ? selectedVehicleDetails.driverOption.driverChargePerDay * modalRentalDays : 0)).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Terms and Conditions */}
-              {selectedVehicleDetails.termsAndConditions.length > 0 && (
+              {selectedVehicleDetails.termsAndConditions && selectedVehicleDetails.termsAndConditions.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Terms & Conditions</h3>
-                  <ul className="space-y-1">
+                  <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Terms & Conditions</h4>
+                  <ul className="space-y-2">
                     {selectedVehicleDetails.termsAndConditions.map((term, index) => (
-                      <li key={index} className="text-gray-600 text-sm flex items-start gap-2">
-                        <span className="text-orange-500 mt-1">•</span>
+                      <li key={index} className="text-white/80 font-urbanist text-sm flex items-start gap-2">
+                        <span className="text-[#B23092] mt-1">•</span>
                         <span>{term}</span>
                       </li>
                     ))}
@@ -1247,20 +1392,64 @@ const ServicesPage = () => {
 
               {/* Contact Info */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact</h3>
+                <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Contact</h4>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">📞</span>
-                    <span className="text-gray-600">{selectedVehicleDetails.contactInfo.phone}</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <span className="text-[#B23092]">📞</span>
+                    <span className="font-urbanist text-sm">{selectedVehicleDetails.contactInfo.phone}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">✉️</span>
-                    <span className="text-gray-600">{selectedVehicleDetails.contactInfo.email}</span>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <span className="text-[#B23092]">✉️</span>
+                    <span className="font-urbanist text-sm">{selectedVehicleDetails.contactInfo.email}</span>
                   </div>
                 </div>
               </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-white/20 flex gap-3">
+                {selectedVehicles.find(v => v._id === selectedVehicleDetails._id) ? (
+                  <div className="flex-1 flex items-center justify-center gap-3 bg-white/10 rounded-xl p-3">
+                    <button
+                      onClick={() => {
+                        removeVehicle(selectedVehicleDetails._id);
+                        if (selectedVehicles.find(v => v._id === selectedVehicleDetails._id)?.quantity === 1) {
+                          setShowVehicleModal(false);
+                        }
+                      }}
+                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center hover:bg-[#B23092]/30 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="text-white font-urbanist text-lg min-w-[2rem] text-center">
+                      {selectedVehicles.find(v => v._id === selectedVehicleDetails._id)?.quantity || 0}
+                    </span>
+                    <button
+                      onClick={() => addVehicle(selectedVehicleDetails, modalRentalDays, modalWithDriver)}
+                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center hover:bg-[#B23092]/30 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      addVehicle(selectedVehicleDetails, modalRentalDays, modalWithDriver);
+                      setShowVehicleModal(false);
+                    }}
+                    className="flex-1 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-urbanist font-semibold transition-colors"
+                  >
+                    Add to Booking
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowVehicleModal(false)}
+                  className="px-6 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-urbanist font-semibold transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 

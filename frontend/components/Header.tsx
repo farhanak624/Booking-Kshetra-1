@@ -24,10 +24,13 @@ export default function Header() {
   const isAirportTransportPage = pathname === '/airport-transport';
   const isAirportTransportPaymentPage = pathname === '/airport-transport/payment';
   const isServicesPage = pathname === '/services';
+  const isServicesPaymentPage = pathname === '/services/booking/payment';
+  const isServicesDetailsPage = pathname === '/services/booking/details';
+  const isServicesSuccessPage = pathname === '/services/booking/success';
   const isContactPage = pathname === '/contact';
   const isRoomsPage = pathname === '/rooms';
   const isAdventurePage = pathname === '/adventure';
-  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isContactPage || isRoomsPage || isAdventurePage;
+  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isServicesPaymentPage || isServicesDetailsPage || isServicesSuccessPage || isContactPage || isRoomsPage || isAdventurePage;
   return (
     <header 
       className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-transparent' : 'sticky top-0 z-50 bg-black backdrop-blur-md shadow-sm'}`}
