@@ -188,55 +188,38 @@ export const updateAdventureSport = async (req: Request, res: Response) => {
     console.log('Existing Sport Images:', existingSport.images);
     console.log('Existing Sport Data:', JSON.stringify(existingSport.toObject(), null, 2));
 
-    // Support flexible image updates:
-    // - imageUrl: string -> append single URL to images
-    // - images: string[] with appendImages=true -> append many
-    // - images: string[] with appendImages not set -> replace images
-    const { imageUrl, images, appendImages } = req.body as any;
-    console.log('Extracted Values:');
-    console.log('  - imageUrl:', imageUrl);
-    console.log('  - images:', images);
-    console.log('  - appendImages:', appendImages);
+    // Simple image handling: if images array is provided, save exactly what's sent
+    // - Empty array [] -> save empty array
+    // - One image [url] -> save one image array
+    // - Multiple images [url1, url2] -> save multiple images array
+    const { images } = req.body as any;
+    console.log('Images array received:', images);
+    console.log('Is array:', Array.isArray(images));
+    if (Array.isArray(images)) {
+      console.log('Images array length:', images.length);
+    }
 
     // Build update object
     let update: any = { ...req.body };
     delete update.imageUrl;
     delete update.appendImages;
-    console.log('Update Object (before image processing):', JSON.stringify(update, null, 2));
 
-    // Handle image updates - only update if explicitly provided
-    if (imageUrl) {
-      console.log('Processing single imageUrl:', imageUrl);
-      update.$addToSet = { ...(update.$addToSet || {}), images: imageUrl };
-      delete update.images; // avoid accidental replacement
-      console.log('Using $addToSet for single image');
-    } else if (Array.isArray(images)) {
-      if (images.length > 0 && appendImages) {
-        console.log('Processing images array with appendImages=true (appending', images.length, 'images)');
-        update.$addToSet = { ...(update.$addToSet || {}), images: { $each: images } };
-        delete update.images; // do not replace when appending
-        console.log('Using $addToSet with $each for multiple images');
-      } else if (images.length > 0 && !appendImages) {
-        console.log('Processing images array to REPLACE (appendImages=false or not set,', images.length, 'images)');
-        console.log('Images to set:', images);
-        // Explicitly set images array - this will replace the entire array
+    // Handle images: if images field exists in request body, save exactly what's sent
+    if ('images' in req.body) {
+      if (Array.isArray(images)) {
+        // Save exactly what's sent - empty array, one image, or multiple images
         update.images = images;
-        // Make sure we're not using $addToSet for this case
-        if (update.$addToSet) {
-          delete update.$addToSet.images;
-        }
-        console.log('Set update.images to:', update.images);
-      } else if (images.length === 0) {
-        console.log('WARNING: Empty images array received - PRESERVING existing images (not updating images field)');
-        delete update.images; // Don't update images field if empty array - preserve existing
+        console.log('Saving images array to DB:', images);
+        console.log('Array length:', images.length);
+      } else {
+        // If images is provided but not an array, convert to array
+        update.images = images !== undefined && images !== null ? [images] : [];
+        console.log('Converting to array:', update.images);
       }
-    } else if (req.body.images && !Array.isArray(req.body.images)) {
-      console.log('WARNING: images is not an array, converting to array');
-      update.images = [req.body.images];
     } else {
-      // No images field in request - preserve existing
-      console.log('No images field in request - preserving existing images');
+      // If images field is not in request, don't update it (preserve existing)
       delete update.images;
+      console.log('No images field in request - preserving existing images');
     }
 
     console.log('Final Update Object:', JSON.stringify(update, null, 2));

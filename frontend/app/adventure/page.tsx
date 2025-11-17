@@ -8,10 +8,13 @@ import {
   ArrowRight,
   Eye,
   Star,
+  X,
+  Loader2,
 } from 'lucide-react'
 import Header from '../../components/Header'
 import { adventureSportsAPI } from '../../lib/api'
 import { useRouter } from 'next/navigation'
+import Footer from '@/components/Footer'
 
 interface Service {
   _id: string
@@ -30,11 +33,13 @@ interface Service {
 const AdventurePage = () => {
   const router = useRouter()
   const [services, setServices] = useState<Service[]>([])
-  const [selectedServices, setSelectedServices] = useState<{ _id: string; name: string; price: number; priceUnit: string; quantity: number }[]>([])
+  const [selectedServices, setSelectedServices] = useState<{ _id: string; name: string; price: number; priceUnit: string; category: string; quantity: number }[]>([])
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<Service | null>(null)
   const [showServiceModal, setShowServiceModal] = useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [selectedDate, setSelectedDate] = useState('')
   const [loading, setLoading] = useState(true)
+  const [bookingLoading, setBookingLoading] = useState(false)
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -67,7 +72,14 @@ const AdventurePage = () => {
         next[idx] = { ...next[idx], quantity: Math.min((service.maxQuantity || 10), next[idx].quantity + 1) }
         return next
       }
-      return [...prev, { _id: service._id, name: service.name, price: service.price, priceUnit: service.priceUnit, quantity: 1 }]
+      return [...prev, { 
+        _id: service._id, 
+        name: service.name, 
+        price: service.price, 
+        priceUnit: service.priceUnit, 
+        category: service.category,
+        quantity: 1 
+      }]
     })
   }
   const removeService = (serviceId: string) => {
@@ -89,20 +101,33 @@ const AdventurePage = () => {
     return selectedServices.reduce((sum, s) => sum + s.price * s.quantity, 0)
   }
 
-  const handleBook = () => {
+  const handleBook = async () => {
+    // Validate that at least one service is selected
+    if (selectedServices.length === 0) {
+      alert('Please enroll at least one adventure sport before proceeding')
+      return
+    }
+    // Validate that date is selected
     if (!selectedDate) {
       alert('Please select a service date')
       return
     }
-    const bookingData = {
-      services: selectedServices,
-      vehicles: [],
-      date: selectedDate,
-      totalAmount: getTotalAmount(),
-      timestamp: new Date().toISOString()
+    
+    setBookingLoading(true)
+    try {
+      const bookingData = {
+        services: selectedServices,
+        vehicles: [],
+        date: selectedDate,
+        totalAmount: getTotalAmount(),
+        timestamp: new Date().toISOString()
+      }
+      localStorage.setItem('servicesBookingData', JSON.stringify(bookingData))
+      router.push('/services/booking/details')
+    } catch (error) {
+      console.error('Error proceeding to booking:', error)
+      setBookingLoading(false)
     }
-    localStorage.setItem('servicesBookingData', JSON.stringify(bookingData))
-    router.push('/services/booking/details')
   }
 
   const ServiceCard = ({ service }: { service: Service }) => {
@@ -157,7 +182,11 @@ const AdventurePage = () => {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => { setSelectedServiceDetails(service); setShowServiceModal(true) }}
+                onClick={() => { 
+                  setSelectedServiceDetails(service)
+                  setSelectedImageIndex(0)
+                  setShowServiceModal(true) 
+                }}
                 className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs"
               >
                 View Details
@@ -237,31 +266,7 @@ const AdventurePage = () => {
 
       {/* Date + Summary */}
       <div className="container mx-auto px-4 md:px-[100px] py-8" id="adventure-list">
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6 mb-8">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <div className="flex-1">
-              <label className="block text-white/80 text-sm font-urbanist mb-2">Service Date</label>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:border-[#B23092] focus:ring-2 focus:ring-[#B23092] outline-none"
-              />
-            </div>
-            <div className="text-white/90 font-urbanist">
-              <div className="text-sm">Total</div>
-              <div className="text-2xl font-annie-telescope text-[#B23092]">₹{getTotalAmount().toLocaleString()}</div>
-            </div>
-            <button
-              onClick={handleBook}
-              className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2"
-            >
-              Proceed to Details
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+        
 
         {/* Listing */}
         {/* Section header */}
@@ -295,6 +300,242 @@ const AdventurePage = () => {
           </div>
         )}
       </div>
+      <div className="container mx-auto px-4 md:px-[100px] py-8 bg-black">
+      <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6 mb-8">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="flex-1">
+              <label className="block text-white/80 text-sm font-urbanist mb-2">Service Date</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:border-[#B23092] focus:ring-2 focus:ring-[#B23092] outline-none"
+              />
+            </div>
+            <div className="text-white/90 font-urbanist">
+              <div className="text-sm">Total</div>
+              <div className="text-2xl font-annie-telescope text-[#B23092]">₹{getTotalAmount().toLocaleString()}</div>
+            </div>
+            <button
+              onClick={handleBook}
+              disabled={selectedServices.length === 0 || bookingLoading}
+              className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#B23092]"
+            >
+              {bookingLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  Proceed to booking
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Service Details Modal */}
+      {showServiceModal && selectedServiceDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setShowServiceModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-black/90 backdrop-blur-md border border-white/20 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092] scrollbar-thin scrollbar-thumb-[#B23092]/50 scrollbar-track-white/5"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#B2309280 transparent'
+            }}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-black/95 backdrop-blur-md border-b border-white/20 p-6 flex items-center justify-between">
+              <h3 className="text-2xl font-annie-telescope text-white">{selectedServiceDetails.name}</h3>
+              <button
+                onClick={() => setShowServiceModal(false)}
+                className="p-2 rounded-full hover:bg-white/10 text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Image Gallery */}
+              {selectedServiceDetails.images && selectedServiceDetails.images.length > 0 && (
+                <div className="space-y-3">
+                  {/* Main Image */}
+                  <div className="relative h-64 sm:h-80 rounded-xl overflow-hidden bg-white/5 group">
+                    <img
+                      src={selectedServiceDetails.images[selectedImageIndex]}
+                      alt={selectedServiceDetails.name}
+                      className="w-full h-full object-cover transition-opacity duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Navigation Arrows (if multiple images) */}
+                    {selectedServiceDetails.images && selectedServiceDetails.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            const images = selectedServiceDetails.images
+                            if (images) {
+                              setSelectedImageIndex((prev) => 
+                                prev === 0 ? images.length - 1 : prev - 1
+                              )
+                            }
+                          }}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <ArrowRight className="w-5 h-5 rotate-180" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            const images = selectedServiceDetails.images
+                            if (images) {
+                              setSelectedImageIndex((prev) => 
+                                prev === images.length - 1 ? 0 : prev + 1
+                              )
+                            }
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </button>
+                        
+                        {/* Image Counter */}
+                        <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur text-white text-xs">
+                          {selectedImageIndex + 1} / {selectedServiceDetails.images.length}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  
+                  {/* Thumbnail Gallery (if multiple images) */}
+                  {selectedServiceDetails.images.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-[#B23092]/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-[#B23092]"
+                      style={{
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#B2309280 transparent'
+                      }}
+                    >
+                      {selectedServiceDetails.images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImageIndex(index)}
+                          className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                            selectedImageIndex === index
+                              ? 'border-[#B23092] ring-2 ring-[#B23092]/50'
+                              : 'border-transparent hover:border-white/30'
+                          }`}
+                        >
+                          <img
+                            src={image}
+                            alt={`${selectedServiceDetails.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Description */}
+              <div>
+                <h4 className="text-lg font-urbanist font-semibold text-white mb-2">Description</h4>
+                <p className="text-white/80 font-urbanist">{selectedServiceDetails.description}</p>
+              </div>
+
+              {/* Details Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {selectedServiceDetails.duration && (
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Clock className="w-4 h-4 text-[#B23092]" />
+                    <span className="font-urbanist text-sm">{selectedServiceDetails.duration}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-white/80">
+                  <Star className="w-4 h-4 text-[#B23092]" />
+                  <span className="font-urbanist text-sm">Rating: 4.5</span>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="pt-4 border-t border-white/20">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80 font-urbanist">Price:</span>
+                  <span className="text-2xl font-annie-telescope font-bold text-[#B23092]">
+                    {formatPrice(selectedServiceDetails.price, selectedServiceDetails.priceUnit)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Features */}
+              {selectedServiceDetails.features && selectedServiceDetails.features.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-urbanist font-semibold text-white mb-3">Features</h4>
+                  <div className="space-y-2">
+                    {selectedServiceDetails.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-white/80">
+                        <CheckCircle className="w-4 h-4 text-[#B23092] flex-shrink-0" />
+                        <span className="font-urbanist text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-white/20 flex gap-3">
+                {selectedServices.find(s => s._id === selectedServiceDetails._id) ? (
+                  <div className="flex-1 flex items-center justify-center gap-3 bg-white/10 rounded-xl p-3">
+                    <button
+                      onClick={() => removeService(selectedServiceDetails._id)}
+                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center"
+                    >
+                      -
+                    </button>
+                    <span className="text-white font-urbanist text-lg min-w-[2rem] text-center">
+                      {selectedServices.find(s => s._id === selectedServiceDetails._id)?.quantity || 0}
+                    </span>
+                    <button
+                      onClick={() => addService(selectedServiceDetails)}
+                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center"
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      addService(selectedServiceDetails)
+                      setShowServiceModal(false)
+                    }}
+                    className="flex-1 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-urbanist font-semibold transition-colors"
+                  >
+                    Enroll Now
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowServiceModal(false)}
+                  className="px-6 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-urbanist font-semibold transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <Footer />
     </div>
   )
 }

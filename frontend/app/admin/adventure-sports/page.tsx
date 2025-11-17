@@ -242,8 +242,12 @@ export default function AdminAdventureSports() {
 
     try {
       if (editingSport) {
-        // Update existing sport
-        const response = await adminAPI.updateAdventureSport(editingSport._id, formData);
+        // Update existing sport - include images from editingSport state
+        const updatePayload = {
+          ...formData,
+          images: editingSport.images || [] // Use images from editingSport state (includes any removals)
+        };
+        const response = await adminAPI.updateAdventureSport(editingSport._id, updatePayload);
 
         if (response.data.success) {
           setSports(sports.map(s =>
@@ -1074,69 +1078,20 @@ export default function AdminAdventureSports() {
                             setError('Failed to upload images. Please try again.');
                           }
                         }}
-                        onRemove={async (index: number) => {
+                        onRemove={(index: number) => {
                           if (!editingSport) return;
 
-                          try {
-                            // Remove image from the array
-                            const updatedImages = [...(editingSport.images || [])];
-                            updatedImages.splice(index, 1);
-
-                            console.log('Removing image at index:', index);
-                            console.log('Original images:', editingSport.images);
-                            console.log('Updated images:', updatedImages);
-
-                            // Prepare update payload - only send fields that should be updated
-                            const updatePayload = {
-                              name: editingSport.name,
-                              category: editingSport.category,
-                              price: editingSport.price,
-                              priceUnit: editingSport.priceUnit,
-                              description: editingSport.description,
-                              detailedDescription: editingSport.detailedDescription,
-                              duration: editingSport.duration,
-                              difficulty: editingSport.difficulty,
-                              location: editingSport.location,
-                              features: editingSport.features,
-                              includedItems: editingSport.includedItems,
-                              requirements: editingSport.requirements,
-                              images: updatedImages, // Explicitly set the updated images array
-                              ageRestriction: editingSport.ageRestriction,
-                              instructor: editingSport.instructor,
-                              safety: editingSport.safety,
-                              whatToBring: editingSport.whatToBring,
-                              cancellationPolicy: editingSport.cancellationPolicy,
-                              maxQuantity: editingSport.maxQuantity,
-                              isActive: editingSport.isActive
-                            };
-
-                            console.log('Sending update payload:', updatePayload);
-
-                            // Update the backend - explicitly send images array to replace
-                            const response = await adminAPI.updateAdventureSport(editingSport._id, updatePayload);
-
-                            if (response.data.success) {
-                              console.log('Backend update successful, new images:', response.data.data.images);
-                              // Update the local state
-                              setEditingSport(prev => prev ? {
-                                ...prev,
-                                images: updatedImages
-                              } : null);
-
-                              // Update the sports list
-                              setSports(prev => prev.map(s =>
-                                s._id === editingSport._id
-                                  ? { ...s, images: updatedImages }
-                                  : s
-                              ));
-                            } else {
-                              console.error('Backend update failed:', response.data);
-                              setError('Failed to remove image. Please try again.');
-                            }
-                          } catch (error) {
-                            setError('Failed to remove image. Please try again.');
-                            console.error('Error removing image:', error);
-                          }
+                          // Get current images array
+                          const currentImages = editingSport.images || [];
+                          
+                          // Create a completely new array without the removed item
+                          const updatedImages = currentImages.filter((_: string, i: number) => i !== index);
+                          
+                          // Update only the local state - API call will happen on "Update Activity" button
+                          setEditingSport(prev => prev ? {
+                            ...prev,
+                            images: updatedImages
+                          } : null);
                         }}
                         maxFiles={10}
                         maxSizeMB={5}
