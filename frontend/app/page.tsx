@@ -263,7 +263,7 @@ export default function Home() {
       color: "from-blue-600 to-blue-800",
     },
     {
-      title: "Airport Transport",
+      title: "Airport Transfers",
       category: "Transportation",
       description:
         "Seamless airport pickup and drop services with professional drivers, flight tracking, and comfortable vehicles. Choose your terminal, add flight details, and enjoy hassle-free transfers.",
@@ -339,6 +339,99 @@ export default function Home() {
       author: "Maria Santos",
       location: "São Paulo, Brazil",
       rating: 5,
+    },
+  ];
+
+  const attractions = [
+    {
+      id: "beaches",
+      title: "Beaches",
+      distance: "Just 4 km near",
+      description: "Varkala Beach, Odayam, Edava, Kappil, and Chilakoor are all within 5 km.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%2014.png",
+      imageAlt: "Beaches",
+      badgeColor: "bg-[#B23092]",
+      delay: 0,
+    },
+    {
+      id: "backwaters",
+      title: "Backwaters & Houseboats (Kollam)",
+      distance: "Just 20 km near",
+      description: "Glide through palm-lined canals just 20 km away.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%207.png",
+      imageAlt: "Backwaters & Houseboats",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.1,
+    },
+    {
+      id: "adventure",
+      title: "Adventure & Surfing",
+      distance: "Just 4 km near",
+      description: "Surf the Arabian Sea, kayak the Varkala backwaters, or paraglide from the cliffs — all steps from Kshetra.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%208.png",
+      imageAlt: "Adventure & Surfing",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.2,
+    },
+    {
+      id: "jatayu",
+      title: "Jatayu Earth Center",
+      distance: "Just 25 km near",
+      description: "Explore the world's largest bird sculpture and zip-line through nature 25 km away.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%209.png",
+      imageAlt: "Jatayu Earth Center",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.3,
+    },
+    {
+      id: "ponmudi",
+      title: "Ponmudi Hills & Tea Gardens",
+      distance: "Just 50 km near",
+      description: "A scenic 2-hour drive (50 km) through winding ghats and lush estates.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%2010.png",
+      imageAlt: "Ponmudi Hills & Tea Gardens",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.4,
+    },
+    {
+      id: "thenmala",
+      title: "Thenmala Forest Trails",
+      distance: "Just 4 km near",
+      description: "Trek through biodiversity hotspots of the Western Ghats.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%2011.png",
+      imageAlt: "Thenmala Forest Trails",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.5,
+    },
+    {
+      id: "kathakali",
+      title: "Kathakali's Birthplace (Kottarakara)",
+      distance: "Just 25 km near",
+      description: "Witness Kerala's classical art where it began, just 25 km away.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%2012.png",
+      imageAlt: "Kathakali's Birthplace",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.6,
+    },
+    {
+      id: "raja-ravi-varma",
+      title: "Raja Ravi Varma Palace & Museum",
+      distance: "Just 19 km near",
+      description: "Step into the legacy of India's greatest painter (19 km).",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%2013.png",
+      imageAlt: "Raja Ravi Varma Palace",
+      badgeColor: "bg-[#B23092]",
+      delay: 0.7,
+    },
+    {
+      id: "trivandrum",
+      title: "Trivandrum Palaces & Heritage Sites",
+      distance: "Just 25 km near",
+      description: "A royal journey within 25 km.",
+      image: "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/nearest%20spot/Group%206.png",
+      imageAlt: "Trivandrum Palaces",
+      badgeColor: "bg-purple-500",
+      delay: 0.8,
     },
   ];
 
@@ -485,6 +578,7 @@ export default function Home() {
               </p>
 
               {/* CTA Button */}
+              <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -498,6 +592,17 @@ export default function Home() {
               >
                 Start Your Booking
               </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  router.push("/track-booking")
+                }
+                className="bg-transparent border border-[#B23092]  text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist"
+              >
+                Track Your Booking
+              </motion.button>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -609,289 +714,43 @@ export default function Home() {
       <section className="py-20 bg-black">
         <div className="container mx-auto px-4 md:px-[100px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1: Beaches */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 4 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Beaches"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Beaches
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Varkala Beach, Odayam, Edava, Kappil, and Chilakoor are all
-                  within 5 km.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 2: Backwaters & Houseboats */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 20 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Backwaters & Houseboats"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Backwaters & Houseboats (Kollam)
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Glide through palm-lined canals just 20 km away.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 3: Adventure & Surfing */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 4 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Adventure & Surfing"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Adventure & Surfing
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Surf the Arabian Sea, kayak the Varkala backwaters, or
-                  paraglide from the cliffs — all steps from Kshetra.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 4: Jatayu Earth Center */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 25 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Jatayu Earth Center"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Jatayu Earth Center
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Explore the world's largest bird sculpture and zip-line
-                  through nature 25 km away.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 5: Ponmudi Hills & Tea Gardens */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 50 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Ponmudi Hills & Tea Gardens"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Ponmudi Hills & Tea Gardens
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  A scenic 2-hour drive (50 km) through winding ghats and lush
-                  estates.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 6: Thenmala Forest Trails */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 4 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Thenmala Forest Trails"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Thenmala Forest Trails
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Trek through biodiversity hotspots of the Western Ghats.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 7: Kathakali's Birthplace */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 25 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Kathakali's Birthplace"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Kathakali's Birthplace (Kottarakara)
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Witness Kerala's classical art where it began, just 25 km
-                  away.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 8: Raja Ravi Varma Palace */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-[#B23092] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 19 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Raja Ravi Varma Palace"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Raja Ravi Varma Palace & Museum
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  Step into the legacy of India's greatest painter (19 km).
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Card 9: Trivandrum Palaces */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer"
-            >
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-purple-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Just 25 km near
-                </span>
-              </div>
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Trivandrum Palaces"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2 font-urbanist">
-                  Trivandrum Palaces & Heritage Sites
-                </h3>
-                <p className="text-sm text-white/90 font-urbanist">
-                  A royal journey within 25 km.
-                </p>
-              </div>
-            </motion.div>
+            {attractions.map((attraction) => (
+              <motion.div
+                key={attraction.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: attraction.delay }}
+                className="relative rounded-2xl overflow-hidden group cursor-pointer"
+              >
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-1">
+                  <img 
+                    src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Gifs/https___lottiefiles.com_animations_location-GX07K3YgXE.gif"
+                    alt="Location"
+                    className="w-10 h-10 object-contain"
+                  />
+                  <span className={`${attraction.badgeColor} text-white text-xs font-semibold px-3 py-1 rounded-full`}>
+                    {attraction.distance}
+                  </span>
+                </div>
+                <div className="aspect-[4/3] relative overflow-hidden">
+                  <img
+                    src={attraction.image}
+                    alt={attraction.imageAlt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                    {attraction.title}
+                  </h3>
+                  <p className="text-sm text-white/90 font-urbanist">
+                    {attraction.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

@@ -250,80 +250,97 @@ const TrackBookingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      <main className="pt-20">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
-          <div className="container mx-auto px-4 md:px-[100px] text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Track Your Booking
-              </h1>
-              <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-                Enter your booking ID to view all details about your
-                reservation, including room information, services, and payment
-                status.
-              </p>
-            </motion.div>
+      <main>
+        {/* Hero Section with Background Image */}
+        <section className="relative min-h-screen overflow-hidden w-full">
+          {/* Background Image */}
+          <div className="absolute inset-0 w-full min-h-full">
+            <img
+              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+              alt="Track Your Booking"
+              className="w-full h-full min-h-screen object-cover"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div className="absolute inset-0 bg-black/20"></div>
+          </div>
+
+          {/* Hero Content */}
+          <div className="relative z-10 min-h-screen flex flex-col py-12">
+            <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center mb-12"
+              >
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope uppercase tracking-wider">
+                  Track Your
+                </h1>
+                <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-6 font-water-brush">
+                  Booking
+                </h2>
+                <p className="text-white/90 text-lg md:text-xl font-urbanist max-w-2xl mx-auto">
+                  Enter your booking ID to view all details about your reservation, including room information, services, and payment status.
+                </p>
+              </motion.div>
+
+              {/* Search Section */}
+              <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20"
+                >
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-white mb-4 font-annie-telescope">
+                      Enter Your Booking ID
+                    </h2>
+                    <p className="text-white/70 font-urbanist">
+                      You can find your booking ID in the confirmation email or receipt you received after booking.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+                    <input
+                      type="text"
+                      value={bookingId}
+                      onChange={(e) => setBookingId(e.target.value)}
+                      placeholder="Enter your booking ID (e.g., 68dcc2ec59e880899e1bbb9c)"
+                      className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder:text-white/50 focus:ring-2 focus:ring-[#B23092] focus:border-[#B23092] transition-colors"
+                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                    />
+                    <button
+                      onClick={handleSearch}
+                      disabled={loading}
+                      className="px-8 py-3 bg-[#B23092] text-white rounded-lg hover:bg-[#9a2578] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-urbanist font-semibold"
+                    >
+                      <Search className="w-5 h-5" />
+                      {loading ? "Searching..." : "Track Booking"}
+                    </button>
+                  </div>
+
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-6 p-4 bg-red-500/20 backdrop-blur-sm border border-red-500/50 rounded-lg text-red-300 text-center font-urbanist"
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+                </motion.div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Search Section */}
-        <section className="py-16">
+        {/* Booking Details Section */}
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-lg p-8 mb-8"
-            >
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Enter Your Booking ID
-                </h2>
-                <p className="text-gray-600">
-                  You can find your booking ID in the confirmation email or
-                  receipt you received after booking.
-                </p>
-              </div>
 
-              <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                <input
-                  type="text"
-                  value={bookingId}
-                  onChange={(e) => setBookingId(e.target.value)}
-                  placeholder="Enter your booking ID (e.g., 68dcc2ec59e880899e1bbb9c)"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                />
-                <button
-                  onClick={handleSearch}
-                  disabled={loading}
-                  className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Search className="w-5 h-5" />
-                  {loading ? "Searching..." : "Track Booking"}
-                </button>
-              </div>
-
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center"
-                >
-                  {error}
-                </motion.div>
-              )}
-            </motion.div>
-
-            {/* Booking Details */}
             {booking && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -332,18 +349,18 @@ const TrackBookingPage = () => {
                 className="space-y-6"
               >
                 {/* Status Overview */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900">
+                    <h3 className="text-2xl font-bold text-white font-annie-telescope">
                       Booking Overview
                     </h3>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600 font-mono">
+                      <span className="text-sm text-white/70 font-mono">
                         {booking._id}
                       </span>
                       <button
                         onClick={handleCopyBookingId}
-                        className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                        className="p-1 text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
                         title="Copy Booking ID"
                       >
                         <Copy className="w-4 h-4" />
@@ -355,7 +372,7 @@ const TrackBookingPage = () => {
                     <div className="flex items-center gap-3">
                       {getStatusIcon(booking.status)}
                       <div>
-                        <p className="text-sm text-gray-600">Booking Status</p>
+                        <p className="text-sm text-white/70 font-urbanist">Booking Status</p>
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                             booking.status
@@ -368,9 +385,9 @@ const TrackBookingPage = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <CreditCard className="w-5 h-5 text-blue-600" />
+                      <CreditCard className="w-5 h-5 text-[#B23092]" />
                       <div>
-                        <p className="text-sm text-gray-600">Payment Status</p>
+                        <p className="text-sm text-white/70 font-urbanist">Payment Status</p>
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getPaymentStatusColor(
                             booking.paymentStatus
@@ -383,10 +400,10 @@ const TrackBookingPage = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Tag className="w-5 h-5 text-purple-600" />
+                      <Tag className="w-5 h-5 text-[#B23092]" />
                       <div>
-                        <p className="text-sm text-gray-600">Booking Type</p>
-                        <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                        <p className="text-sm text-white/70 font-urbanist">Booking Type</p>
+                        <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-[#B23092]/20 text-[#B23092] border border-[#B23092]/30">
                           {booking.primaryService ||
                             (booking.bookingType ?
                               booking.bookingType.charAt(0).toUpperCase() + booking.bookingType.slice(1) :
@@ -398,16 +415,16 @@ const TrackBookingPage = () => {
 
                   {booking.finalAmount !== booking.totalAmount &&
                     booking.couponCode && (
-                      <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="mt-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
                         <div className="flex items-center gap-2 mb-2">
-                          <Tag className="w-4 h-4 text-green-600" />
-                          <span className="font-semibold text-green-800">
+                          <Tag className="w-4 h-4 text-[#B23092]" />
+                          <span className="font-semibold text-white font-annie-telescope">
                             Coupon Applied
                           </span>
                         </div>
-                        <p className="text-sm text-green-700">
+                        <p className="text-sm text-white/90 font-urbanist">
                           Coupon{" "}
-                          <span className="font-mono font-bold">
+                          <span className="font-mono font-bold text-[#B23092]">
                             {booking.couponCode}
                           </span>{" "}
                           saved you ₹{booking.couponDiscount?.toLocaleString()}
@@ -416,49 +433,49 @@ const TrackBookingPage = () => {
                     )}
                 </div>
 
-                {/* Guest Information */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <Users className="w-5 h-5" />
+                  {/* Guest Information */}
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2 font-annie-telescope">
+                    <Users className="w-5 h-5 text-[#B23092]" />
                     Guest Information
                   </h3>
 
                   {/* Primary Guest Details */}
                   {booking.primaryGuestInfo && (
-                    <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                        <User className="w-4 h-4" />
+                    <div className="mb-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
+                      <h4 className="font-semibold text-white mb-3 flex items-center gap-2 font-annie-telescope">
+                        <User className="w-4 h-4 text-[#B23092]" />
                         Primary Guest
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-blue-600">Full Name</p>
-                          <p className="font-medium text-blue-900">
+                          <p className="text-sm text-white/70 font-urbanist">Full Name</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.primaryGuestInfo.name}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm text-blue-600">Email</p>
-                          <p className="font-medium text-blue-900">
+                          <p className="text-sm text-white/70 font-urbanist">Email</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.primaryGuestInfo.email}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm text-blue-600">Phone</p>
-                          <p className="font-medium text-blue-900">
+                          <p className="text-sm text-white/70 font-urbanist">Phone</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.primaryGuestInfo.phone}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm text-blue-600">Location</p>
-                          <p className="font-medium text-blue-900">
+                          <p className="text-sm text-white/70 font-urbanist">Location</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.primaryGuestInfo.city},{" "}
                             {booking.primaryGuestInfo.state}
                           </p>
                         </div>
                         <div className="md:col-span-2">
-                          <p className="text-sm text-blue-600">Address</p>
-                          <p className="font-medium text-blue-900">
+                          <p className="text-sm text-white/70 font-urbanist">Address</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.primaryGuestInfo.address},{" "}
                             {booking.primaryGuestInfo.city},{" "}
                             {booking.primaryGuestInfo.state} -{" "}
@@ -467,10 +484,10 @@ const TrackBookingPage = () => {
                         </div>
                         {booking.primaryGuestInfo.emergencyContact?.name && (
                           <div className="md:col-span-2">
-                            <p className="text-sm text-blue-600">
+                            <p className="text-sm text-white/70 font-urbanist">
                               Emergency Contact
                             </p>
-                            <p className="font-medium text-blue-900">
+                            <p className="font-medium text-white font-urbanist">
                               {booking.primaryGuestInfo.emergencyContact.name} (
                               {
                                 booking.primaryGuestInfo.emergencyContact
@@ -487,23 +504,23 @@ const TrackBookingPage = () => {
 
                   {/* Guest Summary */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-gray-900">
+                    <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
+                      <p className="text-2xl font-bold text-white font-annie-telescope">
                         {booking.totalGuests}
                       </p>
-                      <p className="text-sm text-gray-600">Total Guests</p>
+                      <p className="text-sm text-white/70 font-urbanist">Total Guests</p>
                     </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-green-600">
+                    <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
+                      <p className="text-2xl font-bold text-[#B23092] font-annie-telescope">
                         {booking.adults}
                       </p>
-                      <p className="text-sm text-gray-600">Adults</p>
+                      <p className="text-sm text-white/70 font-urbanist">Adults</p>
                     </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-600">
+                    <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
+                      <p className="text-2xl font-bold text-[#B23092] font-annie-telescope">
                         {booking.children}
                       </p>
-                      <p className="text-sm text-gray-600">Children</p>
+                      <p className="text-sm text-white/70 font-urbanist">Children</p>
                     </div>
                   </div>
 
@@ -511,22 +528,22 @@ const TrackBookingPage = () => {
                 </div>
 
                 {/* Booking Details */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 font-annie-telescope">
+                    <Calendar className="w-5 h-5 text-[#B23092]" />
                     Booking Details
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <p className="text-sm text-gray-600">Check-in Date</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-white/70 font-urbanist">Check-in Date</p>
+                      <p className="font-medium text-white font-urbanist">
                         {formatDateOnly(booking.checkIn)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Check-out Date</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-white/70 font-urbanist">Check-out Date</p>
+                      <p className="font-medium text-white font-urbanist">
                         {formatDateOnly(booking.checkOut)}
                       </p>
                     </div>
@@ -534,27 +551,27 @@ const TrackBookingPage = () => {
 
                   {/* Room Information */}
                   {booking.roomId && (
-                    <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <Home className="w-4 h-4" />
+                    <div className="mb-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
+                      <h4 className="font-semibold text-white mb-2 flex items-center gap-2 font-annie-telescope">
+                        <Home className="w-4 h-4 text-[#B23092]" />
                         Room Information
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-gray-600">Room Number</p>
-                          <p className="font-medium">
+                          <p className="text-sm text-white/70 font-urbanist">Room Number</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.roomId.roomNumber}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Room Type</p>
-                          <p className="font-medium">
+                          <p className="text-sm text-white/70 font-urbanist">Room Type</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.roomId.roomType}
                           </p>
                         </div>
                         <div className="md:col-span-2">
-                          <p className="text-sm text-gray-600">Description</p>
-                          <p className="font-medium">
+                          <p className="text-sm text-white/70 font-urbanist">Description</p>
+                          <p className="font-medium text-white font-urbanist">
                             {booking.roomId.description}
                           </p>
                         </div>
@@ -564,12 +581,12 @@ const TrackBookingPage = () => {
 
                   {/* Yoga Session Information */}
                   {booking.bookingType === "yoga" && booking.yogaSessionId && (
-                    <div className="mb-6 p-4 bg-purple-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <Activity className="w-4 h-4" />
+                    <div className="mb-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
+                      <h4 className="font-semibold text-white mb-2 flex items-center gap-2 font-annie-telescope">
+                        <Activity className="w-4 h-4 text-[#B23092]" />
                         Yoga Session Information
                       </h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-white/70 font-urbanist">
                         Session ID: {typeof booking.yogaSessionId === 'string'
                           ? booking.yogaSessionId
                           : booking.yogaSessionId?._id || 'N/A'}
@@ -580,16 +597,16 @@ const TrackBookingPage = () => {
                   {/* Transport Information */}
                   {booking.transport &&
                     (booking.transport.pickup || booking.transport.drop) && (
-                      <div className="mb-6 p-4 bg-green-50 rounded-lg">
-                        <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                          <Car className="w-4 h-4" />
+                      <div className="mb-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
+                        <h4 className="font-semibold text-white mb-2 flex items-center gap-2 font-annie-telescope">
+                          <Car className="w-4 h-4 text-[#B23092]" />
                           Transport Information
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {booking.transport.pickup && (
                             <div>
-                              <p className="text-sm text-gray-600">Pickup</p>
-                              <p className="font-medium">
+                              <p className="text-sm text-white/70 font-urbanist">Pickup</p>
+                              <p className="font-medium text-white font-urbanist">
                                 From{" "}
                                 {booking.transport.airportFrom || "Airport"}
                                 {booking.transport.pickupTerminal &&
@@ -599,8 +616,8 @@ const TrackBookingPage = () => {
                           )}
                           {booking.transport.drop && (
                             <div>
-                              <p className="text-sm text-gray-600">Drop</p>
-                              <p className="font-medium">
+                              <p className="text-sm text-white/70 font-urbanist">Drop</p>
+                              <p className="font-medium text-white font-urbanist">
                                 To {booking.transport.airportTo || "Airport"}
                                 {booking.transport.dropTerminal &&
                                   ` (Terminal ${booking.transport.dropTerminal})`}
@@ -609,10 +626,10 @@ const TrackBookingPage = () => {
                           )}
                           {booking.transport.flightNumber && (
                             <div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-white/70 font-urbanist">
                                 Flight Number
                               </p>
-                              <p className="font-medium">
+                              <p className="font-medium text-white font-urbanist">
                                 {booking.transport.flightNumber}
                               </p>
                             </div>
@@ -623,83 +640,83 @@ const TrackBookingPage = () => {
 
                   {/* Special Requests */}
                   {booking.specialRequests && (
-                    <div className="mb-6 p-4 bg-yellow-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <Info className="w-4 h-4" />
+                    <div className="mb-6 p-4 bg-[#B23092]/20 border border-[#B23092]/30 rounded-lg backdrop-blur-sm">
+                      <h4 className="font-semibold text-white mb-2 flex items-center gap-2 font-annie-telescope">
+                        <Info className="w-4 h-4 text-[#B23092]" />
                         Special Requests
                       </h4>
-                      <p className="text-gray-700">{booking.specialRequests}</p>
+                      <p className="text-white/90 font-urbanist">{booking.specialRequests}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Pricing Breakdown */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Receipt className="w-5 h-5" />
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 font-annie-telescope">
+                    <Receipt className="w-5 h-5 text-[#B23092]" />
                     Pricing Breakdown
                   </h3>
 
                   <div className="space-y-3">
                     {booking.roomPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Room Charges</span>
-                        <span className="font-medium">
+                        <span className="text-white/70 font-urbanist">Room Charges</span>
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.roomPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
                     {booking.yogaPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Yoga Session</span>
-                        <span className="font-medium">
+                        <span className="text-white/70 font-urbanist">Yoga Session</span>
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.yogaPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
                     {booking.foodPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Food</span>
-                        <span className="font-medium">
+                        <span className="text-white/70 font-urbanist">Food</span>
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.foodPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
                     {booking.breakfastPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Breakfast</span>
-                        <span className="font-medium">
+                        <span className="text-white/70 font-urbanist">Breakfast</span>
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.breakfastPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
                     {booking.servicesPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-white/70 font-urbanist">
                           Additional Services
                         </span>
-                        <span className="font-medium">
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.servicesPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
                     {booking.transportPrice > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Transport</span>
-                        <span className="font-medium">
+                        <span className="text-white/70 font-urbanist">Transport</span>
+                        <span className="font-medium text-white font-urbanist">
                           ₹{booking.transportPrice.toLocaleString()}
                         </span>
                       </div>
                     )}
 
-                    <div className="border-t pt-3">
-                      <div className="flex justify-between text-lg font-semibold">
+                    <div className="border-t border-white/20 pt-3">
+                      <div className="flex justify-between text-lg font-semibold text-white font-annie-telescope">
                         <span>Subtotal</span>
                         <span>₹{booking.totalAmount.toLocaleString()}</span>
                       </div>
 
                       {booking.couponDiscount && booking.couponDiscount > 0 && (
-                        <div className="flex justify-between text-green-600 mt-2">
+                        <div className="flex justify-between text-[#B23092] mt-2 font-urbanist">
                           <span>Discount ({booking.couponCode})</span>
                           <span>
                             -₹{booking.couponDiscount.toLocaleString()}
@@ -707,9 +724,9 @@ const TrackBookingPage = () => {
                         </div>
                       )}
 
-                      <div className="flex justify-between text-xl font-bold mt-3 pt-3 border-t">
+                      <div className="flex justify-between text-xl font-bold mt-3 pt-3 border-t border-white/20 text-white font-annie-telescope">
                         <span>Final Amount</span>
-                        <span className="text-blue-600">
+                        <span className="text-[#B23092]">
                           ₹
                           {(
                             booking.finalAmount || booking.totalAmount
@@ -720,16 +737,16 @@ const TrackBookingPage = () => {
                   </div>
 
                   {booking.paymentId && (
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-6 p-4 bg-white/5 border border-white/20 rounded-lg backdrop-blur-sm">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Payment ID</p>
-                          <p className="font-mono text-sm font-medium">
+                          <p className="text-sm text-white/70 font-urbanist">Payment ID</p>
+                          <p className="font-mono text-sm font-medium text-white">
                             {booking.paymentId}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-600">Status</p>
+                          <p className="text-sm text-white/70 font-urbanist">Status</p>
                           <span
                             className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(
                               booking.paymentStatus
@@ -744,20 +761,20 @@ const TrackBookingPage = () => {
                 </div>
 
                 {/* Booking Timestamps */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 font-annie-telescope">
                     Booking Timeline
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Booking Created</p>
-                      <p className="font-medium">
+                      <p className="text-sm text-white/70 font-urbanist">Booking Created</p>
+                      <p className="font-medium text-white font-urbanist">
                         {formatDate(booking.createdAt)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Last Updated</p>
-                      <p className="font-medium">
+                      <p className="text-sm text-white/70 font-urbanist">Last Updated</p>
+                      <p className="font-medium text-white font-urbanist">
                         {formatDate(booking.updatedAt)}
                       </p>
                     </div>

@@ -196,7 +196,7 @@ export default function AirportTransportPage() {
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png"
             style={{ objectFit: "cover" }}
-            alt="Airport Transport at Kshetra"
+            alt="Airport Transfers at Kshetra"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/20"></div>
@@ -261,7 +261,7 @@ export default function AirportTransportPage() {
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
-            alt="Airport Transport at Kshetra"
+            alt="Airport Transfers at Kshetra"
             className="w-full h-auto object-cover"
           />
         </div>

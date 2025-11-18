@@ -92,37 +92,56 @@ function ServicesBookingSuccessPageContent() {
     <div className="min-h-screen bg-black">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden h-[50vh] sm:h-[60vh]">
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] overflow-visible w-full">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 w-full h-full">
           <img
             src={'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/rentbike.png'}
             alt={'Booking Success'}
             className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/20" />
         </div>
-        <div className="relative z-10 h-full flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-white mb-4">
-                <span className="block text-2xl sm:text-3xl md:text-4xl font-annie-telescope">
-                  BOOKING CONFIRMED
-                </span>
-                <span className="block text-4xl sm:text-5xl md:text-6xl font-water-brush text-[#B23092] mt-2">
-                  Success!
-                </span>
+
+        {/* Hero Content */}
+        <div className="relative z-10 min-h-[70vh] sm:min-h-[80vh] flex flex-col py-8">
+          <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#B23092]/50">
+                <CheckCircle className="w-12 h-12 text-[#B23092]" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope uppercase tracking-wider">
+                Booking Confirmed
               </h1>
-              <p className="text-white/90 font-urbanist text-sm sm:text-base max-w-2xl mx-auto">
+              <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-6 font-water-brush">
+                Success!
+              </h2>
+              <p className="text-white/90 text-lg md:text-xl font-urbanist max-w-2xl mx-auto">
                 Your booking has been successfully confirmed. We'll contact you shortly with all the details.
               </p>
+            </motion.div>
+          </div>
+
+          {/* Scroll Hint */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-white/70 text-xs font-urbanist uppercase tracking-wider">Scroll for details</p>
+              <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
             </div>
           </div>
         </div>
-      </section>
 
-      <div className="container mx-auto px-4 md:px-[100px] py-16">
+        {/* Booking Info Container - Starts from bottom of hero */}
+        <div className="relative z-10 -mt-32 md:-mt-40">
+          <div className="container mx-auto px-4 md:px-[100px] py-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -334,7 +353,12 @@ function ServicesBookingSuccessPageContent() {
             </button>
           </div>
         </motion.div>
-      </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional spacing for content below */}
+      <div className="bg-black py-16"></div>
     </div>
   )
 }

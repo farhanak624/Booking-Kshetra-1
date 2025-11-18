@@ -120,31 +120,66 @@ const BookingSuccessPageContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="container mx-auto px-4 md:px-[100px] py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-2xl mx-auto"
-        >
-          {/* Success Icon */}
-          <div className="text-center mb-8">
-            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-16 h-16 text-green-500" />
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              🎉 Booking Confirmed!
-            </h1>
-            <p className="text-lg text-gray-600 mb-2">
-              Your payment was successful and your booking has been confirmed.
-            </p>
-            <p className="text-sm text-gray-500">
-              You will receive a confirmation email shortly.
-            </p>
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] overflow-visible w-full">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/hotel.png?updatedAt=1763030443251"
+            alt="Booking Success"
+            className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 min-h-[70vh] sm:min-h-[80vh] flex flex-col py-8">
+          <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-8"
+            >
+              <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#B23092]/50">
+                <CheckCircle className="w-12 h-12 text-[#B23092]" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope uppercase tracking-wider">
+                Booking Confirmed
+              </h1>
+              <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-6 font-water-brush">
+                Success!
+              </h2>
+              <p className="text-white/90 text-lg md:text-xl font-urbanist max-w-2xl mx-auto">
+                Your payment was successful and your booking has been confirmed. You will receive a confirmation email shortly.
+              </p>
+            </motion.div>
           </div>
+
+          {/* Scroll Hint */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-white/70 text-xs font-urbanist uppercase tracking-wider">Scroll for details</p>
+              <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Booking Info Container - Starts from bottom of hero */}
+        <div className="relative z-10 -mt-32 md:-mt-40">
+          <div className="container mx-auto px-4 md:px-[100px] py-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="max-w-2xl mx-auto"
+            >
 
           {/* Booking Details Card */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 mb-8">
@@ -312,8 +347,13 @@ const BookingSuccessPageContent = () => {
               Thank you for choosing Kshetra Retreat Resort. We look forward to hosting you!
             </p>
           </div>
-        </motion.div>
-      </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional spacing for content below */}
+      <div className="bg-black py-16"></div>
     </div>
   );
 };

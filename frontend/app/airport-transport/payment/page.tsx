@@ -206,7 +206,7 @@ function PaymentPageContent() {
           dropFlightNumber: bookingDetails.dropDetails?.flightNumber || ''
         },
         selectedServices: [],
-        specialRequests: `Airport Transport Service - ${bookingDetails.pickup ? 'Pickup' : ''} ${bookingDetails.pickup && bookingDetails.drop ? '& ' : ''}${bookingDetails.drop ? 'Drop' : ''} - Airport: ${bookingDetails.airportLocation}`,
+        specialRequests: `Airport Transfer Service - ${bookingDetails.pickup ? 'Pickup' : ''} ${bookingDetails.pickup && bookingDetails.drop ? '& ' : ''}${bookingDetails.drop ? 'Drop' : ''} - Airport: ${bookingDetails.airportLocation}`,
         totalAmount: bookingDetails.totalAmount,
         couponCode: appliedCoupon ? couponCode : undefined,
         paymentStatus: 'pending',
@@ -318,7 +318,7 @@ function PaymentPageContent() {
         <div className="absolute inset-0 w-full min-h-full">
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
-            alt="Airport Transport Booking"
+            alt="Airport Transfer Booking"
             className="w-full h-full min-h-screen object-cover"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
@@ -572,7 +572,7 @@ function PaymentPageContent() {
                     {/* Airport Details */}
                     <div className="bg-white/5 rounded-2xl p-6 space-y-4 border border-white/10">
                       <div className="text-center mb-4">
-                        <h4 className="text-xl font-semibold text-white font-annie-telescope">Airport Transport Service</h4>
+                        <h4 className="text-xl font-semibold text-white font-annie-telescope">Airport Transfer Service</h4>
                         <p className="text-white/70 text-sm mt-2 font-urbanist">Professional airport transfer service</p>
                       </div>
 

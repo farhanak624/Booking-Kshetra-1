@@ -265,13 +265,15 @@ const AdventurePage = () => {
       </section>
 
       {/* Date + Summary */}
-      <div className="container mx-auto px-4 md:px-[100px] py-8" id="adventure-list">
+      <div className="container mx-auto px-4 md:px-[100px] py-8" id="adventure-list"
+      style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/adventure.png)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      >
         
 
         {/* Listing */}
         {/* Section header */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl text-white">
+        <div className="text-center mb-8 mt-[100px]">
+          <h2 className="text-3xl md:text-4xl text-white font-annie-telescope">
             <span className="font-annie-telescope">Adventure</span>{' '}
             <span className="font-water-brush text-[#B23092]">Sports</span>
           </h2>
