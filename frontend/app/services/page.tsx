@@ -504,14 +504,14 @@ const ServicesPage = () => {
     const mainImage = vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : '';
 
     return (
-      <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-lg shadow-[#B23092]/50">
+      <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-sm border ">
         {/* Background Image with Dark Overlay */}
         <div className="absolute inset-0">
           {mainImage && (
             <img
               src={mainImage}
               alt={vehicle.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80"></div>

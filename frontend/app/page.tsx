@@ -944,7 +944,7 @@ export default function Home() {
         </div>
 
         {/* Explore Now Button */}
-        <div className="absolute top-8 right-8 z-20">
+        <div className="absolute top-7 right-8 z-20">
           <Link href={activeWellnessSlide.ctaLink}>
           <button className="bg-[#B23092] text-white px-6 py-3 rounded-lg font-urbanist font-semibold hover:bg-[#9a2779] transition-colors duration-200">
               {activeWellnessSlide.ctaLabel}
@@ -988,19 +988,11 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right Side - Illustration */}
-            <motion.div
-              key={`${activeWellnessSlide.id}-visual`}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-              className="relative h-full min-h-[600px] flex items-center justify-center"
-            >
-            </motion.div>
+
           </div>
 
           {/* Bottom Navigation */}
-          <div className="absolute bottom-8 right-8 z-20 flex items-center gap-6">
+          <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-20 flex items-center gap-4 sm:gap-6">
             <button
               onClick={handleWellnessPrev}
               className="flex flex-col items-center gap-2 group"
