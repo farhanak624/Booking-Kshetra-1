@@ -21,7 +21,7 @@ export default function BookingForm({ formData, setFormData, pricing }: BookingF
   const steps = [
     { number: 1, title: 'Dates & Guests', icon: Calendar },
     { number: 2, title: 'Room Selection', icon: Users },
-    { number: 3, title: 'Airport Transport', icon: Plane },
+    { number: 3, title: 'Airport Transfers', icon: Plane },
     { number: 4, title: 'Meals', icon: Coffee },
     { number: 5, title: 'Activities & Yoga', icon: Heart },
     { number: 6, title: 'Review & Book', icon: MessageSquare },
@@ -282,11 +282,11 @@ function RoomSelectionStep({ formData, updateFormData }: any) {
   )
 }
 
-// Step 3: Airport Transport
+// Step 3: Airport Transfers
 function AirportTransportStep({ formData, updateFormData }: any) {
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Airport Transport Services</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Airport Transfer Services</h2>
 
       <div className="space-y-6">
         <div className="flex items-center gap-2 mb-4">

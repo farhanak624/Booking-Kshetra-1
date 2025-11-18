@@ -989,7 +989,7 @@ export default function YogaPage() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
-              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetteaherbg.png"
+              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetteaherbg.png?updatedAt=1762973554357"
               alt="Meet Our Teachers Background"
               className="w-full h-full object-cover"
             />

@@ -11,7 +11,8 @@ export default function Header() {
 
   const navigation = [
     { name: "Kshetra", href: "/rooms" },
-    { name: "Airport Transport", href: "/airport-transport" },
+    { name: "Yoga", href: "/yoga" },
+    { name: "Airport Transfers", href: "/airport-transport" },
     { name: "Rent a Vehicle", href: "/services" },
     { name: "Adventure Sports", href: "/adventure" },
     { name: "Contact", href: "/contact" },
@@ -33,8 +34,7 @@ export default function Header() {
   const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isServicesPaymentPage || isServicesDetailsPage || isServicesSuccessPage || isContactPage || isRoomsPage || isAdventurePage;
   return (
     <header 
-      className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-transparent' : 'sticky top-0 z-50 bg-black backdrop-blur-md shadow-sm'}`}
-      style={isTransparentPage ? { backgroundColor: 'transparent', background: 'transparent' } : {}}
+      className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-black/20 ' : 'sticky top-0 z-50 bg-black/30  shadow-sm'}`}
     >
 
       {/* Main header */}
@@ -54,7 +54,7 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-md ${
+                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-lg ${
                       isTransparentPage
                         ? 'text-gray-300 hover:text-white'
                         : isActive ? 'text-[#B23092]' : 'text-gray-700 hover:text-gray-900'
@@ -68,11 +68,11 @@ export default function Header() {
           </nav>
 
           {/* Pinkrooms Section */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2 cursor-pointer">
             <img 
-              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png?updatedAt=1762181371803" 
+              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png" 
               alt="Kshetra Pinkrooms"
-              className="w-28 h-12 object-contain"
+              className="w-40 h-auto object-contain"
             />
           </div>
 

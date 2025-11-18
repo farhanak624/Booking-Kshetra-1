@@ -106,8 +106,8 @@ export default function SuccessPage() {
   const handleShareBooking = () => {
     if (navigator.share && bookingData) {
       navigator.share({
-        title: 'Airport Transport Booking Confirmation',
-        text: `I just booked airport transport at Kshetra Retreat Resort!`,
+        title: 'Airport Transfer Booking Confirmation',
+        text: `I just booked airport transfer at Kshetra Retreat Resort!`,
         url: window.location.href
       })
     } else {
@@ -122,7 +122,7 @@ export default function SuccessPage() {
 
     const details = `
 KSHETRA RETREAT RESORT
-Airport Transport Booking Confirmation
+Airport Transfer Booking Confirmation
 
 Booking ID: ${bookingData.bookingId}
 Booking Date: ${formatDateTime(bookingData.bookingDate)}
@@ -219,26 +219,57 @@ Thank you for choosing Kshetra Retreat Resort!
         </div>
       )}
 
-      <div className="container mx-auto px-4 md:px-[100px] py-8 max-w-4xl">
-        {/* Success Animation */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-12 h-12 text-[#B23092]" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 font-annie-telescope">
-            Booking Confirmed!
-          </h1>
-          <p className="text-xl text-white/80 font-urbanist">
-            Your airport transport has been successfully booked
-          </p>
-        </motion.div>
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] overflow-visible w-full">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+            alt="Booking Success"
+            className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        {/* Hero Content */}
+        <div className="relative z-10 min-h-[70vh] sm:min-h-[80vh] flex flex-col py-8">
+          <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <div className="w-20 h-20 bg-[#B23092]/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#B23092]/50">
+                <CheckCircle className="w-12 h-12 text-[#B23092]" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-annie-telescope uppercase tracking-wider">
+                Booking Confirmed
+              </h1>
+              <h2 className="text-5xl md:text-6xl font-bold text-[#B23092] mb-6 font-water-brush">
+                Success!
+              </h2>
+              <p className="text-white/90 text-lg md:text-xl font-urbanist max-w-2xl mx-auto">
+                Your airport transfer has been successfully booked. We'll contact you shortly with all the details.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Scroll Hint */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-white/70 text-xs font-urbanist uppercase tracking-wider">Scroll for details</p>
+              <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Booking Info Container - Starts from bottom of hero */}
+        <div className="relative z-10 -mt-32 md:-mt-40">
+          <div className="container mx-auto px-4 md:px-[100px] max-w-8xl">
+            <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Confirmation Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Booking Reference */}
@@ -288,7 +319,7 @@ Thank you for choosing Kshetra Retreat Resort!
                 </div>
                 <div>
                   <span className="text-white/60 font-urbanist">Payment ID</span>
-                  <p className="font-medium text-white font-mono text-xs font-urbanist">{bookingData.paymentId || 'N/A'}</p>
+                  <p className="font-medium text-white font-mono text-xs">{bookingData.paymentId || 'N/A'}</p>
                 </div>
                 <div>
                   <span className="text-white/60 font-urbanist">Amount Paid</span>
@@ -422,11 +453,11 @@ Thank you for choosing Kshetra Retreat Resort!
                 <div className="mt-4 pt-4 border-t border-white/20 grid grid-cols-2 gap-4 text-sm text-left">
                   <div>
                     <span className="text-white/60 font-urbanist">Payment ID</span>
-                    <p className="font-medium text-white font-mono text-xs font-urbanist mt-1">{bookingData.paymentId || 'N/A'}</p>
+                    <p className="font-medium text-white font-mono text-xs mt-1">{bookingData.paymentId || 'N/A'}</p>
                   </div>
                   <div>
                     <span className="text-white/60 font-urbanist">Order ID</span>
-                    <p className="font-medium text-white font-mono text-xs font-urbanist mt-1">{bookingData.orderId || 'N/A'}</p>
+                    <p className="font-medium text-white font-mono text-xs mt-1">{bookingData.orderId || 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -573,7 +604,12 @@ Thank you for choosing Kshetra Retreat Resort!
             Thank you for choosing <span className="text-[#B23092] font-bold font-annie-telescope">Kshetra Retreat Resort</span>! We look forward to serving you.
           </p>
         </motion.div>
-      </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional spacing for content below */}
+      <div className="bg-black py-16"></div>
     </div>
   )
 }

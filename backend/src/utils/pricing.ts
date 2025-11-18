@@ -205,7 +205,7 @@ export class PricingCalculator {
     if (!coupon.applicableServices.includes(serviceType as any)) {
       // Create user-friendly service names
       const serviceNames: { [key: string]: string } = {
-        'airport': 'Airport Transport',
+        'airport': 'Airport Transfers',
         'yoga': 'Yoga Sessions',
         'rental': 'Vehicle Rental',
         'adventure': 'Adventure Sports'
