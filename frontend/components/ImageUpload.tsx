@@ -16,7 +16,7 @@ interface ImageUploadProps {
   variant?: 'single' | 'multiple';
 }
 
-interface ImageUploadMultipleProps extends Omit<ImageUploadProps, 'onUpload' | 'currentImageUrl' | 'variant'> {
+interface ImageUploadMultipleProps extends Omit<ImageUploadProps, 'onUpload' | 'currentImageUrl' | 'variant' | 'onRemove'> {
   onUpload: (files: File[]) => Promise<void>;
   onRemove?: (index: number) => void;
   currentImageUrls?: string[];
