@@ -31,7 +31,8 @@ export default function Header() {
   const isContactPage = pathname === '/contact';
   const isRoomsPage = pathname === '/rooms';
   const isAdventurePage = pathname === '/adventure';
-  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isServicesPaymentPage || isServicesDetailsPage || isServicesSuccessPage || isContactPage || isRoomsPage || isAdventurePage;
+  const isTermsPage = pathname === '/terms';
+  const isTransparentPage = isHomePage || isYogaPage || isPaymentPage || isAirportTransportPage || isAirportTransportPaymentPage || isServicesPage || isServicesPaymentPage || isServicesDetailsPage || isServicesSuccessPage || isContactPage || isRoomsPage || isAdventurePage || isTermsPage;
   return (
     <header 
       className={`transition-all duration-300 ${isTransparentPage ? 'absolute top-0 left-0 right-0 z-50 bg-black/20 ' : 'sticky top-0 z-50 bg-black/30  shadow-sm'}`}
@@ -44,7 +45,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3 z-10 relative flex-shrink-0">
             <img 
               src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} 
-              className="w-20 md:w-24 lg:w-24 xl:w-28 2xl:w-32 h-auto transition-all max-w-[96px] lg:max-w-[80px] xl:max-w-[112px] 2xl:max-w-[128px]" 
+              className="w-20 md:w-24 lg:w-20 xl:w-28 2xl:w-32 h-auto transition-all max-w-[96px] lg:max-w-[70px] xl:max-w-[112px] 2xl:max-w-[128px]" 
             />
           </Link>
 
