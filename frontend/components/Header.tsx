@@ -39,22 +39,25 @@ export default function Header() {
 
       {/* Main header */}
       <div className="container mx-auto px-4 md:px-[100px] py-4">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 lg:gap-3 xl:gap-6 2xl:gap-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 z-10 relative">
-            <img src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} className="w-24 h-auto" />
+          <Link href="/" className="flex items-center gap-3 z-10 relative flex-shrink-0">
+            <img 
+              src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} 
+              className="w-20 md:w-24 lg:w-24 xl:w-28 2xl:w-32 h-auto transition-all max-w-[96px] lg:max-w-[80px] xl:max-w-[112px] 2xl:max-w-[128px]" 
+            />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center">
-            <div className="flex items-center gap-8">
+          <nav className="hidden lg:flex items-center flex-1 min-w-0 justify-center">
+            <div className="flex items-center gap-3 lg:gap-4 xl:gap-6 2xl:gap-8">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-lg ${
+                    className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-base lg:text-lg xl:text-lg ${
                       isTransparentPage
                         ? 'text-gray-300 hover:text-white'
                         : isActive ? 'text-[#B23092]' : 'text-gray-700 hover:text-gray-900'
@@ -68,11 +71,11 @@ export default function Header() {
           </nav>
 
           {/* Pinkrooms Section */}
-          <div className="hidden lg:flex items-center gap-2 cursor-pointer">
+          <div className="hidden lg:flex items-center gap-2 cursor-pointer flex-shrink-0">
             <img 
               src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png" 
               alt="Kshetra Pinkrooms"
-              className="w-40 h-auto object-contain"
+              className="w-32 lg:w-32 xl:w-40 2xl:w-40 h-auto object-contain max-w-[128px] lg:max-w-[120px] xl:max-w-[160px] 2xl:max-w-[160px]"
             />
           </div>
 

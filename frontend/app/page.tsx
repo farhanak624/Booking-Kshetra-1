@@ -711,9 +711,9 @@ export default function Home() {
       </section>
 
       {/* Attractions Grid Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4 md:px-[100px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-black">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-6 xl:gap-8">
             {attractions.map((attraction) => (
               <motion.div
                 key={attraction.id}
@@ -721,15 +721,15 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: attraction.delay }}
-                className="relative rounded-2xl overflow-hidden group cursor-pointer"
+                className="relative rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer shadow-lg shadow-[#B23092]/20 hover:shadow-[#B23092]/40 transition-shadow duration-300"
               >
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-1">
-                  <img 
-                    src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Gifs/https___lottiefiles.com_animations_location-GX07K3YgXE.gif"
-                    alt="Location"
-                    className="w-10 h-10 object-contain"
-                  />
-                  <span className={`${attraction.badgeColor} text-white text-xs font-semibold px-3 py-1 rounded-full`}>
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 lg:top-5 lg:left-5 z-10">
+                  <span className={`${attraction.badgeColor} text-white text-[10px] sm:text-xs md:text-xs lg:text-sm font-semibold px-2 sm:px-2.5 md:px-3 lg:px-1 xl:px-2 2xl:px-3 py-1.5 sm:py-2 md:py-2.5 lg:py-1 xl:py-1.5 2xl:py-2.5 rounded-full flex items-center gap-1 sm:gap-1.5 md:gap-2 shadow-lg`}>
+                    <img 
+                      src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Gifs/https___lottiefiles.com_animations_location-GX07K3YgXE.gif?updatedAt=1763474897370"
+                      alt="Location"
+                      className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 object-contain"
+                    />
                     {attraction.distance}
                   </span>
                 </div>
@@ -741,11 +741,11 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-2xl font-bold mb-2 font-urbanist">
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 lg:p-6 xl:p-7 text-white">
+                  <h3 className="text-lg sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold mb-1 sm:mb-2 font-urbanist line-clamp-2">
                     {attraction.title}
                   </h3>
-                  <p className="text-sm text-white/90 font-urbanist">
+                  <p className="text-sm sm:text-xs md:text-sm lg:text-sm xl:text-base text-white/90 font-urbanist line-clamp-2 sm:line-clamp-3">
                     {attraction.description}
                   </p>
                 </div>
@@ -928,7 +928,7 @@ export default function Home() {
 
       {/* Comfort Amenities Section */}
       <section
-        className="relative py-24 lg:py-28 text-white bg-black"
+        className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 text-white bg-black"
         style={{
           backgroundImage:
             "url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetscoastal.png?updatedAt=1762759854675')",
@@ -937,14 +937,14 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       >
-        <div className="container mx-auto px-4 md:px-[100px]">
-          <div className="max-w-3xl mx-auto text-center mb-16">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
+          <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 md:mb-14 lg:mb-16">
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-annie-telescope tracking-wide text-white"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-annie-telescope tracking-wide text-white"
             >
               Where Comfort
             </motion.h2>
@@ -953,7 +953,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-water-brush text-[#E24AA8] mt-2"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-water-brush text-[#E24AA8] mt-1 sm:mt-2"
             >
               Meets Coastal Luxury
             </motion.h3>
@@ -962,7 +962,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-6 text-base md:text-lg text-white/85 font-urbanist leading-relaxed"
+              className="mt-4 sm:mt-5 md:mt-6 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-white/85 font-urbanist leading-relaxed px-2 sm:px-0"
             >
               From high-speed WiFi and personalized concierge services to serene
               yoga spaces and rejuvenating Ayurvedic therapies — every detail at
@@ -971,7 +971,7 @@ export default function Home() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6 lg:gap-6 xl:gap-8">
             {comfortAmenities.map((item, index) => (
               <motion.div
                 key={item.title}
@@ -979,9 +979,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="relative rounded-2xl overflow-hidden group shadow-lg shadow-black/40"
+                className="relative rounded-xl sm:rounded-2xl overflow-hidden group shadow-lg shadow-black/40"
               >
-                <div className="aspect-[5/5]">
+                <div className="aspect-[5/5] sm:aspect-[5/5]">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -989,11 +989,11 @@ export default function Home() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6">
-                  <h4 className="text-xl font-annie-telescope mb-2">
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6">
+                  <h4 className="text-lg sm:text-xl md:text-xl lg:text-2xl font-annie-telescope mb-1 sm:mb-2">
                     {item.title}
                   </h4>
-                  <p className="text-sm text-white/85 font-urbanist">
+                  <p className="text-xs sm:text-sm md:text-sm lg:text-base text-white/85 font-urbanist line-clamp-2 sm:line-clamp-3">
                     {item.description}
                   </p>
                 </div>
