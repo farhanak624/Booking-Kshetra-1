@@ -388,7 +388,7 @@ export default function YogaPage() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 md:px-[100px] mt-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

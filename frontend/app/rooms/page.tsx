@@ -432,29 +432,33 @@ const RoomsPage = () => {
               </div>
 
               {/* Main Image */}
-              <div className="rounded-2xl overflow-hidden bg-transparent">
+              <div className="rounded-2xl overflow-hidden bg-transparent relative">
+                {/* Main Image */}
                 <img
                   src={(acc.images && acc.images[0]) || "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=2048&q=60"}
                   alt={acc.name}
-                  className="w-full h-[380px] sm:h-[460px] object-cover"
+                  className="w-full h-[380px] sm:h-[460px] md:h-[500px] lg:h-[550px] object-cover"
                 />
-                <div className="border-t border-white/10 px-4 sm:px-6 py-3 sm:py-4 text-white/80 text-xs sm:text-sm font-urbanist flex flex-wrap gap-x-6 gap-y-2">
-                  <span>• Premium Interiors</span>
-                  <span>• Large Bed</span>
-                  <span>• Balcony View</span>
-                  <span>• Wi‑Fi</span>
+                {/* Text Overlays on Bottom Left */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 sm:p-6 md:p-8">
+                  <div className="text-white text-xs sm:text-sm md:text-base font-urbanist flex flex-wrap gap-x-6 gap-y-2">
+                    <span>- PREMIUM INTERIORS</span>
+                    <span>- LARGE BED</span>
+                    <span>- BALCONY VIEW</span>
+                    <span>- WI-FI</span>
+                  </div>
                 </div>
               </div>
 
               {/* Thumbnails */}
-              <div className="mt-6 grid sm:grid-cols-3 gap-4">
+              <div className="mt-6 grid sm:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
                 {(acc.images && acc.images.slice(1, 4).length > 0 ? acc.images.slice(1, 4) : [
                   "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=60",
                   "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=60",
                   "https://images.unsplash.com/photo-1559599101-f09722fb4948?auto=format&fit=crop&w=1200&q=60",
                 ]).map((img: string, i: number) => (
-                  <div key={i} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 ">
-                    <img src={img} alt={`${acc.name} ${i+2}`} className="w-full sm:h-48" />
+                  <div key={i} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 aspect-square">
+                    <img src={img} alt={`${acc.name} ${i+2}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
