@@ -158,14 +158,14 @@ export default function ContactPage() {
                   </div>
 
                   {/* Email */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 break-words overflow-hidden">
                     <div className="w-10 h-10 bg-orange-500/30 rounded-lg flex items-center justify-center mb-3">
                       <Mail className="w-5 h-5 text-white" />
                     </div>
                     <h3 className="text-white font-semibold mb-2 font-annie-telescope">Email</h3>
-                    <p className="text-white/80 text-sm font-urbanist">
-                      info@kshetraretreat.com<br />
-                      bookings@kshetraretreat.com
+                    <p className="text-white/80 text-sm font-urbanist break-all">
+                      <span className="block break-words">info@kshetraretreat.com</span>
+                      <span className="block break-words">bookings@kshetraretreat.com</span>
                     </p>
                   </div>
 
