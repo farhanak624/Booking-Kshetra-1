@@ -851,10 +851,10 @@ export default function Home() {
           </div>
 
           {/* Bottom Navigation */}
-          <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-20 flex items-center gap-4 sm:gap-6">
+          <div className="absolute bottom-4 right-4 sm:bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:top-1/2 lg:-translate-y-1/2 xl:top-1/2 xl:-translate-y-1/2 sm:right-8 md:left-[75%] md:right-auto md:-translate-x-1/2 lg:left-[75%] lg:-translate-x-1/2 xl:left-[75%] xl:-translate-x-1/2 z-20 flex items-center gap-4 sm:gap-6">
             <button
               onClick={handleWellnessPrev}
-              className="flex flex-col items-center gap-2 group"
+              className="flex flex-col items-center gap-2 group flex-shrink-0"
               aria-label="View previous wellness slide"
             >
               <div className="w-12 h-12 rounded-full bg-[#B23092] flex items-center justify-center hover:bg-[#9a2779] transition-colors duration-200">
@@ -876,7 +876,7 @@ export default function Home() {
               <span className="text-white text-xs font-urbanist">PREVIOUS</span>
             </button>
 
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-3 w-72 sm:w-48 md:w-56 flex-shrink-0">
               <div className="flex items-center gap-2">
                 {wellnessSlides.map((slide, index) => {
                   const isActive = index === currentWellnessSlide;
@@ -894,14 +894,14 @@ export default function Home() {
                   );
                 })}
               </div>
-              <span className="text-white/70 text-xs font-urbanist tracking-wide uppercase">
+              <span className="text-white/70 text-xs font-urbanist tracking-wide uppercase text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
                 {activeWellnessSlide.metaLabel}
               </span>
             </div>
 
             <button
               onClick={handleWellnessNext}
-              className="flex flex-col items-center gap-2 group"
+              className="flex flex-col items-center gap-2 group flex-shrink-0"
               aria-label="View next wellness slide"
             >
               <div className="w-12 h-12 rounded-full bg-[#B23092] flex items-center justify-center hover:bg-[#9a2779] transition-colors duration-200">
