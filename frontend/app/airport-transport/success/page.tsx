@@ -179,7 +179,7 @@ Thank you for choosing Kshetra Retreat Resort!
     return (
       <div className="min-h-screen bg-black">
         <Header />
-        <div className="container mx-auto px-4 md:px-[100px] py-8 max-w-4xl">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8 max-w-4xl">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B23092] mx-auto mb-4"></div>
             <p className="text-white/80 font-urbanist">Loading booking details...</p>
@@ -234,7 +234,7 @@ Thank you for choosing Kshetra Retreat Resort!
 
         {/* Hero Content */}
         <div className="relative z-10 min-h-[70vh] sm:min-h-[80vh] flex flex-col py-8">
-          <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] w-full flex-1 flex flex-col justify-center py-12">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -268,7 +268,7 @@ Thank you for choosing Kshetra Retreat Resort!
 
         {/* Booking Info Container - Starts from bottom of hero */}
         <div className="relative z-10 -mt-32 md:-mt-40">
-          <div className="container mx-auto px-4 md:px-[100px] max-w-8xl">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] max-w-8xl">
             <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Confirmation Details */}
           <div className="lg:col-span-2 space-y-6">

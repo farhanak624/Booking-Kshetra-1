@@ -502,7 +502,7 @@ const BookingCompletePageContent = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="container mx-auto px-4 md:px-[100px] py-8">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8">
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No Booking Data Found</h2>
@@ -523,7 +523,7 @@ const BookingCompletePageContent = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="container mx-auto px-4 md:px-[100px] py-8">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-light text-gray-900 mb-4">Complete Your Booking</h1>

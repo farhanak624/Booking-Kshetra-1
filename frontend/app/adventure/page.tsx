@@ -105,11 +105,21 @@ const AdventurePage = () => {
     // Validate that at least one service is selected
     if (selectedServices.length === 0) {
       alert('Please enroll at least one adventure sport before proceeding')
+      // Scroll to services section
+      const servicesSection = document.getElementById('adventure-list')
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
       return
     }
     // Validate that date is selected
     if (!selectedDate) {
-      alert('Please select a service date')
+      alert('Please select a service date to continue with booking')
+      // Scroll to date picker
+      const stickyBar = document.querySelector('.sticky.bottom-0')
+      if (stickyBar) {
+        stickyBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
       return
     }
     
@@ -133,9 +143,20 @@ const AdventurePage = () => {
   const ServiceCard = ({ service }: { service: Service }) => {
     const selected = selectedServices.find(s => s._id === service._id)
     const quantity = selected?.quantity || 0
+    const isSelected = quantity > 0
 
     return (
-      <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+      <div className={`rounded-2xl overflow-hidden border transition-all duration-300 relative ${
+        isSelected 
+          ? 'border-[#B23092] bg-[#B23092]/10 backdrop-blur-md shadow-lg shadow-[#B23092]/20' 
+          : 'border-white/15 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/30'
+      }`}>
+        {isSelected && (
+          <div className="absolute top-2 left-2 z-10 bg-[#B23092] text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <CheckCircle className="w-3 h-3" />
+            Selected
+          </div>
+        )}
         {/* Image header */}
         <div className="relative h-44 sm:h-52">
           <img
@@ -230,7 +251,7 @@ const AdventurePage = () => {
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <div className="max-w-3xl">
               <h1 className="text-white mb-6">
                 <span className="block text-3xl sm:text-4xl md:text-5xl font-annie-telescope">
@@ -265,7 +286,7 @@ const AdventurePage = () => {
       </section>
 
       {/* Date + Summary */}
-      <div className="container mx-auto px-4 md:px-[100px] py-8" id="adventure-list"
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8" id="adventure-list"
       style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/adventure.png)', backgroundSize: 'cover', backgroundPosition: 'center'}}
       >
         
@@ -302,43 +323,134 @@ const AdventurePage = () => {
           </div>
         )}
       </div>
-      <div className="container mx-auto px-4 md:px-[100px] py-8 bg-black">
-      <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6 mb-8">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <div className="flex-1">
-              <label className="block text-white/80 text-sm font-urbanist mb-2">Service Date</label>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:border-[#B23092] focus:ring-2 focus:ring-[#B23092] outline-none"
-              />
+
+      {/* Sticky Booking Summary Bar */}
+      {selectedServices.length > 0 && (
+        <div className="sticky bottom-0 z-40 bg-black/95 backdrop-blur-md border-t border-white/20 shadow-2xl">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-white/80 text-xs font-urbanist mb-1">Service Date</label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:border-[#B23092] focus:ring-2 focus:ring-[#B23092] outline-none"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <div className="text-white/90 font-urbanist w-full">
+                    <div className="text-xs text-white/70 mb-1">Total Amount</div>
+                    <div className="text-xl sm:text-2xl font-annie-telescope text-[#B23092]">₹{getTotalAmount().toLocaleString()}</div>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleBook}
+                disabled={selectedServices.length === 0 || !selectedDate || bookingLoading}
+                className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#B23092] min-w-[180px]"
+              >
+                {bookingLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    {!selectedDate ? 'Select Date First' : 'Proceed to Booking'}
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
             </div>
-            <div className="text-white/90 font-urbanist">
-              <div className="text-sm">Total</div>
-              <div className="text-2xl font-annie-telescope text-[#B23092]">₹{getTotalAmount().toLocaleString()}</div>
-            </div>
-            <button
-              onClick={handleBook}
-              disabled={selectedServices.length === 0 || bookingLoading}
-              className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#B23092]"
-            >
-              {bookingLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  Proceed to booking
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Booking Progress Indicator */}
+      {selectedServices.length > 0 && (
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8 bg-black">
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 p-6 mb-8">
+            <div className="mb-4">
+              <h3 className="text-white font-urbanist font-semibold text-lg mb-2">Booking Progress</h3>
+              <div className="flex items-center gap-2 text-sm text-white/70">
+                <CheckCircle className="w-4 h-4 text-[#B23092]" />
+                <span>Step 1: Select Services ({selectedServices.length} selected)</span>
+                <ArrowRight className="w-4 h-4 mx-2" />
+                <span className={selectedDate ? "text-white" : "text-white/50"}>
+                  Step 2: {selectedDate ? "Date Selected ✓" : "Select Date"}
+                </span>
+                <ArrowRight className="w-4 h-4 mx-2" />
+                <span className="text-white/50">Step 3: Enter Details</span>
+                <ArrowRight className="w-4 h-4 mx-2" />
+                <span className="text-white/50">Step 4: Payment</span>
+              </div>
+            </div>
+            
+            {/* Selected Services Summary */}
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <h4 className="text-white font-urbanist font-medium mb-3">Selected Services</h4>
+              <div className="space-y-2 max-h-32 overflow-y-auto">
+                {selectedServices.map((service) => (
+                  <div key={service._id} className="flex items-center justify-between text-sm bg-white/5 rounded-lg p-2">
+                    <span className="text-white/90 font-urbanist">{service.name}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-white/70">Qty: {service.quantity}</span>
+                      <span className="text-[#B23092] font-semibold">₹{(service.price * service.quantity).toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 pt-3 border-t border-white/20 flex items-center justify-between">
+                <span className="text-white font-urbanist font-semibold">Total:</span>
+                <span className="text-2xl font-annie-telescope text-[#B23092]">₹{getTotalAmount().toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Helpful Next Steps */}
+            {selectedServices.length > 0 && !selectedDate && (
+              <div className="mt-4 p-4 bg-[#B23092]/10 border border-[#B23092]/30 rounded-lg animate-pulse">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5">
+                    <Clock className="w-5 h-5 text-[#B23092]" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-urbanist font-medium text-sm mb-1">Next Step Required</p>
+                    <p className="text-white/80 font-urbanist text-xs mb-2">Please select a date for your adventure activities. Use the date picker in the sticky bar at the bottom of the page.</p>
+                    <button
+                      onClick={() => {
+                        const stickyBar = document.querySelector('.sticky.bottom-0');
+                        if (stickyBar) {
+                          stickyBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                      }}
+                      className="text-[#B23092] text-xs font-semibold hover:underline flex items-center gap-1"
+                    >
+                      Scroll to Date Picker <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedServices.length > 0 && selectedDate && (
+              <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-urbanist font-medium text-sm mb-1">Ready to Book! ✓</p>
+                    <p className="text-white/80 font-urbanist text-xs">All set! Click "Proceed to Booking" in the sticky bar below to continue with your details and payment. Next, you'll enter your contact information.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Service Details Modal */}
       {showServiceModal && selectedServiceDetails && (

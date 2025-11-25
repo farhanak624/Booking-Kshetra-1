@@ -492,6 +492,26 @@ export class EmailService {
     });
   }
 
+  // Send assignment notification to driver
+  async sendDriverAssignmentNotificationToDriver(booking: any, driver: any, vehicle: any, assignment: any): Promise<{ success: boolean; error?: string }> {
+    if (!driver.email) {
+      return {
+        success: false,
+        error: 'No driver email available for notification'
+      };
+    }
+
+    const html = this.generateDriverAssignmentEmailForDriver(booking, driver, vehicle, assignment);
+
+    return this.sendEmail({
+      to: driver.email,
+      cc: process.env.ADMIN_EMAIL,
+      subject: '🚗 New Transport Assignment - Kshetra Retreat Resort',
+      html,
+      text: `You have been assigned a new transport booking. Booking ID: ${booking._id}, Vehicle: ${vehicle.brand} ${vehicle.vehicleModel}`
+    });
+  }
+
   // Generate enhanced driver assignment email template
   private generateDriverAssignmentEmail(booking: any, driver: any, vehicle: any, assignment: any): string {
     const customerName = booking.primaryGuestInfo?.name || booking.guests[0]?.name || 'Guest';
@@ -618,6 +638,132 @@ export class EmailService {
             <p>📞 Resort Contact: +91-XXXXXXXXXX</p>
             <p>📧 Email: info@kshetraretreat.com</p>
             <p style="margin-top: 20px; font-size: 12px;">This is an automated notification. Safe travels!</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  // Generate driver assignment email template for driver
+  private generateDriverAssignmentEmailForDriver(booking: any, driver: any, vehicle: any, assignment: any): string {
+    const customerName = booking.primaryGuestInfo?.name || booking.guests[0]?.name || 'Guest';
+    const customerPhone = booking.primaryGuestInfo?.phone || booking.guests[0]?.phone || 'N/A';
+    const customerEmail = booking.guestEmail || (booking.userId as any)?.email || booking.primaryGuestInfo?.email || 'N/A';
+    const pickupLocation = booking.transport?.pickupTerminal || booking.transport?.pickupLocation || 'Airport/Terminal';
+    const dropLocation = booking.transport?.dropTerminal || booking.transport?.dropLocation || 'Kshetra Retreat Resort';
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+          .container { max-width: 700px; margin: 0 auto; background-color: white; }
+          .header { background: linear-gradient(135deg, #B23092, #d446a8); color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; }
+          .info-card { background-color: #f8f9fa; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 5px solid #B23092; }
+          .highlight-box { background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border: 2px solid #ffc107; }
+          .schedule-box { background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; }
+          .customer-box { background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0; }
+          .footer { background-color: #B23092; color: white; padding: 20px; text-align: center; }
+          .highlight { color: #B23092; font-weight: bold; }
+          .button { display: inline-block; padding: 12px 24px; background-color: #B23092; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🚗 NEW TRANSPORT ASSIGNMENT</h1>
+            <p>You have been assigned a new booking</p>
+            <p style="font-size: 14px; margin: 5px 0;">Booking ID: ${booking._id}</p>
+          </div>
+
+          <div class="content">
+            <h2>Dear ${driver.name},</h2>
+            <p>You have been assigned a new transport booking. Please review the details below and prepare accordingly.</p>
+
+            <div class="highlight-box">
+              <h3 style="margin-top: 0; color: #856404;">⚠️ Important Instructions</h3>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li>Arrive at the pickup location 15 minutes before scheduled time</li>
+                <li>Confirm vehicle inspection and cleanliness</li>
+                <li>Contact the customer 30 minutes before pickup</li>
+                <li>Display professional behavior and ensure customer safety</li>
+                <li>Report any issues immediately to the agency</li>
+              </ul>
+            </div>
+
+            <div class="customer-box">
+              <h3>👤 Customer Information</h3>
+              <p><strong>Name:</strong> ${customerName}</p>
+              <p><strong>Phone:</strong> <a href="tel:${customerPhone}" style="color: #B23092;">${customerPhone}</a></p>
+              ${customerEmail !== 'N/A' ? `<p><strong>Email:</strong> <a href="mailto:${customerEmail}" style="color: #B23092;">${customerEmail}</a></p>` : ''}
+            </div>
+
+            <div class="info-card">
+              <h3>🚙 Vehicle Details</h3>
+              <p><strong>Vehicle:</strong> ${vehicle.brand} ${vehicle.vehicleModel}</p>
+              <p><strong>Vehicle Number:</strong> <span class="highlight">${vehicle.vehicleNumber}</span></p>
+              <p><strong>Type:</strong> ${vehicle.vehicleType}</p>
+              <p><strong>Capacity:</strong> ${vehicle.capacity} passengers</p>
+              ${vehicle.color ? `<p><strong>Color:</strong> ${vehicle.color}</p>` : ''}
+              ${vehicle.images && vehicle.images.length > 0 ? `
+                <p><strong>Vehicle Photo:</strong></p>
+                <img src="${vehicle.images[0]}" alt="Vehicle" style="max-width: 300px; border-radius: 8px; margin: 10px 0;">
+              ` : ''}
+            </div>
+
+            <div class="schedule-box">
+              <h3>📅 Schedule & Route</h3>
+              ${assignment.pickupTime ? `
+                <p><strong>Pickup Time:</strong> <span class="highlight">${new Date(assignment.pickupTime).toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'short' })}</span></p>
+                <p><strong>Pickup Location:</strong> ${pickupLocation}</p>
+              ` : ''}
+              ${assignment.dropTime ? `
+                <p><strong>Drop Time:</strong> <span class="highlight">${new Date(assignment.dropTime).toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'short' })}</span></p>
+                <p><strong>Drop Location:</strong> ${dropLocation}</p>
+              ` : ''}
+              ${booking.transport?.flightNumber ? `<p><strong>Flight Number:</strong> ${booking.transport.flightNumber}</p>` : ''}
+              ${booking.transport?.pickupDate ? `<p><strong>Pickup Date:</strong> ${new Date(booking.transport.pickupDate).toLocaleDateString('en-IN')}</p>` : ''}
+              ${booking.transport?.dropDate ? `<p><strong>Drop Date:</strong> ${new Date(booking.transport.dropDate).toLocaleDateString('en-IN')}</p>` : ''}
+            </div>
+
+            ${assignment.notes ? `
+            <div class="info-card">
+              <h3>📝 Special Instructions</h3>
+              <p>${assignment.notes}</p>
+            </div>
+            ` : ''}
+
+            <div class="info-card">
+              <h3>📞 Contact & Support</h3>
+              <p><strong>Agency Contact:</strong> Please contact your agency for any queries or support.</p>
+              <p><strong>Emergency Contact:</strong> Your emergency contact (${driver.emergencyContact.name}) can be reached at ${driver.emergencyContact.phone}</p>
+            </div>
+
+            <div style="background-color: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #c3e6cb;">
+              <h4 style="color: #155724; margin-top: 0;">✅ Pre-Trip Checklist:</h4>
+              <ul style="color: #155724; margin: 0; padding-left: 20px;">
+                <li>Verify vehicle documents are valid</li>
+                <li>Check fuel level and vehicle condition</li>
+                <li>Ensure navigation system is working</li>
+                <li>Confirm customer contact details</li>
+                <li>Review route and estimated travel time</li>
+                <li>Carry necessary identification</li>
+              </ul>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px;">
+              <strong>Safe travels and thank you for your service!</strong>
+            </p>
+          </div>
+
+          <div class="footer">
+            <h3>Kshetra Retreat Resort</h3>
+            <p>Transport Management System</p>
+            <p style="margin-top: 20px; font-size: 12px;">This is an automated notification. Please do not reply to this email.</p>
           </div>
         </div>
       </body>

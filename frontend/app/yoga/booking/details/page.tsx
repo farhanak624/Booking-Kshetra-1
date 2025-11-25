@@ -288,7 +288,7 @@ function YogaBookingDetailsPageContent() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
         <Header />
-        <div className="container mx-auto px-4 md:px-[100px] py-8">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8">
           <div className="text-center">
             <p className="text-gray-300">Session not found</p>
           </div>
@@ -301,7 +301,7 @@ function YogaBookingDetailsPageContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
       <Header />
 
-      <div className="container mx-auto px-4 md:px-[100px] py-8 max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8 max-w-6xl">
         {/* Progress Steps */}
         <div className="mb-12">
           <div className="flex items-center justify-center space-x-8">

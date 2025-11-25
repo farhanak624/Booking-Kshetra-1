@@ -381,18 +381,9 @@ export const createPublicBooking = async (req: any, res: Response): Promise<void
 
     await session.commitTransaction();
 
-    // Send email notification for public booking
-    try {
-      await emailService.sendBookingConfirmation(booking);
-      // Send admin notification for new booking
-      await emailService.sendAdminBookingNotification(booking);
-    } catch (emailError) {
-      console.error('Failed to send booking confirmation email:', emailError);
-      // Don't fail the booking creation if email fails
-    }
-
-    // Notify agency about transport booking if applicable
-    await notifyActiveAgencyAboutTransport(booking);
+    // NOTE: Email notifications (booking confirmation, admin notification, agency notification)
+    // are now sent ONLY after successful payment verification in verifyPublicPayment.
+    // This ensures emails are only sent when payment is successful.
 
     res.status(201).json({
       success: true,
@@ -696,33 +687,9 @@ export const createBooking = async (req: AuthenticatedRequest, res: Response): P
       .populate('selectedServices.serviceId', 'name category price')
       .populate('yogaSessionId', 'type batchName startDate endDate');
 
-    // Send booking confirmation email
-    try {
-      if (userId === 'admin_id_123') {
-        // For admin bookings, use admin info
-        const adminUser = {
-          name: 'Admin User',
-          email: 'admin@gmail.com'
-        };
-        await emailService.sendBookingConfirmation(populatedBooking, adminUser);
-        // Send admin notification for new booking
-        await emailService.sendAdminBookingNotification(populatedBooking, adminUser);
-      } else {
-        // For regular users, find user in database
-        const user = await User.findById(userId);
-        if (user) {
-          await emailService.sendBookingConfirmation(populatedBooking, user);
-          // Send admin notification for new booking
-          await emailService.sendAdminBookingNotification(populatedBooking, user);
-        }
-      }
-    } catch (emailError) {
-      console.error('Failed to send booking confirmation email:', emailError);
-      // Don't fail the booking creation if email fails
-    }
-
-    // Notify agency about transport booking if applicable
-    await notifyActiveAgencyAboutTransport(populatedBooking);
+    // NOTE: Email notifications (booking confirmation, admin notification, agency notification)
+    // are now sent ONLY after successful payment verification in verifyPayment.
+    // This ensures emails are only sent when payment is successful.
 
     res.status(201).json({
       success: true,

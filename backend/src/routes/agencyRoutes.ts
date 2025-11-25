@@ -47,9 +47,7 @@ router.post('/vehicles', agencyAuth, [
   body('vehicleNumber')
     .trim()
     .notEmpty()
-    .withMessage('Vehicle number is required')
-    .matches(/^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/)
-    .withMessage('Invalid vehicle number format (e.g., KL07AB1234)'),
+    .withMessage('Vehicle number is required'),
   body('vehicleType')
     .notEmpty()
     .withMessage('Vehicle type is required')
@@ -84,9 +82,7 @@ router.put('/vehicles/:id', agencyAuth, [
   param('id').isMongoId().withMessage('Invalid vehicle ID'),
   body('vehicleNumber')
     .optional()
-    .trim()
-    .matches(/^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/)
-    .withMessage('Invalid vehicle number format (e.g., KL07AB1234)'),
+    .trim(),
   body('vehicleType')
     .optional()
     .isIn(['sedan', 'suv', 'hatchback', 'minivan', 'bus', 'luxury_sedan', 'luxury_suv'])

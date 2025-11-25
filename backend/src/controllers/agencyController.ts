@@ -11,6 +11,7 @@ import {
 } from '../models';
 import { AgencyAuthRequest } from '../middleware/agencyAuth';
 import { emailService } from '../utils/email';
+import { smsService } from '../utils/sms';
 import {
   uploadImageToImageKit,
   uploadMultipleImages,
@@ -159,10 +160,22 @@ export const createVehicle = async (req: AgencyAuthRequest, res: Response) => {
       });
     }
 
-    const vehicleData = {
+    // Process vehicle data, including insurance
+    const vehicleData: any = {
       ...req.body,
       agencyId: req.agency._id
     };
+
+    // Handle insurance data - convert expiryDate to Date if provided
+    if (vehicleData.insurance) {
+      if (vehicleData.insurance.expiryDate && typeof vehicleData.insurance.expiryDate === 'string') {
+        vehicleData.insurance.expiryDate = new Date(vehicleData.insurance.expiryDate);
+      }
+      // Remove insurance if all fields are empty
+      if (!vehicleData.insurance.provider && !vehicleData.insurance.policyNumber && !vehicleData.insurance.expiryDate) {
+        vehicleData.insurance = undefined;
+      }
+    }
 
     const vehicle = new Vehicle(vehicleData);
     await vehicle.save();
@@ -220,7 +233,21 @@ export const updateVehicle = async (req: AgencyAuthRequest, res: Response) => {
       });
     }
 
-    Object.assign(vehicle, req.body);
+    // Process update data, including insurance
+    const updateData: any = { ...req.body };
+
+    // Handle insurance data - convert expiryDate to Date if provided
+    if (updateData.insurance) {
+      if (updateData.insurance.expiryDate && typeof updateData.insurance.expiryDate === 'string') {
+        updateData.insurance.expiryDate = new Date(updateData.insurance.expiryDate);
+      }
+      // Remove insurance if all fields are empty
+      if (!updateData.insurance.provider && !updateData.insurance.policyNumber && !updateData.insurance.expiryDate) {
+        updateData.insurance = undefined;
+      }
+    }
+
+    Object.assign(vehicle, updateData);
     await vehicle.save();
 
     res.json({
@@ -479,11 +506,11 @@ export const getBookings = async (req: AgencyAuthRequest, res: Response) => {
       ],
       status: { $ne: 'cancelled' }
     })
-    .populate('userId', 'name email phone')
-    .populate('roomId', 'name category')
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+      .populate('userId', 'name email phone')
+      .populate('roomId', 'name category')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     // Get existing assignments for this agency
     const assignments = await TransportAssignment.find({
@@ -652,8 +679,48 @@ export const assignTransport = async (req: AgencyAuthRequest, res: Response) => 
       await emailService.sendDriverAssignmentNotification(booking, driver, vehicle, assignment);
       assignment.customerNotified = true;
       await assignment.save();
+      console.log('Customer email notification sent successfully');
     } catch (emailError) {
-      console.error('Failed to send customer notification:', emailError);
+      console.error('Failed to send customer email notification:', emailError);
+    }
+
+    // Send WhatsApp notification to customer
+    try {
+      const customerPhone = booking.primaryGuestInfo?.phone || booking.guests[0]?.phone;
+      if (customerPhone) {
+        await smsService.sendDriverAssignmentNotification(customerPhone, booking, driver, vehicle, assignment);
+        console.log(`WhatsApp driver assignment notification sent to customer: ${customerPhone}`);
+      } else {
+        console.log('Customer phone number not available. Skipping WhatsApp notification.');
+      }
+    } catch (whatsappError) {
+      console.error('Failed to send customer WhatsApp notification:', whatsappError);
+    }
+
+    // Send email notification to driver
+    try {
+      if (driver.email) {
+        await emailService.sendDriverAssignmentNotificationToDriver(booking, driver, vehicle, assignment);
+        console.log(`Driver notification email sent successfully to ${driver.email}`);
+      } else {
+        console.log(`Driver ${driver.name} does not have an email address. Skipping driver email notification.`);
+      }
+    } catch (emailError) {
+      console.error('Failed to send driver email notification:', emailError);
+      // Don't fail the assignment if driver email fails
+    }
+
+    // Send WhatsApp notification to driver
+    try {
+      if (driver.phone) {
+        await smsService.sendDriverAssignmentNotificationToDriver(driver.phone, booking, driver, vehicle, assignment);
+        console.log(`WhatsApp driver assignment notification sent to driver: ${driver.phone}`);
+      } else {
+        console.log(`Driver ${driver.name} does not have a phone number. Skipping driver WhatsApp notification.`);
+      }
+    } catch (whatsappError) {
+      console.error('Failed to send driver WhatsApp notification:', whatsappError);
+      // Don't fail the assignment if driver WhatsApp fails
     }
 
     res.status(201).json({

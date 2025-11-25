@@ -554,7 +554,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -621,7 +621,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
               {/* Left Side - Text Content */}
               <motion.div
@@ -672,7 +672,7 @@ export default function Home() {
       </section>
 
       {/* Why Varkala Section */}
-      <section className="relative min-h-screen py-20 overflow-hidden bg-black">
+      <section className="relative min-h-screen py-20 sm:py-24 md:py-28 lg:py-32 xl:py-40 2xl:py-44 overflow-hidden bg-black">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -684,7 +684,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-end">
-          <div className="container mx-auto px-4 md:px-[100px] pb-20">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] pb-20">
             <div className="max-w-4xl mx-auto text-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -712,7 +712,7 @@ export default function Home() {
 
       {/* Attractions Grid Section */}
       <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-black">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-6 xl:gap-8">
             {attractions.map((attraction) => (
               <motion.div
@@ -811,7 +811,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="container mx-auto px-4 md:px-[100px] py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-16 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[420px]">
             {/* Left Side - Text Content */}
             <motion.div
@@ -846,10 +846,7 @@ export default function Home() {
                 />
               </div>
             </motion.div>
-
-
           </div>
-
           {/* Bottom Navigation */}
           <div className="absolute bottom-4 right-4 sm:bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:top-1/2 lg:-translate-y-1/2 xl:top-1/2 xl:-translate-y-1/2 sm:right-8 md:left-[75%] md:right-auto md:-translate-x-1/2 lg:left-[75%] lg:-translate-x-1/2 xl:left-[75%] xl:-translate-x-1/2 z-20 flex items-center gap-4 sm:gap-6">
             <button
@@ -937,7 +934,7 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       >
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 md:mb-14 lg:mb-16">
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
@@ -1014,7 +1011,7 @@ export default function Home() {
             backgroundPosition: "center",
         }}
       >
-        <div className="container mx-auto px-4 md:px-[100px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
@@ -1113,7 +1110,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-black/60 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-20 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1383,7 +1380,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-gradient-to-r from-orange-900/70 via-pink-900/70 to-purple-900/70 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-20 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1556,7 +1553,7 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 via-yellow-900/80 to-orange-900/80 z-10" />
 
-        <div className="relative z-20 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-20 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1724,7 +1721,7 @@ export default function Home() {
 
       {/* Resort Amenities Section */}
       <section className="py-32 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <div className="container mx-auto px-4 md:px-[100px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}

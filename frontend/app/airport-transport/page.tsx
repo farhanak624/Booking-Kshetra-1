@@ -204,7 +204,7 @@ export default function AirportTransportPage() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -266,7 +266,7 @@ export default function AirportTransportPage() {
           />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
             {/* Left Side - Service Information */}
             <motion.div
@@ -407,7 +407,7 @@ export default function AirportTransportPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80"></div>
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -963,7 +963,7 @@ export default function AirportTransportPage() {
           {/* <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80"></div> */}
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 md:px-[100px]">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
