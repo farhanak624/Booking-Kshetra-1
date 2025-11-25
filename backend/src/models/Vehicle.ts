@@ -10,6 +10,11 @@ export interface IVehicle extends Document {
   agencyId: mongoose.Types.ObjectId;
   isAvailable: boolean;
   features: string[];
+  insurance?: {
+    provider: string;
+    policyNumber: string;
+    expiryDate: Date;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,8 +26,8 @@ const vehicleSchema = new Schema<IVehicle>(
       required: [true, 'Vehicle number is required'],
       unique: true,
       trim: true,
-      uppercase: true,
-      match: [/^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/, 'Please enter a valid vehicle number (e.g., KL07AB1234)']
+      uppercase: true
+      // Removed strict validation to allow flexible vehicle number formats
     },
     vehicleType: {
       type: String,
@@ -77,6 +82,21 @@ const vehicleSchema = new Schema<IVehicle>(
           return features.every(feature => typeof feature === 'string' && feature.length <= 50);
         },
         message: 'Each feature must be a string with maximum 50 characters'
+      }
+    },
+    insurance: {
+      provider: {
+        type: String,
+        trim: true,
+        maxlength: [100, 'Insurance provider name cannot be more than 100 characters']
+      },
+      policyNumber: {
+        type: String,
+        trim: true,
+        maxlength: [50, 'Policy number cannot be more than 50 characters']
+      },
+      expiryDate: {
+        type: Date
       }
     }
   },

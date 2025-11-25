@@ -351,7 +351,7 @@ const RoomsPage = () => {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -391,7 +391,7 @@ const RoomsPage = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 md:px-[100px] py-8" id="rooms-list"
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8" id="rooms-list"
       style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}
       >
         {/* NOTE: Old static filter + listing commented out as per request */}

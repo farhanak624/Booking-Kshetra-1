@@ -64,7 +64,7 @@ export default function TermsAndConditionsPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-20 ">
         <div className="absolute inset-0 bg-gradient-to-b from-[#B23092]/10 to-transparent"></div>
-        <div className="container mx-auto px-4 md:px-[100px] relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] relative z-10">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,7 +83,7 @@ export default function TermsAndConditionsPage() {
 
       {/* Terms Content */}
       <section className="py-12 sm:py-16 md:py-20 bg-black">
-        <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] max-w-4xl">
           <div className="space-y-6 sm:space-y-8">
             {sections.map((section, index) => (
               <motion.div

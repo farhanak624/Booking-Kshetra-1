@@ -97,7 +97,7 @@ export default function ContactPage() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px] w-full">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] w-full">
             {/* Hero Title */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -324,7 +324,7 @@ export default function ContactPage() {
 
       {/* FAQ Section */}
       <section className="relative bg-black py-20">
-        <div className="container mx-auto px-4 md:px-[100px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

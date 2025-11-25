@@ -269,7 +269,7 @@ const TrackBookingPage = () => {
 
           {/* Hero Content */}
           <div className="relative z-10 min-h-screen flex flex-col py-12">
-            <div className="container mx-auto px-4 md:px-[100px] w-full flex-1 flex flex-col justify-center py-12">
+            <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] w-full flex-1 flex flex-col justify-center py-12">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ const TrackBookingPage = () => {
               </motion.div>
 
               {/* Search Section */}
-              <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
+              <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] max-w-4xl">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -339,7 +339,7 @@ const TrackBookingPage = () => {
 
         {/* Booking Details Section */}
         <section className="py-16 bg-black">
-          <div className="container mx-auto px-4 md:px-[100px] max-w-4xl">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] max-w-4xl">
 
             {booking && (
               <motion.div

@@ -673,7 +673,7 @@ const ServicesPage = () => {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 md:px-[100px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -717,7 +717,7 @@ const ServicesPage = () => {
       </section>
 
       <div className="bg-black">
-        <div className="container mx-auto px-4 md:px-[100px] py-20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-20">
           {/* Vehicle Rental Section */}
           <div id="vehicle-rental-section">
             {/* Header Section */}
@@ -797,7 +797,7 @@ const ServicesPage = () => {
       {/* Selected Services Summary & Booking */}
       {(selectedServices.length > 0 || selectedVehicles.length > 0) && (
         <div className="bg-black/95 backdrop-blur-md border-t border-white/20 sticky bottom-0 z-20 shadow-2xl">
-          <div className="container mx-auto px-4 md:px-[100px] py-4 sm:py-6">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-4 sm:py-6">
             <div className="max-w-6xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -898,7 +898,7 @@ const ServicesPage = () => {
       {/* Empty State */}
       {selectedServices.length === 0 && selectedVehicles.length === 0 && (
         <div className="bg-black py-20">
-          <div className="container mx-auto px-4 md:px-[100px] bg-black">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] bg-black">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}

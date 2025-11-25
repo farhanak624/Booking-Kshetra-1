@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { Booking, Payment, User, Coupon, CouponUsage, YogaSession, Service } from '../models';
+import { Booking, Payment, User, Coupon, CouponUsage, YogaSession, Service, Agency } from '../models';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { razorpayService } from '../utils/razorpay';
 import { emailService } from '../utils/email';
+import { smsService } from '../utils/sms';
 
 export const createPaymentOrder = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
@@ -270,19 +271,92 @@ export const verifyPayment = async (req: AuthenticatedRequest, res: Response): P
 
     await session.commitTransaction();
 
-    // Send payment confirmation email if payment was successful
+    // Send all email and WhatsApp notifications ONLY after successful payment
     if (payment.status === 'paid') {
       try {
         const user = await User.findById(userId);
+        const guestInfo = user || {
+          name: booking.primaryGuestInfo?.name || 'Guest',
+          email: booking.guestEmail || booking.primaryGuestInfo?.email,
+          phone: booking.primaryGuestInfo?.phone
+        };
+
+        // Send booking confirmation email
+        await emailService.sendBookingConfirmation(booking, user);
+
+        // Send booking confirmation WhatsApp to customer
+        if (guestInfo.phone) {
+          try {
+            await smsService.sendBookingConfirmation(guestInfo.phone, booking, guestInfo, true);
+            console.log(`WhatsApp booking confirmation sent to customer: ${guestInfo.phone}`);
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp booking confirmation:', whatsappError);
+          }
+        }
+
+        // Send admin notification for new booking
+        await emailService.sendAdminBookingNotification(booking, user);
+
+        // Send admin WhatsApp notification if admin phone is configured
+        if (process.env.ADMIN_PHONE) {
+          try {
+            await smsService.sendAdminBookingNotification(process.env.ADMIN_PHONE, booking, user);
+            console.log('WhatsApp admin notification sent');
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp admin notification:', whatsappError);
+          }
+        }
+
+        // Send payment confirmation email
         await emailService.sendPaymentConfirmation(booking, {
           amount: payment.amount,
           transactionId: razorpay_payment_id,
           method: payment.paymentMethod || 'Online',
           id: razorpay_payment_id
         }, user);
-      } catch (emailError) {
-        console.error('Failed to send payment confirmation email:', emailError);
-        // Don't fail the payment if email fails
+
+        // Send payment confirmation WhatsApp to customer
+        if (guestInfo.phone) {
+          try {
+            await smsService.sendPaymentConfirmation(guestInfo.phone, booking, {
+              amount: payment.amount,
+              transactionId: razorpay_payment_id,
+              method: payment.paymentMethod || 'Online',
+              id: razorpay_payment_id
+            }, guestInfo);
+            console.log(`WhatsApp payment confirmation sent to customer: ${guestInfo.phone}`);
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp payment confirmation:', whatsappError);
+          }
+        }
+
+        // Notify agency about transport booking if applicable
+        if (booking.transport && (booking.transport.pickup || booking.transport.drop)) {
+          try {
+            const activeAgency = await Agency.findOne({ isActive: true });
+            if (activeAgency) {
+              // Send email notification
+              await emailService.sendAgencyBookingNotification(booking, activeAgency);
+              console.log(`Email transport booking notification sent to agency: ${activeAgency.name}`);
+
+              // Send WhatsApp notification to agency
+              if (activeAgency.contactPhone) {
+                try {
+                  await smsService.sendAgencyBookingNotification(activeAgency.contactPhone, booking, activeAgency);
+                  console.log(`WhatsApp transport booking notification sent to agency: ${activeAgency.contactPhone}`);
+                } catch (whatsappError) {
+                  console.error('Failed to send WhatsApp agency notification:', whatsappError);
+                }
+              }
+            }
+          } catch (agencyError) {
+            console.error('Failed to notify agency about transport booking:', agencyError);
+            // Don't fail the payment if agency notification fails
+          }
+        }
+      } catch (notificationError) {
+        console.error('Failed to send notifications:', notificationError);
+        // Don't fail the payment if notifications fail
       }
     }
 
@@ -717,19 +791,92 @@ export const verifyPublicPayment = async (req: Request, res: Response): Promise<
 
     await session.commitTransaction();
 
-    // Send payment confirmation email if payment was successful (for public bookings)
+    // Send all email and WhatsApp notifications ONLY after successful payment (for public bookings)
     if (payment.status === 'paid') {
       try {
         // For public bookings, user is null
+        const guestInfo = {
+          name: booking.primaryGuestInfo?.name || 'Guest',
+          email: booking.guestEmail || booking.primaryGuestInfo?.email,
+          phone: booking.primaryGuestInfo?.phone
+        };
+
+        // Send booking confirmation email
+        await emailService.sendBookingConfirmation(booking);
+
+        // Send booking confirmation WhatsApp to customer
+        if (guestInfo.phone) {
+          try {
+            await smsService.sendBookingConfirmation(guestInfo.phone, booking, guestInfo, true);
+            console.log(`WhatsApp booking confirmation sent to customer: ${guestInfo.phone}`);
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp booking confirmation:', whatsappError);
+          }
+        }
+
+        // Send admin notification for new booking
+        await emailService.sendAdminBookingNotification(booking);
+
+        // Send admin WhatsApp notification if admin phone is configured
+        if (process.env.ADMIN_PHONE) {
+          try {
+            await smsService.sendAdminBookingNotification(process.env.ADMIN_PHONE, booking);
+            console.log('WhatsApp admin notification sent');
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp admin notification:', whatsappError);
+          }
+        }
+
+        // Send payment confirmation email
         await emailService.sendPaymentConfirmation(booking, {
           amount: payment.amount,
           transactionId: razorpay_payment_id,
           method: payment.paymentMethod || 'Online',
           id: razorpay_payment_id
         }, null);
-      } catch (emailError) {
-        console.error('Failed to send payment confirmation email:', emailError);
-        // Don't fail the payment if email fails
+
+        // Send payment confirmation WhatsApp to customer
+        if (guestInfo.phone) {
+          try {
+            await smsService.sendPaymentConfirmation(guestInfo.phone, booking, {
+              amount: payment.amount,
+              transactionId: razorpay_payment_id,
+              method: payment.paymentMethod || 'Online',
+              id: razorpay_payment_id
+            }, guestInfo);
+            console.log(`WhatsApp payment confirmation sent to customer: ${guestInfo.phone}`);
+          } catch (whatsappError) {
+            console.error('Failed to send WhatsApp payment confirmation:', whatsappError);
+          }
+        }
+
+        // Notify agency about transport booking if applicable
+        if (booking.transport && (booking.transport.pickup || booking.transport.drop)) {
+          try {
+            const activeAgency = await Agency.findOne({ isActive: true });
+            if (activeAgency) {
+              // Send email notification
+              await emailService.sendAgencyBookingNotification(booking, activeAgency);
+              console.log(`Email transport booking notification sent to agency: ${activeAgency.name}`);
+
+              // Send WhatsApp notification to agency
+              if (activeAgency.contactPhone) {
+                try {
+                  await smsService.sendAgencyBookingNotification(activeAgency.contactPhone, booking, activeAgency);
+                  console.log(`WhatsApp transport booking notification sent to agency: ${activeAgency.contactPhone}`);
+                } catch (whatsappError) {
+                  console.error('Failed to send WhatsApp agency notification:', whatsappError);
+                }
+              }
+            }
+          } catch (agencyError) {
+            console.error('Failed to notify agency about transport booking:', agencyError);
+            // Don't fail the payment if agency notification fails
+          }
+        }
+      } catch (notificationError) {
+        console.error('Failed to send notifications:', notificationError);
+        // Don't fail the payment if notifications fail
       }
     }
 

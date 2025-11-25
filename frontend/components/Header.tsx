@@ -39,7 +39,7 @@ export default function Header() {
     >
 
       {/* Main header */}
-      <div className="container mx-auto px-4 md:px-[100px] py-4">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-4">
         <div className="flex items-center gap-4 lg:gap-3 xl:gap-6 2xl:gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-10 relative flex-shrink-0">
@@ -97,7 +97,7 @@ export default function Header() {
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className={`lg:hidden border-t backdrop-blur-md shadow-lg ${isTransparentPage ? 'bg-purple-900/95 border-purple-700' : 'bg-white/95 border-gray-200'}`}>
-          <nav className="container mx-auto px-4 md:px-[100px] py-4">
+          <nav className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-4">
             <div className="flex flex-col gap-4">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
