@@ -866,8 +866,8 @@ export default function Home() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M6.17785 0L0 6.25L6.17785 12.5L7.07768 11.5897L2.43694 6.89383H20V5.60521H2.43606L7.07768 0.911165L6.17785 0Z"
                     fill="white"
                   />
@@ -913,8 +913,8 @@ export default function Home() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M13.8221 0L20 6.25L13.8221 12.5L12.9223 11.5897L17.5631 6.89383H0V5.60521H17.5639L12.9223 0.911165L13.8221 0Z"
                     fill="white"
                   />

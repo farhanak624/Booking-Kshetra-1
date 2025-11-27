@@ -4,17 +4,18 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { bookingAPI } from '../../../lib/api';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Users, 
-  MapPin, 
-  CreditCard, 
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Users,
+  MapPin,
+  CreditCard,
   CheckCircle,
   AlertCircle,
-  ArrowLeft 
+  ArrowLeft,
+  Hotel
 } from 'lucide-react';
 import Header from '../../../components/Header';
 import PaymentButton from '../../../components/PaymentButton';
@@ -477,23 +478,190 @@ const BookingCompletePageContent = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="text-center py-12"
+      className="py-12"
     >
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm p-8">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-        <p className="text-gray-600 mb-6">
-          Your booking has been confirmed. A confirmation email has been sent to {personalInfo.email}.
-        </p>
-        <div className="text-sm text-gray-500 mb-6">
-          <p>Booking ID: {bookingId}</p>
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+          <p className="text-gray-600 mb-4">
+            Your booking has been confirmed. A confirmation email has been sent to {personalInfo.email}.
+          </p>
+          <div className="inline-block bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+            <p className="text-sm font-medium text-green-800">Booking ID: {bookingId}</p>
+          </div>
         </div>
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          View My Bookings
-        </button>
+
+        {/* Booking Details */}
+        {bookingSummary && (
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            {/* Left Column - Room & Dates */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Hotel className="w-5 h-5" />
+                  Room Details
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="font-medium text-gray-900">Room {bookingSummary.roomDetails.roomNumber}</p>
+                  <p className="text-gray-600">{bookingSummary.roomDetails.roomType}</p>
+                  <p className="text-sm text-gray-500">₹{bookingSummary.roomDetails.pricePerNight.toLocaleString()}/night</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Stay Duration
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Check-in</p>
+                      <p className="font-medium">{bookingSummary.dates.checkIn.toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Check-out</p>
+                      <p className="font-medium">{bookingSummary.dates.checkOut.toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">{bookingSummary.dates.nights} night(s)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Guest Information
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="font-medium text-gray-900 mb-2">Total Guests: {bookingSummary.guests.length}</p>
+                  <div className="space-y-2">
+                    {bookingSummary.guests.map((guest, index) => (
+                      <div key={index} className="text-sm">
+                        <span className="font-medium">{guest.name}</span>
+                        <span className="text-gray-500 ml-2">({guest.age} years old)</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Contact & Pricing */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Contact Information
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{personalInfo.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{personalInfo.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{personalInfo.phone}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Payment Summary
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Room Charges</span>
+                    <span>₹{bookingSummary.pricing.roomCharges.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Food Charges</span>
+                    <span>₹{bookingSummary.pricing.foodCharges.toLocaleString()}</span>
+                  </div>
+                  {bookingSummary.pricing.transportCharges > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span>Transport Charges</span>
+                      <span>₹{bookingSummary.pricing.transportCharges.toLocaleString()}</span>
+                    </div>
+                  )}
+                  {bookingSummary.pricing.serviceCharges > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span>Service Charges</span>
+                      <span>₹{bookingSummary.pricing.serviceCharges.toLocaleString()}</span>
+                    </div>
+                  )}
+                  <hr className="my-2" />
+                  <div className="flex justify-between font-semibold text-lg text-green-600">
+                    <span>Total Paid</span>
+                    <span>₹{bookingSummary.pricing.totalAmount.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Services */}
+              {bookingSummary.services.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Additional Services</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                    {bookingSummary.services.map((service, index) => (
+                      <div key={index} className="flex justify-between text-sm">
+                        <span>{service.name} (x{service.quantity})</span>
+                        <span>₹{service.price.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Important Information */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+          <h4 className="font-semibold text-blue-900 mb-2">Important Information:</h4>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• Please arrive at the property with a valid ID proof</li>
+            <li>• Check-in time: 2:00 PM | Check-out time: 11:00 AM</li>
+            <li>• Save this booking ID for future reference: <strong>{bookingId}</strong></li>
+            <li>• For any changes or queries, contact us at +91-XXXXXXXXXX</li>
+          </ul>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => router.push('/')}
+            className="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Return to Home
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            Print Confirmation
+          </button>
+          <button
+            onClick={() => {
+              const subject = `Booking Confirmation - ${bookingId}`;
+              const body = `Dear Kshetra Retreat Team,\n\nI have a question about my booking:\nBooking ID: ${bookingId}\nEmail: ${personalInfo.email}\n\nPlease let me know.\n\nThank you!`;
+              window.location.href = `mailto:bookings@kshetraretreat.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            }}
+            className="flex-1 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Contact Support
+          </button>
+        </div>
       </div>
     </motion.div>
   );
