@@ -542,19 +542,22 @@ export default function Home() {
 
       {/* Hero Section - Tropical Night Theme */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+        {/* Background Image with Parallax */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ y }}
+        >
           <img
             src="https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710"
             alt="Kshetra Retreat Hero"
-            className="w-full h-full object-cover"
+            className="w-full h-[120%] object-cover"
           />
           <div className="absolute inset-0 bg-black/20"></div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:pt-10 lg:px-0 xl:px-[100px] 2xl:px-[120px]">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-[100px] 2xl:px-[120px] pt-4 sm:pt-6 md:pt-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -562,23 +565,23 @@ export default function Home() {
               className="max-w-3xl"
             >
               {/* Main Heading */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
-                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 sm:mb-8 leading-tight">
+                <span className="block uppercase tracking-wider mb-2 text-sm sm:text-base md:text-lg font-annie-telescope">
                   BOOK ROOMS & SERVICES
                 </span>
-                <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4">
+                <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-water-brush italic mt-2 sm:mt-4">
                   All In <span className="text-[#B23092]">One</span> Place
                 </span>
               </h1>
 
               {/* Description */}
-              <p className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-annie-telescope">
+              <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 md:mb-12 max-w-xl leading-relaxed font-annie-telescope">
                 Find the perfect stay and trusted services in seconds. Browse
                 rooms, book instantly, and get reliable help at your fingertips.
               </p>
 
               {/* CTA Button */}
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -588,7 +591,7 @@ export default function Home() {
                     "_blank"
                   )
                 }
-                className="bg-[#B23092] hover:bg-[#B23092]/80 text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist"
+                className="bg-[#B23092] hover:bg-[#B23092]/80 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
               >
                 Start Your Booking
               </motion.button>
@@ -598,7 +601,7 @@ export default function Home() {
                 onClick={() =>
                   router.push("/track-booking")
                 }
-                className="bg-transparent border border-[#B23092]  text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist"
+                className="bg-transparent border border-[#B23092] text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
               >
                 Track Your Booking
               </motion.button>
