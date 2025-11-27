@@ -39,13 +39,13 @@ export default function Header() {
     >
 
       {/* Main header */}
-      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-4">
-        <div className="flex items-center gap-4 lg:gap-3 xl:gap-6 2xl:gap-8">
+      <div className="container mx-auto px-4 sm:px-6 md:px-2 lg:px-4 xl:px-[100px] 2xl:px-[120px] py-4">
+        <div className="flex items-center gap-4 lg:gap-5 xl:gap-6 2xl:gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-10 relative flex-shrink-0">
-            <img 
-              src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"} 
-              className="w-20 md:w-24 lg:w-20 xl:w-28 2xl:w-32 h-auto transition-all max-w-[96px] lg:max-w-[70px] xl:max-w-[112px] 2xl:max-w-[128px]" 
+            <img
+              src={"https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"}
+              className="w-28 md:w-36 lg:w-64 xl:w-72 2xl:w-80 h-auto transition-all"
             />
           </Link>
 
@@ -73,10 +73,10 @@ export default function Header() {
 
           {/* Pinkrooms Section */}
           <div className="hidden lg:flex items-center gap-2 cursor-pointer flex-shrink-0">
-            <img 
-              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png" 
+            <img
+              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png"
               alt="Kshetra Pinkrooms"
-              className="w-32 lg:w-32 xl:w-40 2xl:w-40 h-auto object-contain max-w-[128px] lg:max-w-[120px] xl:max-w-[160px] 2xl:max-w-[160px]"
+              className="w-32 md:w-36 lg:w-56 xl:w-64 2xl:w-72 h-auto object-contain"
             />
           </div>
 

@@ -554,7 +554,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
+          <div className="container mx-auto px-4 sm:px-6 md:pt-10 lg:px-0 xl:px-[100px] 2xl:px-[120px]">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
