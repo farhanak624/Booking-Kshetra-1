@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import {
   Clock,
   CheckCircle,
@@ -32,6 +32,8 @@ interface Service {
 
 const AdventurePage = () => {
   const router = useRouter()
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const [services, setServices] = useState<Service[]>([])
   const [selectedServices, setSelectedServices] = useState<{ _id: string; name: string; price: number; priceUnit: string; category: string; quantity: number }[]>([])
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<Service | null>(null)
@@ -239,17 +241,18 @@ const AdventurePage = () => {
 
       {/* Hero */}
       <section className="relative overflow-hidden min-h-screen ">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-        
-        <img
+        {/* Background Image with Parallax */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ y }}
+        >
+          <img
             src={'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/adventure.jpg?updatedAt=1763305822583'}
             alt={'Adventure Sports'}
-            className="w-full h-full object-cover"
+            className="w-full h-[120%] object-cover"
           />
-
           <div className="absolute inset-0 bg-black/40" />
-        </div>
+        </motion.div>
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
             <div className="max-w-3xl">

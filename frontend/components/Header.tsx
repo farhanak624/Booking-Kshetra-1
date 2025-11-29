@@ -35,6 +35,7 @@ export default function Header() {
   const isRoomsPage = pathname === "/rooms";
   const isAdventurePage = pathname === "/adventure";
   const isTermsPage = pathname === "/terms";
+  const isPinkroomsPage = pathname === "/pinkrooms";
   const isTransparentPage =
     isHomePage ||
     isYogaPage ||
@@ -48,7 +49,8 @@ export default function Header() {
     isContactPage ||
     isRoomsPage ||
     isAdventurePage ||
-    isTermsPage;
+    isTermsPage ||
+    isPinkroomsPage;
   return (
     <header
       className={`transition-all duration-300 ${
@@ -96,13 +98,16 @@ export default function Header() {
               })}
 
               {/* Pinkrooms Section - moved inside nav */}
-              <div className="flex items-center gap-2 cursor-pointer flex-shrink-0 ml-4">
+              <Link
+                href="/pinkrooms"
+                className="flex items-center gap-2 cursor-pointer flex-shrink-0 ml-4 hover:opacity-80 transition-opacity"
+              >
                 <img
                   src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png"
                   alt="Kshetra Pinkrooms"
                   className="w-32 md:w-36 lg:w-56 xl:w-64 2xl:w-72 h-auto object-contain"
                 />
-              </div>
+              </Link>
             </div>
           </nav>
 
@@ -158,13 +163,17 @@ export default function Header() {
               })}
 
               {/* Pinkrooms Section for Mobile */}
-              <div className="flex items-center justify-center pt-4 border-t border-gray-300/20">
+              <Link
+                href="/pinkrooms"
+                className="flex items-center justify-center pt-4 border-t border-gray-300/20 hover:opacity-80 transition-opacity"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <img
                   src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/pinkroom.png"
                   alt="Kshetra Pinkrooms"
                   className="w-40 h-auto object-contain cursor-pointer"
                 />
-              </div>
+              </Link>
             </div>
           </nav>
         </div>

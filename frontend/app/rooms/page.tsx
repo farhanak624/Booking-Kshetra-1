@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Users,
   Wifi,
@@ -131,6 +131,8 @@ const staticRooms: Room[] = [
 
 const RoomsPage = () => {
   const router = useRouter();
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const [filters, setFilters] = useState({
     roomType: "all",
     priceRange: "all",
@@ -339,15 +341,18 @@ const RoomsPage = () => {
 
       {/* Hero Section - Rooms */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+        {/* Background Image with Parallax */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ y }}
+        >
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/hotel.png?updatedAt=1763030443251"
             alt="Kshetra Rooms"
-            className="w-full h-full object-cover"
+            className="w-full h-[120%] object-cover"
           />
           <div className="absolute inset-0 bg-black/40" />
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
