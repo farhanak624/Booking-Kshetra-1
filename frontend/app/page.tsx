@@ -566,7 +566,7 @@ export default function Home() {
             >
               {/* Main Heading */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 sm:mb-8 leading-tight">
-                <span className="block uppercase tracking-wider mb-2 text-sm sm:text-base md:text-lg font-annie-telescope">
+                <span className="block uppercase tracking-wider mb-2 text-base sm:text-lg md:text-xl lg:text-4xl font-annie-telescope">
                   BOOK ROOMS & SERVICES
                 </span>
                 <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-water-brush italic mt-2 sm:mt-4">

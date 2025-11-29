@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Users,
   Clock,
@@ -70,6 +70,8 @@ interface Teacher {
 
 export default function YogaPage() {
   const router = useRouter();
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -376,15 +378,18 @@ export default function YogaPage() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+        {/* Background Image with Parallax */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ y }}
+        >
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png"
             alt="Yoga & Wellness at Kshetra"
-            className="w-full h-full object-cover"
+            className="w-full h-[120%] object-cover"
           />
           <div className="absolute inset-0 bg-black/20"></div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
@@ -396,7 +401,7 @@ export default function YogaPage() {
               className="max-w-3xl"
             >
               {/* Main Heading */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight mt-12">
                 <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
                   WE OFFER MORE THAN YOGA
                 </span>

@@ -661,15 +661,18 @@ const ServicesPage = () => {
 
       {/* Hero Section with Background */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+        {/* Background Image with Parallax */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ y }}
+        >
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/rentbike.png"
             alt="Rent a Vehicle Hero"
-            className="w-full h-full object-cover"
+            className="w-full h-[120%] object-cover"
           />
           <div className="absolute inset-0 bg-black/20"></div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
