@@ -8,6 +8,7 @@ require("dotenv").config();
 
 import { connectDatabase } from "./config/database";
 import { errorHandler, notFound } from "./middleware/errorHandler";
+import { cleanupOldLicensePhotos } from "./jobs/cleanupLicensePhotos";
 
 // Routes
 import authRoutes from "./routes/authRoutes";
@@ -237,6 +238,37 @@ const startServer = async (): Promise<void> => {
       console.log(
         `💻 Frontend URL: ${process.env.PORT || "http://localhost:3000"}`
       );
+
+      // Start scheduled jobs
+      // Run cleanup job daily at 2 AM
+      const runCleanupJob = () => {
+        const now = new Date();
+        const twoAM = new Date();
+        twoAM.setHours(2, 0, 0, 0);
+        
+        // If it's already past 2 AM today, schedule for tomorrow
+        if (now.getTime() > twoAM.getTime()) {
+          twoAM.setDate(twoAM.getDate() + 1);
+        }
+        
+        const msUntilTwoAM = twoAM.getTime() - now.getTime();
+        
+        setTimeout(() => {
+          cleanupOldLicensePhotos();
+          // Run every 24 hours after first run
+          setInterval(cleanupOldLicensePhotos, 24 * 60 * 60 * 1000);
+        }, msUntilTwoAM);
+      };
+
+      // Run cleanup job on startup (for development/testing)
+      // In production, it will run daily at 2 AM
+      if (process.env.NODE_ENV === 'development') {
+        // Run immediately in development, then schedule daily
+        cleanupOldLicensePhotos();
+        setInterval(cleanupOldLicensePhotos, 24 * 60 * 60 * 1000);
+      } else {
+        runCleanupJob();
+      }
     });
   } catch (error) {
     console.error("Failed to start server:", error);

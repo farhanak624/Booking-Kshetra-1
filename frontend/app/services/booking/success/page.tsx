@@ -36,7 +36,8 @@ function ServicesBookingSuccessPageContent() {
   const fetchBookingDetails = async (id: string) => {
     try {
       setLoading(true)
-      const response = await bookingAPI.getBookingById(id)
+      // Use public booking endpoint since this is a public booking (no auth required)
+      const response = await bookingAPI.getPublicBookingById(id)
       console.log('Booking details:', response.data)
       if (response.data?.success) {
         setBookingDetails(response.data.data)

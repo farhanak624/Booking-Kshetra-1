@@ -6,6 +6,7 @@ import { pricingCalculator } from '../utils/pricing';
 import { bookingValidator } from '../utils/bookingValidation';
 import { emailService } from '../utils/email';
 import { ReceiptService } from '../services/receiptService';
+import { uploadImageToImageKit, IMAGE_FOLDERS, IMAGE_TRANSFORMATIONS } from '../utils/imagekitUpload';
 
 // Helper function to notify active agency about transport bookings
 const notifyActiveAgencyAboutTransport = async (booking: any) => {
@@ -972,6 +973,159 @@ export const getBookingReceipt = async (req: any, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: error.message || 'Failed to generate receipt'
+    });
+  }
+};
+
+// Upload license photo for vehicle rental booking
+export const uploadLicensePhoto = async (req: any, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const file = req.file;
+
+    if (!file) {
+      res.status(400).json({
+        success: false,
+        message: 'No license photo provided'
+      });
+      return;
+    }
+
+    // Verify booking exists and populate services
+    const booking = await Booking.findById(id)
+      .populate('selectedServices.serviceId', 'name category price description');
+    
+    if (!booking) {
+      res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+      return;
+    }
+
+    // Check if booking is a vehicle rental using multiple methods
+    // Method 1: Check if serviceId is populated and has vehicle_rental category
+    let isVehicleRental = booking.selectedServices?.some((service: any) => {
+      if (typeof service.serviceId === 'object' && service.serviceId !== null) {
+        return service.serviceId.category === 'vehicle_rental';
+      }
+      return false;
+    });
+
+    // Method 2: If serviceId is not populated (might be vehicle ID from vehicle rental), check service details/name
+    if (!isVehicleRental && booking.selectedServices && booking.selectedServices.length > 0) {
+      // Check if any service details or name contains vehicle-related keywords
+      const vehicleKeywords = ['vehicle', 'bike', 'car', 'scooter', 'motorcycle', 'rental', '2-wheeler', '4-wheeler'];
+      isVehicleRental = booking.selectedServices.some((service: any) => {
+        const details = (service.details || '').toLowerCase();
+        const serviceName = (typeof service.serviceId === 'object' && service.serviceId?.name) 
+          ? service.serviceId.name.toLowerCase() 
+          : '';
+        const combined = (details + ' ' + serviceName).toLowerCase();
+        return vehicleKeywords.some(keyword => combined.includes(keyword));
+      });
+    }
+
+    // Method 3: Check booking special requests for vehicle rental indicators
+    if (!isVehicleRental && booking.specialRequests) {
+      const requestText = booking.specialRequests.toLowerCase();
+      const vehicleKeywords = ['vehicle', 'bike', 'car', 'scooter', 'motorcycle', 'rental', '2-wheeler', '4-wheeler'];
+      isVehicleRental = vehicleKeywords.some(keyword => requestText.includes(keyword));
+    }
+
+    if (!isVehicleRental) {
+      res.status(400).json({
+        success: false,
+        message: 'License photo can only be uploaded for vehicle rental bookings'
+      });
+      return;
+    }
+
+    // Upload license photo to ImageKit
+    const licensePhotoUrl = await uploadImageToImageKit(file.buffer, {
+      folder: `${IMAGE_FOLDERS.DRIVERS.LICENSES}/customer-licenses`,
+      fileName: `license_${booking._id}_${Date.now()}`,
+      transformation: IMAGE_TRANSFORMATIONS.LICENSE_DOCUMENT
+    });
+
+    // Delete old license photo if exists
+    if (booking.licensePhoto) {
+      try {
+        const { deleteImageFromImageKit } = await import('../utils/imagekitUpload');
+        await deleteImageFromImageKit(booking.licensePhoto);
+      } catch (error) {
+        console.error('Error deleting old license photo:', error);
+        // Continue even if deletion fails
+      }
+    }
+
+    // Update booking with license photo
+    booking.licensePhoto = licensePhotoUrl;
+    booking.licensePhotoUploadedAt = new Date();
+    booking.licensePhotoVerified = false; // Admin needs to verify
+    await booking.save();
+
+    res.json({
+      success: true,
+      message: 'License photo uploaded successfully',
+      data: {
+        licensePhoto: licensePhotoUrl
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error uploading license photo:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to upload license photo'
+    });
+  }
+};
+
+// Verify license photo (Admin only)
+export const verifyLicensePhoto = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { verified } = req.body;
+
+    // Verify booking exists
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+      return;
+    }
+
+    if (!booking.licensePhoto) {
+      res.status(400).json({
+        success: false,
+        message: 'No license photo found for this booking'
+      });
+      return;
+    }
+
+    // Update verification status
+    booking.licensePhotoVerified = verified === true;
+    await booking.save();
+
+    res.json({
+      success: true,
+      message: `License photo ${verified ? 'verified' : 'rejected'} successfully`,
+      data: {
+        booking: {
+          _id: booking._id,
+          licensePhotoVerified: booking.licensePhotoVerified
+        }
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error verifying license photo:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to verify license photo'
     });
   }
 };

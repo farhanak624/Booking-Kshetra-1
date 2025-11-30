@@ -26,6 +26,7 @@ import Header from '../../../../components/Header'
 import { bookingAPI } from '../../../../lib/api'
 import { initiatePayment } from '../../../../utils/razorpay'
 import { validateCoupon } from '../../../../lib/api/coupons'
+import LicensePhotoUpload from '../../../../components/LicensePhotoUpload'
 
 // Types for services booking
 interface Service {
@@ -43,6 +44,15 @@ interface Service {
 
 interface SelectedService extends Service {
   quantity: number
+  selectedOptions?: {
+    pickupLocation?: string
+    dropLocation?: string
+    rentalDays?: number
+    startDate?: string
+    endDate?: string
+    withDriver?: boolean
+    sessionLevel?: 'beginner' | 'intermediate' | 'advanced'
+  }
 }
 
 interface FormData {
@@ -79,6 +89,9 @@ export default function ServicesBookingPaymentPage() {
   const [couponError, setCouponError] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
   const [validatingCoupon, setValidatingCoupon] = useState(false)
+  const [licensePhotoUrl, setLicensePhotoUrl] = useState<string | null>(null)
+  const [licensePhotoError, setLicensePhotoError] = useState<string>('')
+  const [uploadingLicense, setUploadingLicense] = useState(false)
 
   useEffect(() => {
     // Get complete booking data from localStorage
@@ -207,11 +220,42 @@ export default function ServicesBookingPaymentPage() {
     try {
       console.log('🚀 Creating services booking...')
 
+      // Determine checkIn and checkOut dates
+      // For vehicle rentals, use startDate and endDate from selectedOptions
+      // For adventure services, use bookingData.date
+      let checkInDate: string;
+      let checkOutDate: string;
+
+      const vehicleRentalService = bookingData.services.find(s => s.category === 'vehicle_rental');
+      if (vehicleRentalService?.selectedOptions?.startDate && vehicleRentalService?.selectedOptions?.endDate) {
+        // Use vehicle rental dates
+        const startDate = new Date(vehicleRentalService.selectedOptions.startDate);
+        const endDate = new Date(vehicleRentalService.selectedOptions.endDate);
+        
+        // Validate dates
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          throw new Error('Invalid vehicle rental dates');
+        }
+        
+        checkInDate = startDate.toISOString();
+        checkOutDate = endDate.toISOString();
+      } else if (bookingData.date) {
+        // Use service date for adventure bookings
+        const serviceDate = new Date(bookingData.date);
+        if (isNaN(serviceDate.getTime())) {
+          throw new Error('Invalid service date');
+        }
+        checkInDate = serviceDate.toISOString();
+        checkOutDate = new Date(serviceDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
+      } else {
+        throw new Error('No valid date found for booking');
+      }
+
       // Create booking payload
       const bookingPayload = {
         roomId: '000000000000000000000000', // Dummy room ID for services
-        checkIn: new Date(bookingData.date).toISOString(),
-        checkOut: new Date(new Date(bookingData.date).getTime() + 24 * 60 * 60 * 1000).toISOString(),
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
         primaryGuestInfo: {
           name: bookingData.user.name,
           email: bookingData.user.email,
@@ -244,9 +288,19 @@ export default function ServicesBookingPaymentPage() {
           serviceId: service._id,
           quantity: service.quantity,
           totalPrice: service.price * service.quantity,
-          details: service.description
+          details: service.category === 'vehicle_rental' 
+            ? `Vehicle Rental: ${service.name} - ${service.description}`
+            : service.description,
+          ...(service.category === 'vehicle_rental' && service.selectedOptions && {
+            selectedOptions: service.selectedOptions
+          })
         })),
-        specialRequests: `Services: ${bookingData.services.map(s => s.name).join(', ')}. ${bookingData.user.specialRequests}`,
+        specialRequests: `Services: ${bookingData.services.map(s => {
+          if (s.category === 'vehicle_rental') {
+            return `Vehicle Rental: ${s.name}`;
+          }
+          return s.name;
+        }).join(', ')}. ${bookingData.user.specialRequests}`,
         totalAmount: bookingData.totalAmount,
         couponCode: appliedCoupon ? couponCode : undefined,
         paymentStatus: 'pending',
@@ -286,8 +340,42 @@ export default function ServicesBookingPaymentPage() {
     setLoading(false)
   }
 
+  const handleLicensePhotoUpload = async (file: File) => {
+    // This will be called after booking is created
+    return file; // Return file to store for later upload
+  };
+
+  const uploadLicensePhotoToBooking = async (bookingId: string, file: File) => {
+    try {
+      setUploadingLicense(true);
+      setLicensePhotoError('');
+      const response = await bookingAPI.uploadLicensePhoto(bookingId, file);
+      if (response.data?.success) {
+        setLicensePhotoUrl(response.data.data.licensePhoto);
+        return true;
+      } else {
+        throw new Error(response.data?.message || 'Failed to upload license photo');
+      }
+    } catch (error: any) {
+      setLicensePhotoError(error.response?.data?.message || error.message || 'Failed to upload license photo');
+      throw error;
+    } finally {
+      setUploadingLicense(false);
+    }
+  };
+
   const handlePayment = async () => {
     if (!bookingData) return
+
+    // Check if vehicle rental and license photo is required
+    // Determine if this is a vehicle rental booking by checking service categories
+    const hasVehicleRental = bookingData.services.some(s => s.category === 'vehicle_rental');
+    const pendingLicenseFile = (window as any).pendingLicenseFile as File | null;
+    
+    if (hasVehicleRental && !licensePhotoUrl && !pendingLicenseFile && !uploadingLicense) {
+      setLicensePhotoError('Please upload your driving license photo before proceeding');
+      return;
+    }
 
     setLoading(true)
 
@@ -297,7 +385,22 @@ export default function ServicesBookingPaymentPage() {
       // Create booking first
       const createdBookingId = await createServicesBooking()
 
-      console.log('✅ Services booking created, now opening Razorpay...')
+      console.log('✅ Services booking created, now uploading license photo if needed...')
+
+      // Upload license photo if vehicle rental (upload the stored file)
+      const pendingLicenseFile = (window as any).pendingLicenseFile as File | null;
+      const hasVehicleRental = bookingData.services.some(s => s.category === 'vehicle_rental');
+      if (hasVehicleRental && pendingLicenseFile) {
+        try {
+          await uploadLicensePhotoToBooking(createdBookingId, pendingLicenseFile);
+          (window as any).pendingLicenseFile = null; // Clear after successful upload
+        } catch (error) {
+          console.error('Failed to upload license photo, but continuing with payment:', error);
+          // Continue with payment even if license upload fails
+        }
+      }
+
+      console.log('✅ Now opening Razorpay...')
 
       // Immediately trigger payment after booking creation using the proper utils
       await initiatePayment({
@@ -433,14 +536,67 @@ export default function ServicesBookingPaymentPage() {
               <h3 className="text-2xl font-bold text-white mb-8 font-annie-telescope">Booking Summary</h3>
 
               <div className="space-y-6">
-                {/* Service Date */}
+                {/* Service Date / Rental Period */}
                 <div className="bg-white/10 rounded-2xl p-6 text-center">
                   <div className="flex items-center justify-center gap-2 text-[#B23092] mb-2">
                     <Calendar className="w-5 h-5" />
-                    <span className="font-medium">Service Date</span>
+                    <span className="font-medium">
+                      {isAdventureBooking ? 'Service Date' : 'Rental Period'}
+                    </span>
                   </div>
                   <div className="text-xl font-bold text-white">
-                    {formatDate(bookingData.date)}
+                    {isAdventureBooking ? (
+                      bookingData.date && bookingData.date !== 'Invalid Date' ? formatDate(bookingData.date) : 'Date not selected'
+                    ) : (
+                      (() => {
+                        // Get vehicle rental dates from services
+                        const vehicleServices = bookingData.services.filter(s => s.category === 'vehicle_rental');
+                        if (vehicleServices.length > 0) {
+                          // Find the first vehicle with valid dates
+                          const vehicleWithDates = vehicleServices.find(
+                            v => v.selectedOptions?.startDate && v.selectedOptions?.endDate
+                          );
+                          
+                          if (vehicleWithDates?.selectedOptions) {
+                            const startDate = new Date(vehicleWithDates.selectedOptions.startDate);
+                            const endDate = new Date(vehicleWithDates.selectedOptions.endDate);
+                            
+                            // Validate dates
+                            if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                              const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
+                              
+                              return (
+                                <div>
+                                  <div className="text-lg">
+                                    {startDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {endDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </div>
+                                  <div className="text-base text-white/70 mt-1">
+                                    {days} {days === 1 ? 'Day' : 'Days'}
+                                  </div>
+                                </div>
+                              );
+                            }
+                          }
+                          
+                          // Fallback: try to get from duration field if dates not in selectedOptions
+                          const firstVehicle = vehicleServices[0];
+                          if (firstVehicle.duration) {
+                            const days = firstVehicle.selectedOptions?.rentalDays || 1;
+                            return (
+                              <div>
+                                <div className="text-lg">{firstVehicle.duration}</div>
+                                <div className="text-base text-white/70 mt-1">
+                                  {days} {days === 1 ? 'Day' : 'Days'}
+                                </div>
+                              </div>
+                            );
+                          }
+                        }
+                        
+                        // Final fallback
+                        return 'Date range not available';
+                      })()
+                    )}
                   </div>
                 </div>
 
@@ -598,6 +754,28 @@ export default function ServicesBookingPaymentPage() {
               </div>
 
               <div className="space-y-8">
+                {/* License Photo Upload for Vehicle Rental */}
+                {bookingData && bookingData.services.some(s => s.category === 'vehicle_rental') && (
+                  <div>
+                    <LicensePhotoUpload
+                      onUpload={async (file: File) => {
+                        // Store file - will upload after booking is created
+                        setLicensePhotoError('');
+                        (window as any).pendingLicenseFile = file;
+                        setLicensePhotoUrl(URL.createObjectURL(file)); // Show preview
+                      }}
+                      onRemove={() => {
+                        setLicensePhotoUrl(null);
+                        (window as any).pendingLicenseFile = null;
+                        setLicensePhotoError('');
+                      }}
+                      currentImageUrl={licensePhotoUrl || undefined}
+                      disabled={uploadingLicense || loading}
+                      error={licensePhotoError}
+                    />
+                  </div>
+                )}
+
                 {/* Payment Method */}
                 <div>
                   <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">

@@ -96,6 +96,11 @@ export interface IBooking extends Document {
   specialRequests?: string;
   notes?: string;
 
+  // License photo for vehicle rental bookings
+  licensePhoto?: string;
+  licensePhotoUploadedAt?: Date;
+  licensePhotoVerified?: boolean;
+
   // Booking type
   bookingType?: 'room' | 'yoga' | 'transport' | 'adventure' | 'service' | 'package';
 
@@ -477,6 +482,19 @@ const bookingSchema = new Schema<IBooking>(
       type: String,
       trim: true,
       maxlength: [1000, 'Notes cannot be more than 1000 characters']
+    },
+
+    // License photo for vehicle rental bookings
+    licensePhoto: {
+      type: String,
+      trim: true
+    },
+    licensePhotoUploadedAt: {
+      type: Date
+    },
+    licensePhotoVerified: {
+      type: Boolean,
+      default: false
     },
 
     // Booking type

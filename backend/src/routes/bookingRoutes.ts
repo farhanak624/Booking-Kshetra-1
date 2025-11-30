@@ -8,10 +8,13 @@ import {
   getBookingById,
   getPublicBookingById,
   cancelBooking,
-  getBookingReceipt
+  getBookingReceipt,
+  uploadLicensePhoto,
+  verifyLicensePhoto
 } from '../controllers/bookingController';
 import { authenticate, authorize } from '../middleware/auth';
 import { validate } from '../middleware/validation';
+import { uploadSingle } from '../middleware/upload';
 
 const router = express.Router();
 
@@ -208,6 +211,23 @@ router.delete(
   authenticate,
   validate(bookingIdValidation),
   cancelBooking
+);
+
+// License photo upload (public - no auth required for customer to upload)
+router.post(
+  '/:id/upload-license',
+  uploadSingle,
+  validate(bookingIdValidation),
+  uploadLicensePhoto
+);
+
+// Verify license photo (admin only)
+router.patch(
+  '/:id/verify-license',
+  authenticate,
+  authorize('admin'),
+  validate(bookingIdValidation),
+  verifyLicensePhoto
 );
 
 export default router;
