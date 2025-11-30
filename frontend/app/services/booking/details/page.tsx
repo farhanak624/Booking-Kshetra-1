@@ -395,9 +395,12 @@ export default function ServicesBookingDetailsPage() {
                             (v: any) => v.startDate && v.endDate
                           );
                           
-                          if (vehicleWithDates) {
-                            const startDate = new Date(vehicleWithDates.startDate);
-                            const endDate = new Date(vehicleWithDates.endDate);
+                          const startDateStr = vehicleWithDates?.startDate;
+                          const endDateStr = vehicleWithDates?.endDate;
+                          
+                          if (startDateStr && endDateStr) {
+                            const startDate = new Date(startDateStr);
+                            const endDate = new Date(endDateStr);
                             
                             // Validate dates
                             if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
@@ -425,9 +428,12 @@ export default function ServicesBookingDetailsPage() {
                             v => v.selectedOptions?.startDate && v.selectedOptions?.endDate
                           );
                           
-                          if (vehicleWithDates?.selectedOptions) {
-                            const startDate = new Date(vehicleWithDates.selectedOptions.startDate);
-                            const endDate = new Date(vehicleWithDates.selectedOptions.endDate);
+                          const startDateStr = vehicleWithDates?.selectedOptions?.startDate;
+                          const endDateStr = vehicleWithDates?.selectedOptions?.endDate;
+                          
+                          if (startDateStr && endDateStr) {
+                            const startDate = new Date(startDateStr);
+                            const endDate = new Date(endDateStr);
                             
                             // Validate dates
                             if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {

@@ -557,9 +557,12 @@ export default function ServicesBookingPaymentPage() {
                             v => v.selectedOptions?.startDate && v.selectedOptions?.endDate
                           );
                           
-                          if (vehicleWithDates?.selectedOptions) {
-                            const startDate = new Date(vehicleWithDates.selectedOptions.startDate);
-                            const endDate = new Date(vehicleWithDates.selectedOptions.endDate);
+                          const startDateStr = vehicleWithDates?.selectedOptions?.startDate;
+                          const endDateStr = vehicleWithDates?.selectedOptions?.endDate;
+                          
+                          if (startDateStr && endDateStr) {
+                            const startDate = new Date(startDateStr);
+                            const endDate = new Date(endDateStr);
                             
                             // Validate dates
                             if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
