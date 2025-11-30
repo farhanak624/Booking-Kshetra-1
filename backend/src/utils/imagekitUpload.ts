@@ -70,31 +70,56 @@ export const uploadMultipleImages = async (
 
 export const deleteImageFromImageKit = async (imageUrl: string): Promise<void> => {
   try {
-    // Extract file ID from ImageKit URL
-    const fileId = extractFileIdFromUrl(imageUrl);
-    if (fileId) {
-      await imagekit.deleteFile(fileId);
+    // ImageKit deleteFile requires fileId, not URL
+    // We need to find the file by URL first to get its fileId
+    try {
+      // Extract the file path from URL
+      const urlParts = imageUrl.split('/');
+      const imagekitIndex = urlParts.findIndex(part => part.includes('imagekit.io'));
+      if (imagekitIndex === -1) {
+        console.error('Invalid ImageKit URL:', imageUrl);
+        return;
+      }
+
+      // Get the file path (everything after imagekit.io/your_id/)
+      const filePath = urlParts.slice(imagekitIndex + 2).join('/');
+      
+      // List files to find the fileId by URL
+      const files = await imagekit.listFiles({
+        path: filePath.split('/').slice(0, -1).join('/'), // Get folder path
+        name: filePath.split('/').pop(), // Get filename
+        limit: 1
+      });
+
+      if (files && files.length > 0) {
+        const file = files[0];
+        // Check if it's a FileObject (not FolderObject) by checking for fileId property
+        if ('fileId' in file && 'url' in file) {
+          if (file.url === imageUrl || ('thumbnailUrl' in file && file.thumbnailUrl === imageUrl)) {
+            await imagekit.deleteFile(file.fileId);
+            console.log(`✅ Successfully deleted ImageKit file: ${file.fileId}`);
+          }
+        }
+      } else {
+        // If listing fails, try to extract fileId directly from URL if it's in the format
+        // This is a fallback approach
+        console.warn(`Could not find file by URL for deletion: ${imageUrl}`);
+      }
+    } catch (listError) {
+      console.error('Error finding file for deletion:', listError);
+      // Try direct deletion using URL path as fileId (some ImageKit setups allow this)
+      try {
+        const urlPath = imageUrl.split('imagekit.io/')[1]?.split('?')[0];
+        if (urlPath) {
+          await imagekit.deleteFile(urlPath);
+        }
+      } catch (directDeleteError) {
+        console.error('Error in direct deletion fallback:', directDeleteError);
+      }
     }
   } catch (error) {
     console.error('Error deleting image from ImageKit:', error);
   }
-};
-
-const extractFileIdFromUrl = (url: string): string | null => {
-  // ImageKit URL pattern: https://ik.imagekit.io/your_imagekit_id/path/filename.ext
-  // We need to extract the path after the imagekit ID to get the fileId
-  try {
-    const urlParts = url.split('/');
-    const imagekitIndex = urlParts.findIndex(part => part.includes('imagekit.io'));
-    if (imagekitIndex !== -1 && urlParts.length > imagekitIndex + 2) {
-      // Join the path parts after the imagekit ID
-      const filePath = urlParts.slice(imagekitIndex + 2).join('/');
-      return filePath;
-    }
-  } catch (error) {
-    console.error('Error extracting file ID from URL:', error);
-  }
-  return null;
 };
 
 // Predefined folder constants

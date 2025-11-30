@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { adminAPI, roomAPI, serviceAPI } from "../../../lib/api";
+import { adminAPI, roomAPI, serviceAPI, bookingAPI } from "../../../lib/api";
 import {
   Calendar,
   Users,
@@ -17,6 +17,12 @@ import {
   Mail,
   Phone,
   User,
+  CheckCircle,
+  XCircle,
+  Image as ImageIcon,
+  ShieldCheck,
+  ShieldX,
+  Loader,
 } from "lucide-react";
 
 interface Booking {
@@ -78,6 +84,9 @@ interface Booking {
     | string;
   includeFood: boolean;
   includeBreakfast: boolean;
+  licensePhoto?: string;
+  licensePhotoUploadedAt?: string;
+  licensePhotoVerified?: boolean;
 }
 
 interface Room {
@@ -118,6 +127,8 @@ const AdminBookingsPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [verifyingLicense, setVerifyingLicense] = useState(false);
+  const [fetchingBookingDetails, setFetchingBookingDetails] = useState(false);
 
   // Create booking form data
   const [createForm, setCreateForm] = useState({
@@ -249,6 +260,52 @@ const AdminBookingsPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleVerifyLicensePhoto = async (bookingId: string, verified: boolean) => {
+    try {
+      setVerifyingLicense(true);
+      const response = await bookingAPI.verifyLicensePhoto(bookingId, verified);
+      if (response.data?.success) {
+        // Update the booking in the list
+        setBookings(prev => prev.map(booking => 
+          booking._id === bookingId 
+            ? { ...booking, licensePhotoVerified: verified }
+            : booking
+        ));
+        // Update selected booking if it's the same one
+        if (selectedBooking && selectedBooking._id === bookingId) {
+          setSelectedBooking({ ...selectedBooking, licensePhotoVerified: verified });
+        }
+      } else {
+        setError(response.data?.message || 'Failed to verify license photo');
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to verify license photo');
+      console.error('Verify license photo error:', err);
+    } finally {
+      setVerifyingLicense(false);
+    }
+  };
+
+  const isVehicleRentalBooking = (booking: Booking): boolean => {
+    if (!booking.selectedServices || booking.selectedServices.length === 0) {
+      return false;
+    }
+    
+    // Check if any service has vehicle_rental category
+    return booking.selectedServices.some((service) => {
+      // If serviceId is an object with category
+      if (typeof service.serviceId === 'object' && service.serviceId !== null) {
+        return service.serviceId.category === 'vehicle_rental';
+      }
+      // Also check service details or special requests for vehicle rental keywords
+      if (booking.specialRequests) {
+        const lowerRequest = booking.specialRequests.toLowerCase();
+        return lowerRequest.includes('vehicle rental') || lowerRequest.includes('vehicle_rental');
+      }
+      return false;
+    });
   };
 
   const resetCreateForm = () => {
@@ -795,12 +852,56 @@ const AdminBookingsPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="flex items-center justify-center space-x-2">
+                        {/* License Photo Indicator for Vehicle Rentals */}
+                        {isVehicleRentalBooking(booking) && booking.licensePhoto && (
+                          <div className="relative" title={booking.licensePhotoVerified ? "License verified" : "License pending verification"}>
+                            {booking.licensePhotoVerified ? (
+                              <div className="p-1.5 bg-green-100 rounded-full">
+                                <ImageIcon className="w-4 h-4 text-green-600" />
+                              </div>
+                            ) : (
+                              <div className="p-1.5 bg-yellow-100 rounded-full">
+                                <ImageIcon className="w-4 h-4 text-yellow-600" />
+                              </div>
+                            )}
+                          </div>
+                        )}
                         <button
-                          onClick={() => {
-                            setSelectedBooking(booking);
-                            setShowViewModal(true);
+                          onClick={async () => {
+                            // Fetch full booking details including license photo when opening modal
+                            if (isVehicleRentalBooking(booking)) {
+                              setFetchingBookingDetails(true);
+                              try {
+                                const response = await bookingAPI.getBookingById(booking._id);
+                                console.log('Fetched booking response:', response.data);
+                                if (response.data?.success) {
+                                  // The booking is nested in data.data.booking
+                                  const bookingData = response.data.data?.booking || response.data.data;
+                                  console.log('License photo in fetched booking:', bookingData?.licensePhoto);
+                                  console.log('Full booking data:', bookingData);
+                                  setSelectedBooking(bookingData);
+                                  setShowViewModal(true);
+                                } else {
+                                  // Fallback to existing booking data
+                                  console.log('Response not successful, using existing booking data');
+                                  setSelectedBooking(booking);
+                                  setShowViewModal(true);
+                                }
+                              } catch (error) {
+                                console.error('Error fetching booking details:', error);
+                                // Fallback to existing booking data
+                                setSelectedBooking(booking);
+                                setShowViewModal(true);
+                              } finally {
+                                setFetchingBookingDetails(false);
+                              }
+                            } else {
+                              setSelectedBooking(booking);
+                              setShowViewModal(true);
+                            }
                           }}
-                          className="text-blue-600 hover:text-blue-900"
+                          disabled={fetchingBookingDetails}
+                          className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -1676,6 +1777,128 @@ const AdminBookingsPage = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* License Photo Section - Show for vehicle rentals or if license photo exists */}
+                {(isVehicleRentalBooking(selectedBooking) || selectedBooking.licensePhoto) && (
+                  <div className="mt-6 border-t border-gray-200 pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-blue-600" />
+                      Driving License Photo
+                      {isVehicleRentalBooking(selectedBooking) && (
+                        <span className="text-xs text-gray-500 font-normal ml-2">(Vehicle Rental Booking)</span>
+                      )}
+                    </h3>
+                    <div className="bg-gray-50 p-6 rounded-lg border-2 border-gray-200">
+                      {selectedBooking.licensePhoto ? (
+                        <div className="space-y-4">
+                          <div className="relative">
+                            <img
+                              src={selectedBooking.licensePhoto}
+                              alt="Driving License"
+                              className="w-full max-w-md mx-auto rounded-lg border-2 border-gray-300 shadow-md object-contain bg-white p-2 cursor-pointer hover:opacity-90 transition-opacity"
+                              style={{ maxHeight: '400px' }}
+                              onError={(e) => {
+                                console.error('Error loading license image:', selectedBooking.licensePhoto);
+                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image+not+found';
+                              }}
+                              onClick={() => {
+                                // Open image in new tab on click
+                                if (selectedBooking.licensePhoto) {
+                                  window.open(selectedBooking.licensePhoto, '_blank');
+                                }
+                              }}
+                            />
+                            <div className="absolute top-2 right-2">
+                              {selectedBooking.licensePhotoVerified ? (
+                                <div className="flex items-center gap-2 px-3 py-1 bg-green-500 text-white rounded-full text-xs font-medium shadow-lg">
+                                  <ShieldCheck className="w-3 h-3" />
+                                  Verified
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-medium shadow-lg">
+                                  <Clock className="w-3 h-3" />
+                                  Pending Verification
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {selectedBooking.licensePhotoUploadedAt && (
+                            <div className="text-xs text-gray-500 text-center">
+                              Uploaded on: {new Date(selectedBooking.licensePhotoUploadedAt).toLocaleString()}
+                            </div>
+                          )}
+
+                          {!selectedBooking.licensePhotoVerified && (
+                            <div className="flex gap-3 justify-center pt-2">
+                              <button
+                                onClick={() => handleVerifyLicensePhoto(selectedBooking._id, true)}
+                                disabled={verifyingLicense}
+                                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {verifyingLicense ? (
+                                  <>
+                                    <Loader className="w-4 h-4 animate-spin" />
+                                    Verifying...
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShieldCheck className="w-4 h-4" />
+                                    Verify License
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleVerifyLicensePhoto(selectedBooking._id, false)}
+                                disabled={verifyingLicense}
+                                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {verifyingLicense ? (
+                                  <>
+                                    <Loader className="w-4 h-4 animate-spin" />
+                                    Rejecting...
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShieldX className="w-4 h-4" />
+                                    Reject
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          )}
+
+                          {selectedBooking.licensePhotoVerified && (
+                            <div className="text-center">
+                              <button
+                                onClick={() => handleVerifyLicensePhoto(selectedBooking._id, false)}
+                                disabled={verifyingLicense}
+                                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+                              >
+                                {verifyingLicense ? (
+                                  <>
+                                    <Loader className="w-4 h-4 animate-spin" />
+                                    Updating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShieldX className="w-4 h-4" />
+                                    Mark as Unverified
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                          <p>No license photo uploaded yet</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Status */}
                 <div>

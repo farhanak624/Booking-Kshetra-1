@@ -190,6 +190,22 @@ export const bookingAPI = {
   cancelBooking: async (id: string) => {
     return await ApiInstance.patch(`/bookings/${id}/cancel`);
   },
+
+  // Upload license photo for vehicle rental
+  uploadLicensePhoto: async (id: string, file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return await ApiInstance.post(`/bookings/${id}/upload-license`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  // Verify license photo (admin only)
+  verifyLicensePhoto: async (id: string, verified: boolean) => {
+    return await ApiInstance.patch(`/bookings/${id}/verify-license`, { verified });
+  },
 };
 
 // Payment API calls

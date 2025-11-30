@@ -124,7 +124,9 @@ interface SelectedService extends Service {
 
 interface SelectedVehicle extends Vehicle {
   quantity: number;
-  rentalDays: number;
+  rentalDays: number; // Calculated from dates
+  startDate: string;
+  endDate: string;
   withDriver: boolean;
 }
 
@@ -143,7 +145,27 @@ const ServicesPage = () => {
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [selectedVehicleImageIndex, setSelectedVehicleImageIndex] = useState(0);
   const [modalRentalDays, setModalRentalDays] = useState(1);
+  const [modalStartDate, setModalStartDate] = useState('');
+  const [modalEndDate, setModalEndDate] = useState('');
   const [modalWithDriver, setModalWithDriver] = useState(false);
+
+  // Helper function to calculate days between two dates
+  const calculateDays = (startDate: string, endDate: string): number => {
+    if (!startDate || !endDate) return 1;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1; // Minimum 1 day
+  };
+
+  // Update modal rental days when dates change
+  useEffect(() => {
+    if (modalStartDate && modalEndDate) {
+      const days = calculateDays(modalStartDate, modalEndDate);
+      setModalRentalDays(days);
+    }
+  }, [modalStartDate, modalEndDate]);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<Service | null>(null);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -290,13 +312,24 @@ const ServicesPage = () => {
     }
   };
 
-  const addVehicle = (vehicle: Vehicle, rentalDays: number = 1, withDriver: boolean = false) => {
+  const addVehicle = (vehicle: Vehicle, rentalDays: number = 1, startDate: string = '', endDate: string = '', withDriver: boolean = false) => {
     const existingVehicle = selectedVehicles.find(v => v._id === vehicle._id);
+    // If dates are provided, use them. Otherwise, calculate from rentalDays or use existing dates
+    const finalStartDate = startDate || (existingVehicle?.startDate || '');
+    const finalEndDate = endDate || (existingVehicle?.endDate || '');
+    const calculatedDays = finalStartDate && finalEndDate ? calculateDays(finalStartDate, finalEndDate) : rentalDays;
+    
     if (existingVehicle) {
       setSelectedVehicles(prev =>
         prev.map(v =>
           v._id === vehicle._id
-            ? { ...v, quantity: v.quantity + 1 }
+            ? { 
+                ...v, 
+                quantity: v.quantity + 1,
+                ...(finalStartDate && { startDate: finalStartDate }),
+                ...(finalEndDate && { endDate: finalEndDate }),
+                rentalDays: calculatedDays
+              }
             : v
         )
       );
@@ -304,7 +337,9 @@ const ServicesPage = () => {
       const newVehicle: SelectedVehicle = {
         ...vehicle,
         quantity: 1,
-        rentalDays,
+        rentalDays: calculatedDays,
+        startDate: finalStartDate,
+        endDate: finalEndDate,
         withDriver
       };
       setSelectedVehicles(prev => [...prev, newVehicle]);
@@ -326,13 +361,15 @@ const ServicesPage = () => {
     }
   };
 
-  const updateVehicleOptions = (vehicleId: string, rentalDays?: number, withDriver?: boolean) => {
+  const updateVehicleOptions = (vehicleId: string, rentalDays?: number, startDate?: string, endDate?: string, withDriver?: boolean) => {
     setSelectedVehicles(prev =>
       prev.map(v =>
         v._id === vehicleId
           ? {
               ...v,
               ...(rentalDays !== undefined && { rentalDays }),
+              ...(startDate !== undefined && { startDate }),
+              ...(endDate !== undefined && { endDate }),
               ...(withDriver !== undefined && { withDriver })
             }
           : v
@@ -361,7 +398,21 @@ const ServicesPage = () => {
       alert('Please select at least one service or vehicle');
       return;
     }
-    if (!selectedDate) {
+    
+    // Validate vehicle rentals have dates
+    for (const vehicle of selectedVehicles) {
+      if (!vehicle.startDate || !vehicle.endDate) {
+        alert(`Please select start and end dates for ${vehicle.name}`);
+        return;
+      }
+      if (vehicle.endDate < vehicle.startDate) {
+        alert(`End date must be after start date for ${vehicle.name}`);
+        return;
+      }
+    }
+    
+    // Service date is only required if there are adventure services
+    if (selectedServices.length > 0 && !selectedDate) {
       alert('Please select a service date');
       return;
     }
@@ -488,8 +539,12 @@ const ServicesPage = () => {
   const VehicleCard = ({ vehicle }: { vehicle: Vehicle }) => {
     const selectedVehicle = selectedVehicles.find(v => v._id === vehicle._id);
     const quantity = selectedVehicle?.quantity || 0;
-    const [rentalDays, setRentalDays] = useState(selectedVehicle?.rentalDays || 1);
+    const [startDate, setStartDate] = useState(selectedVehicle?.startDate || '');
+    const [endDate, setEndDate] = useState(selectedVehicle?.endDate || '');
     const [withDriver, setWithDriver] = useState(selectedVehicle?.withDriver || false);
+    
+    // Calculate rental days from dates
+    const rentalDays = startDate && endDate ? calculateDays(startDate, endDate) : (selectedVehicle?.rentalDays || 1);
 
     const VehicleIcon = vehicle.type === '2-wheeler' ? Bike : Car;
 
@@ -554,6 +609,8 @@ const ServicesPage = () => {
                   setSelectedVehicleImageIndex(0);
                   const existingVehicle = selectedVehicles.find(v => v._id === vehicle._id);
                   setModalRentalDays(existingVehicle?.rentalDays || 1);
+                  setModalStartDate(existingVehicle?.startDate || '');
+                  setModalEndDate(existingVehicle?.endDate || '');
                   setModalWithDriver(existingVehicle?.withDriver || false);
                   setShowVehicleModal(true);
                 }}
@@ -566,34 +623,56 @@ const ServicesPage = () => {
             {/* Rental Options (Hidden by default, shown when quantity > 0) */}
             {quantity > 0 && (
               <div className="mt-4 pt-4 border-t border-white/20 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80 text-xs font-urbanist">Rental Days:</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const newDays = Math.max(1, rentalDays - 1);
-                        setRentalDays(newDays);
-                        updateVehicleOptions(vehicle._id, newDays, withDriver);
-                      }}
-                      className="w-6 h-6 bg-white/20 hover:bg-white/30 rounded flex items-center justify-center text-white"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="text-white font-medium w-8 text-center text-sm">{rentalDays}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const newDays = rentalDays + 1;
-                        setRentalDays(newDays);
-                        updateVehicleOptions(vehicle._id, newDays, withDriver);
-                      }}
-                      className="w-6 h-6 bg-white/20 hover:bg-white/30 rounded flex items-center justify-center text-white"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  </div>
+                {/* Start Date */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/80 text-xs font-urbanist">Start Date:</span>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => {
+                      const newStartDate = e.target.value;
+                      setStartDate(newStartDate);
+                      // Auto-update end date if it's before new start date
+                      if (endDate && newStartDate && endDate < newStartDate) {
+                        const newEndDate = new Date(newStartDate);
+                        newEndDate.setDate(newEndDate.getDate() + 1);
+                        setEndDate(newEndDate.toISOString().split('T')[0]);
+                        const days = calculateDays(newStartDate, newEndDate.toISOString().split('T')[0]);
+                        updateVehicleOptions(vehicle._id, days, newStartDate, newEndDate.toISOString().split('T')[0], withDriver);
+                      } else {
+                        const days = endDate ? calculateDays(newStartDate, endDate) : 1;
+                        updateVehicleOptions(vehicle._id, days, newStartDate, endDate, withDriver);
+                      }
+                    }}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="px-2 py-1.5 bg-white/10 border border-white/20 rounded text-white text-xs font-urbanist focus:outline-none focus:ring-2 focus:ring-[#B23092] focus:border-transparent"
+                  />
                 </div>
+                
+                {/* End Date */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-white/80 text-xs font-urbanist">End Date:</span>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => {
+                      const newEndDate = e.target.value;
+                      setEndDate(newEndDate);
+                      const days = startDate ? calculateDays(startDate, newEndDate) : 1;
+                      updateVehicleOptions(vehicle._id, days, startDate, newEndDate, withDriver);
+                    }}
+                    min={startDate || new Date().toISOString().split('T')[0]}
+                    className="px-2 py-1.5 bg-white/10 border border-white/20 rounded text-white text-xs font-urbanist focus:outline-none focus:ring-2 focus:ring-[#B23092] focus:border-transparent"
+                  />
+                </div>
+                
+                {/* Calculated Rental Days Display */}
+                {startDate && endDate && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/80 text-xs font-urbanist">Rental Period:</span>
+                    <span className="text-white font-medium text-xs">{rentalDays} {rentalDays === 1 ? 'day' : 'days'}</span>
+                  </div>
+                )}
 
                 {vehicle.driverOption.withDriver && (
                   <div className="flex items-center justify-between">
@@ -603,7 +682,7 @@ const ServicesPage = () => {
                         e.stopPropagation();
                         const newWithDriver = !withDriver;
                         setWithDriver(newWithDriver);
-                        updateVehicleOptions(vehicle._id, rentalDays, newWithDriver);
+                        updateVehicleOptions(vehicle._id, rentalDays, startDate, endDate, newWithDriver);
                       }}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors font-urbanist ${
                         withDriver
@@ -632,7 +711,7 @@ const ServicesPage = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        addVehicle(vehicle, rentalDays, withDriver);
+                        addVehicle(vehicle, rentalDays, startDate, endDate, withDriver);
                       }}
                       className="w-6 h-6 bg-green-500/30 hover:bg-green-500/40 rounded flex items-center justify-center text-white"
                     >
@@ -852,7 +931,13 @@ const ServicesPage = () => {
                                 {React.createElement(vehicle.type === '2-wheeler' ? Bike : Car, { className: "w-4 h-4 text-[#B23092]" })}
                               </div>
                               <span className="text-xs sm:text-sm font-urbanist font-medium text-white whitespace-nowrap">
-                                {vehicle.quantity}x {vehicle.name} <span className="text-white/70">({vehicle.rentalDays}d)</span>
+                                {vehicle.quantity}x {vehicle.name}
+                                {vehicle.startDate && vehicle.endDate && (
+                                  <span className="text-white/70"> ({new Date(vehicle.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {new Date(vehicle.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })})</span>
+                                )}
+                                {!vehicle.startDate && vehicle.rentalDays && (
+                                  <span className="text-white/70"> ({vehicle.rentalDays}d)</span>
+                                )}
                               </span>
                             </div>
                           ))}
@@ -864,16 +949,19 @@ const ServicesPage = () => {
 
                 {/* Date Selection & Booking */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 border-t border-white/20">
-                  <div className="flex-1 sm:flex-initial">
-                    <label className="block text-white/80 font-urbanist text-xs sm:text-sm font-medium mb-2">Service Date</label>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-3 sm:px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-[#B23092] focus:outline-none focus:ring-2 focus:ring-[#B23092]/20 text-sm font-urbanist"
-                    />
-                  </div>
+                  {/* Only show service date if there are adventure services (not vehicle rentals) */}
+                  {selectedServices.length > 0 && (
+                    <div className="flex-1 sm:flex-initial">
+                      <label className="block text-white/80 font-urbanist text-xs sm:text-sm font-medium mb-2">Service Date</label>
+                      <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-3 sm:px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-[#B23092] focus:outline-none focus:ring-2 focus:ring-[#B23092]/20 text-sm font-urbanist"
+                      />
+                    </div>
+                  )}
 
                   <div className="text-center sm:text-left flex-1 sm:flex-initial bg-white/5 rounded-xl px-4 sm:px-6 py-3 border border-white/10">
                     <div className="text-xs sm:text-sm text-white/70 font-urbanist mb-1">Total Amount</div>
@@ -884,7 +972,11 @@ const ServicesPage = () => {
 
                   <button
                     onClick={handleBookServices}
-                    disabled={(selectedServices.length === 0 && selectedVehicles.length === 0) || !selectedDate}
+                    disabled={
+                      (selectedServices.length === 0 && selectedVehicles.length === 0) || 
+                      (selectedServices.length > 0 && !selectedDate) ||
+                      (selectedVehicles.length > 0 && selectedVehicles.some(v => !v.startDate || !v.endDate))
+                    }
                     className="bg-[#B23092] hover:bg-[#9a2578] text-white px-6 sm:px-8 py-3 rounded-xl font-urbanist font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#B23092]/30 text-sm sm:text-base"
                   >
                     <Calendar className="w-4 h-4" />
@@ -1318,24 +1410,50 @@ const ServicesPage = () => {
                     <span className="text-white/60 font-urbanist text-sm">per day</span>
                   </div>
                   
-                  {/* Rental Days Selector */}
-                  <div className="flex items-center justify-between pt-2 border-t border-white/10">
-                    <span className="text-white/80 font-urbanist">Rental Days:</span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setModalRentalDays(prev => Math.max(1, prev - 1))}
-                        className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span className="text-white font-urbanist font-medium w-10 text-center">{modalRentalDays}</span>
-                      <button
-                        onClick={() => setModalRentalDays(prev => prev + 1)}
-                        className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
+                  {/* Rental Period - Start and End Dates */}
+                  <div className="space-y-3 pt-2 border-t border-white/10">
+                    {/* Start Date */}
+                    <div>
+                      <label className="text-white/80 font-urbanist text-sm mb-1.5 block">Start Date:</label>
+                      <input
+                        type="date"
+                        value={modalStartDate}
+                        onChange={(e) => {
+                          const newStartDate = e.target.value;
+                          setModalStartDate(newStartDate);
+                          // Auto-update end date if it's before new start date
+                          if (modalEndDate && newStartDate && modalEndDate < newStartDate) {
+                            const newEndDate = new Date(newStartDate);
+                            newEndDate.setDate(newEndDate.getDate() + 1);
+                            setModalEndDate(newEndDate.toISOString().split('T')[0]);
+                          }
+                        }}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-urbanist focus:outline-none focus:ring-2 focus:ring-[#B23092] focus:border-transparent"
+                      />
                     </div>
+                    
+                    {/* End Date */}
+                    <div>
+                      <label className="text-white/80 font-urbanist text-sm mb-1.5 block">End Date:</label>
+                      <input
+                        type="date"
+                        value={modalEndDate}
+                        onChange={(e) => {
+                          setModalEndDate(e.target.value);
+                        }}
+                        min={modalStartDate || new Date().toISOString().split('T')[0]}
+                        className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-urbanist focus:outline-none focus:ring-2 focus:ring-[#B23092] focus:border-transparent"
+                      />
+                    </div>
+                    
+                    {/* Calculated Rental Days Display */}
+                    {modalStartDate && modalEndDate && (
+                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                        <span className="text-white/80 font-urbanist">Rental Period:</span>
+                        <span className="text-white font-urbanist font-medium">{modalRentalDays} {modalRentalDays === 1 ? 'day' : 'days'}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Driver Option */}
@@ -1427,8 +1545,19 @@ const ServicesPage = () => {
                       {selectedVehicles.find(v => v._id === selectedVehicleDetails._id)?.quantity || 0}
                     </span>
                     <button
-                      onClick={() => addVehicle(selectedVehicleDetails, modalRentalDays, modalWithDriver)}
-                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center hover:bg-[#B23092]/30 transition-colors"
+                      onClick={() => {
+                        if (!modalStartDate || !modalEndDate) {
+                          alert('Please select both start and end dates');
+                          return;
+                        }
+                        if (modalEndDate < modalStartDate) {
+                          alert('End date must be after start date');
+                          return;
+                        }
+                        addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
+                      }}
+                      disabled={!modalStartDate || !modalEndDate}
+                      className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center hover:bg-[#B23092]/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -1436,10 +1565,19 @@ const ServicesPage = () => {
                 ) : (
                   <button
                     onClick={() => {
-                      addVehicle(selectedVehicleDetails, modalRentalDays, modalWithDriver);
+                      if (!modalStartDate || !modalEndDate) {
+                        alert('Please select both start and end dates');
+                        return;
+                      }
+                      if (modalEndDate < modalStartDate) {
+                        alert('End date must be after start date');
+                        return;
+                      }
+                      addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
                       setShowVehicleModal(false);
                     }}
-                    className="flex-1 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-urbanist font-semibold transition-colors"
+                    disabled={!modalStartDate || !modalEndDate}
+                    className="flex-1 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-urbanist font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Add to Booking
                   </button>

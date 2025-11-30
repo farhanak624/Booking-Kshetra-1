@@ -40,12 +40,34 @@ interface SelectedService extends Service {
     pickupLocation?: string
     dropLocation?: string
     rentalDays?: number
+    startDate?: string
+    endDate?: string
+    withDriver?: boolean
     sessionLevel?: 'beginner' | 'intermediate' | 'advanced'
+  }
+}
+
+interface Vehicle {
+  _id: string
+  name: string
+  type: '2-wheeler' | '4-wheeler'
+  category: 'scooter' | 'bike' | 'car' | 'suv'
+  pricePerDay: number
+  description: string
+  features: string[]
+  quantity?: number
+  rentalDays?: number
+  startDate?: string
+  endDate?: string
+  withDriver?: boolean
+  driverOption?: {
+    driverChargePerDay?: number
   }
 }
 
 interface BookingData {
   services: SelectedService[]
+  vehicles?: Vehicle[]
   date: string
   totalAmount: number
   timestamp: string
@@ -148,9 +170,41 @@ export default function ServicesBookingDetailsPage() {
       return
     }
 
+    // Convert vehicles to services with category 'vehicle_rental'
+    const vehicleServices = (bookingData?.vehicles || []).map((vehicle: any) => {
+      const rentalDays = vehicle.rentalDays || 1;
+      const startDate = vehicle.startDate || '';
+      const endDate = vehicle.endDate || '';
+      const dateRange = startDate && endDate 
+        ? `${new Date(startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - ${new Date(endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`
+        : `${rentalDays} day(s)`;
+      
+      return {
+        _id: vehicle._id,
+        name: vehicle.name,
+        category: 'vehicle_rental' as const,
+        price: vehicle.pricePerDay * rentalDays + (vehicle.withDriver && vehicle.driverOption?.driverChargePerDay ? vehicle.driverOption.driverChargePerDay * rentalDays : 0),
+        priceUnit: 'per_day',
+        description: vehicle.description,
+        quantity: vehicle.quantity || 1,
+        duration: dateRange,
+        features: vehicle.features || [],
+        isActive: true,
+        selectedOptions: {
+          rentalDays,
+          startDate,
+          endDate,
+          withDriver: vehicle.withDriver || false
+        }
+      };
+    })
+
+    // Combine regular services with vehicle services
+    const allServices = [...(bookingData?.services || []), ...vehicleServices]
+
     // Store combined booking data in localStorage
     const completeBookingData = {
-      services: bookingData?.services,
+      services: allServices,
       date: bookingData?.date,
       totalAmount: bookingData?.totalAmount,
       user: formData,
@@ -322,14 +376,101 @@ export default function ServicesBookingDetailsPage() {
               <h3 className="text-2xl font-bold text-white mb-8 font-annie-telescope">Your Services</h3>
 
               <div className="space-y-6">
-                {/* Service Date */}
+                {/* Service Date / Rental Period */}
                 <div className="bg-white/10 rounded-2xl p-6 text-center">
                   <div className="flex items-center justify-center gap-2 text-[#B23092] mb-2">
                     <Calendar className="w-5 h-5" />
-                    <span className="font-medium">Service Date</span>
+                    <span className="font-medium">
+                      {isAdventureBooking ? 'Service Date' : 'Rental Period'}
+                    </span>
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    {formatDate(bookingData.date)}
+                    {isAdventureBooking ? (
+                      bookingData.date && bookingData.date !== 'Invalid Date' ? formatDate(bookingData.date) : 'Date not selected'
+                    ) : (
+                      (() => {
+                        // First, try to get dates from vehicles array (before form submission)
+                        if (bookingData.vehicles && bookingData.vehicles.length > 0) {
+                          const vehicleWithDates = bookingData.vehicles.find(
+                            (v: any) => v.startDate && v.endDate
+                          );
+                          
+                          const startDateStr = vehicleWithDates?.startDate;
+                          const endDateStr = vehicleWithDates?.endDate;
+                          
+                          if (startDateStr && endDateStr) {
+                            const startDate = new Date(startDateStr);
+                            const endDate = new Date(endDateStr);
+                            
+                            // Validate dates
+                            if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                              const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
+                              
+                              return (
+                                <div>
+                                  <div className="text-lg">
+                                    {startDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {endDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </div>
+                                  <div className="text-base text-white/70 mt-1">
+                                    {days} {days === 1 ? 'Day' : 'Days'}
+                                  </div>
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                        
+                        // Second, try to get dates from converted services (after form submission)
+                        const vehicleServices = bookingData.services.filter(s => s.category === 'vehicle_rental');
+                        if (vehicleServices.length > 0) {
+                          // Find the first vehicle with valid dates
+                          const vehicleWithDates = vehicleServices.find(
+                            v => v.selectedOptions?.startDate && v.selectedOptions?.endDate
+                          );
+                          
+                          const startDateStr = vehicleWithDates?.selectedOptions?.startDate;
+                          const endDateStr = vehicleWithDates?.selectedOptions?.endDate;
+                          
+                          if (startDateStr && endDateStr) {
+                            const startDate = new Date(startDateStr);
+                            const endDate = new Date(endDateStr);
+                            
+                            // Validate dates
+                            if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                              const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
+                              
+                              return (
+                                <div>
+                                  <div className="text-lg">
+                                    {startDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {endDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </div>
+                                  <div className="text-base text-white/70 mt-1">
+                                    {days} {days === 1 ? 'Day' : 'Days'}
+                                  </div>
+                                </div>
+                              );
+                            }
+                          }
+                          
+                          // Fallback: try to get from duration field if dates not in selectedOptions
+                          const firstVehicle = vehicleServices[0];
+                          if (firstVehicle.duration) {
+                            const days = firstVehicle.selectedOptions?.rentalDays || 1;
+                            return (
+                              <div>
+                                <div className="text-lg">{firstVehicle.duration}</div>
+                                <div className="text-base text-white/70 mt-1">
+                                  {days} {days === 1 ? 'Day' : 'Days'}
+                                </div>
+                              </div>
+                            );
+                          }
+                        }
+                        
+                        // Final fallback
+                        return 'Date range not available';
+                      })()
+                    )}
                   </div>
                 </div>
 
