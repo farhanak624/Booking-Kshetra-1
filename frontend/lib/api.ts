@@ -248,6 +248,12 @@ export const vehicleAPI = {
   getVehicleById: async (id: string) => {
     return await ApiInstance.get(`/vehicles/${id}`);
   },
+
+  checkAvailability: async (vehicleId: string, startDate: string, endDate: string) => {
+    return await ApiInstance.get("/vehicles/check-availability", {
+      params: { vehicleId, startDate, endDate }
+    });
+  },
 };
 
 // Adventure Sports API calls (public)

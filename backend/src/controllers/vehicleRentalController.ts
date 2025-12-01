@@ -83,6 +83,79 @@ export const getVehicleById = async (req: Request, res: Response) => {
   }
 };
 
+// Check vehicle availability for date range (public)
+export const checkVehicleAvailability = async (req: Request, res: Response) => {
+  try {
+    const { vehicleId, startDate, endDate } = req.query;
+
+    if (!vehicleId || !startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'Vehicle ID, start date, and end date are required'
+      });
+    }
+
+    // Validate dates
+    const start = new Date(startDate as string);
+    const end = new Date(endDate as string);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid date format'
+      });
+    }
+
+    if (end <= start) {
+      return res.status(400).json({
+        success: false,
+        message: 'End date must be after start date'
+      });
+    }
+
+    // Check if vehicle exists and is active
+    const vehicle = await VehicleRental.findById(vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        message: 'Vehicle not found'
+      });
+    }
+
+    if (!vehicle.isActive || !vehicle.availability?.isAvailable) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          isAvailable: false,
+          reason: 'Vehicle is currently not available for booking'
+        }
+      });
+    }
+
+    // Check for overlapping bookings
+    const { bookingValidator } = await import('../utils/bookingValidation');
+    const availabilityCheck = await bookingValidator.checkVehicleAvailability(
+      vehicleId as string,
+      start,
+      end
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        isAvailable: !availabilityCheck.hasOverlap,
+        conflictingBookings: availabilityCheck.hasOverlap ? availabilityCheck.conflictingBookings : undefined
+      }
+    });
+  } catch (error: any) {
+    console.error('Check vehicle availability error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Internal server error'
+    });
+  }
+};
+
 // Get vehicles by type (public)
 export const getVehiclesByType = async (req: Request, res: Response) => {
   try {

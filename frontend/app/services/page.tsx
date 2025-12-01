@@ -148,6 +148,9 @@ const ServicesPage = () => {
   const [modalStartDate, setModalStartDate] = useState('');
   const [modalEndDate, setModalEndDate] = useState('');
   const [modalWithDriver, setModalWithDriver] = useState(false);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+  const [isVehicleAvailable, setIsVehicleAvailable] = useState<boolean | null>(null);
 
   // Helper function to calculate days between two dates
   const calculateDays = (startDate: string, endDate: string): number => {
@@ -166,6 +169,51 @@ const ServicesPage = () => {
       setModalRentalDays(days);
     }
   }, [modalStartDate, modalEndDate]);
+
+  // Check vehicle availability when dates change
+  useEffect(() => {
+    const checkAvailability = async () => {
+      if (!selectedVehicleDetails?._id || !modalStartDate || !modalEndDate) {
+        setIsVehicleAvailable(null);
+        setAvailabilityError(null);
+        return;
+      }
+
+      // Reset availability state
+      setAvailabilityError(null);
+      setIsVehicleAvailable(null);
+      setCheckingAvailability(true);
+
+      try {
+        const response = await vehicleAPI.checkAvailability(
+          selectedVehicleDetails._id,
+          modalStartDate,
+          modalEndDate
+        );
+
+        if (response.data?.success) {
+          const { isAvailable } = response.data.data;
+          setIsVehicleAvailable(isAvailable);
+          if (!isAvailable) {
+            setAvailabilityError('This vehicle is already booked for the selected dates. Please choose different dates.');
+          }
+        } else {
+          setIsVehicleAvailable(false);
+          setAvailabilityError(response.data?.message || 'Unable to check vehicle availability');
+        }
+      } catch (error: any) {
+        console.error('Error checking vehicle availability:', error);
+        setIsVehicleAvailable(false);
+        setAvailabilityError(error.response?.data?.message || 'Failed to check vehicle availability');
+      } finally {
+        setCheckingAvailability(false);
+      }
+    };
+
+    // Debounce the availability check
+    const timeoutId = setTimeout(checkAvailability, 500);
+    return () => clearTimeout(timeoutId);
+  }, [modalStartDate, modalEndDate, selectedVehicleDetails?._id]);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<Service | null>(null);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -312,7 +360,27 @@ const ServicesPage = () => {
     }
   };
 
-  const addVehicle = (vehicle: Vehicle, rentalDays: number = 1, startDate: string = '', endDate: string = '', withDriver: boolean = false) => {
+  const addVehicle = async (vehicle: Vehicle, rentalDays: number = 1, startDate: string = '', endDate: string = '', withDriver: boolean = false) => {
+    // Check availability before adding if dates are provided
+    if (startDate && endDate) {
+      setCheckingAvailability(true);
+      try {
+        const response = await vehicleAPI.checkAvailability(vehicle._id, startDate, endDate);
+        if (response.data?.success && !response.data.data.isAvailable) {
+          alert(`Vehicle "${vehicle.name}" is already booked for the selected dates. Please choose different dates.`);
+          setCheckingAvailability(false);
+          return;
+        }
+      } catch (error: any) {
+        console.error('Error checking vehicle availability:', error);
+        alert('Failed to check vehicle availability. Please try again.');
+        setCheckingAvailability(false);
+        return;
+      } finally {
+        setCheckingAvailability(false);
+      }
+    }
+
     const existingVehicle = selectedVehicles.find(v => v._id === vehicle._id);
     // If dates are provided, use them. Otherwise, calculate from rentalDays or use existing dates
     const finalStartDate = startDate || (existingVehicle?.startDate || '');
@@ -612,6 +680,9 @@ const ServicesPage = () => {
                   setModalStartDate(existingVehicle?.startDate || '');
                   setModalEndDate(existingVehicle?.endDate || '');
                   setModalWithDriver(existingVehicle?.withDriver || false);
+                  // Reset availability state when opening modal
+                  setIsVehicleAvailable(null);
+                  setAvailabilityError(null);
                   setShowVehicleModal(true);
                 }}
                 className="bg-black/60 hover:bg-black/80 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors font-urbanist"
@@ -1449,9 +1520,29 @@ const ServicesPage = () => {
                     
                     {/* Calculated Rental Days Display */}
                     {modalStartDate && modalEndDate && (
-                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
-                        <span className="text-white/80 font-urbanist">Rental Period:</span>
-                        <span className="text-white font-urbanist font-medium">{modalRentalDays} {modalRentalDays === 1 ? 'day' : 'days'}</span>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                          <span className="text-white/80 font-urbanist">Rental Period:</span>
+                          <span className="text-white font-urbanist font-medium">{modalRentalDays} {modalRentalDays === 1 ? 'day' : 'days'}</span>
+                        </div>
+                        
+                        {/* Availability Status */}
+                        {checkingAvailability && (
+                          <div className="flex items-center gap-2 text-yellow-400 text-sm font-urbanist">
+                            <div className="w-4 h-4 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                            Checking availability...
+                          </div>
+                        )}
+                        {!checkingAvailability && isVehicleAvailable === false && availabilityError && (
+                          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-2 text-red-300 text-sm font-urbanist">
+                            {availabilityError}
+                          </div>
+                        )}
+                        {!checkingAvailability && isVehicleAvailable === true && (
+                          <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-2 text-green-300 text-sm font-urbanist">
+                            ✓ Vehicle is available for selected dates
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1545,7 +1636,7 @@ const ServicesPage = () => {
                       {selectedVehicles.find(v => v._id === selectedVehicleDetails._id)?.quantity || 0}
                     </span>
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         if (!modalStartDate || !modalEndDate) {
                           alert('Please select both start and end dates');
                           return;
@@ -1554,9 +1645,13 @@ const ServicesPage = () => {
                           alert('End date must be after start date');
                           return;
                         }
-                        addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
+                        if (isVehicleAvailable === false) {
+                          alert('Vehicle is not available for the selected dates. Please choose different dates.');
+                          return;
+                        }
+                        await addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
                       }}
-                      disabled={!modalStartDate || !modalEndDate}
+                      disabled={!modalStartDate || !modalEndDate || checkingAvailability || isVehicleAvailable === false}
                       className="w-8 h-8 rounded-full bg-[#B23092]/20 text-[#B23092] flex items-center justify-center hover:bg-[#B23092]/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Plus className="w-4 h-4" />
@@ -1564,7 +1659,7 @@ const ServicesPage = () => {
                   </div>
                 ) : (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (!modalStartDate || !modalEndDate) {
                         alert('Please select both start and end dates');
                         return;
@@ -1573,17 +1668,29 @@ const ServicesPage = () => {
                         alert('End date must be after start date');
                         return;
                       }
-                      addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
+                      if (isVehicleAvailable === false) {
+                        alert('Vehicle is not available for the selected dates. Please choose different dates.');
+                        return;
+                      }
+                      await addVehicle(selectedVehicleDetails, modalRentalDays, modalStartDate, modalEndDate, modalWithDriver);
                       setShowVehicleModal(false);
+                      // Reset availability state when closing modal
+                      setIsVehicleAvailable(null);
+                      setAvailabilityError(null);
                     }}
-                    disabled={!modalStartDate || !modalEndDate}
+                    disabled={!modalStartDate || !modalEndDate || checkingAvailability || isVehicleAvailable === false}
                     className="flex-1 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-xl font-urbanist font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Add to Booking
                   </button>
                 )}
                 <button
-                  onClick={() => setShowVehicleModal(false)}
+                  onClick={() => {
+                    setShowVehicleModal(false);
+                    // Reset availability state when closing modal
+                    setIsVehicleAvailable(null);
+                    setAvailabilityError(null);
+                  }}
                   className="px-6 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-urbanist font-semibold transition-colors"
                 >
                   Close
