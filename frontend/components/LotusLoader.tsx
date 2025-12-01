@@ -224,14 +224,14 @@ const LotusLoader = ({ onComplete }: LotusLoaderProps) => {
             Kshetra Retreat
           </motion.h1>
 
-          <motion.p
+          {/* <motion.p
             className="text-xl text-pink-200 font-annie-telescope"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
           >
             Where Serenity Meets Luxury
-          </motion.p>
+          </motion.p> */}
 
           {/* Loading text with dots animation */}
           <motion.div

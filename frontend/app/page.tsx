@@ -101,7 +101,7 @@ export default function Home() {
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel2.png",
       visualAlt: "Therapist preparing ayurvedic treatment",
       ctaLabel: "Explore Now",
-      ctaLink: "/services",
+      ctaLink: "/adventure",
       highlightColor: "#F472B6",
       metaLabel: "CULINARY PREVIEW",
     },
@@ -121,7 +121,7 @@ export default function Home() {
       visualAlt: "Glasshouse wellness pavilion under palm trees",
       ctaLabel: "Explore Now",
       highlightColor: "#F97316",
-      ctaLink: "/services",
+      ctaLink: "/dining",
       metaLabel: "NEARBY ATTRACTIONS SNAPSHOT",
     },
     {

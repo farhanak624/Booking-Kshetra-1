@@ -36,6 +36,7 @@ export default function Header() {
   const isAdventurePage = pathname === "/adventure";
   const isTermsPage = pathname === "/terms";
   const isPinkroomsPage = pathname === "/pinkrooms";
+  const isDiningPage = pathname === "/dining";
   const isTransparentPage =
     isHomePage ||
     isYogaPage ||
@@ -50,7 +51,8 @@ export default function Header() {
     isRoomsPage ||
     isAdventurePage ||
     isTermsPage ||
-    isPinkroomsPage;
+    isPinkroomsPage ||
+    isDiningPage;
   return (
     <header
       className={`transition-all duration-300 ${
