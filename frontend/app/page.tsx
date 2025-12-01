@@ -1076,9 +1076,9 @@ export default function Home() {
                       </h4>
                       <p className="text-sm text-white/70">{testimonial.location}</p>
                     </div>
-                    <div className="ml-auto flex items-center gap-1 text-[#F56EB3]">
+                    <div className="ml-auto flex items-center gap-0.5 sm:gap-1 text-[#F56EB3]">
                       {[...Array(testimonial.rating)].map((_, starIndex) => (
-                        <Star key={starIndex} className="w-4 h-4 fill-current" />
+                        <Star key={starIndex} className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 fill-current" />
                       ))}
                     </div>
                   </div>
