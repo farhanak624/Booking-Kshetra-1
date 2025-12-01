@@ -255,7 +255,7 @@ export default function AirportTransportPage() {
         </div>
       </section>
       {/* Service Information */}
-      <section className="relative py-20 md:py-30 overflow-hidden bg-transparent">
+      <section className="relative py-20 md:py-30 overflow-hidden bg-black">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -267,7 +267,7 @@ export default function AirportTransportPage() {
               backgroundRepeat: "no-repeat",
             }}
             alt="Airport Transfers at Kshetra"
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
 
