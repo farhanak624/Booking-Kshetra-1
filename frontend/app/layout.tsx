@@ -3,6 +3,7 @@ import { Inter, Monomaniac_One, Annie_Use_Your_Telescope, Water_Brush, Urbanist 
 import './globals.css'
 import { YogaBookingProvider } from '../contexts/YogaBookingContext'
 import { Toaster } from 'react-hot-toast'
+import AppInitializer from '../components/AppInitializer'
 
 const inter = Inter({ subsets: ['latin'] })
 const monomaniacOne = Monomaniac_One({ 
@@ -40,33 +41,35 @@ export default function RootLayout({
   return (
     <html lang="en" className={`scroll-smooth ${monomaniacOne.variable} ${annieUseYourTelescope.variable} ${waterBrush.variable} ${urbanist.variable}`}>
       <body className={inter.className} suppressHydrationWarning={true}>
-        <YogaBookingProvider>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#4ade80',
-                  secondary: '#fff',
+        <AppInitializer>
+          <YogaBookingProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
                 },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#4ade80',
+                    secondary: '#fff',
+                  },
                 },
-              },
-            }}
-          />
-        </YogaBookingProvider>
+                error: {
+                  duration: 5000,
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+          </YogaBookingProvider>
+        </AppInitializer>
       </body>
     </html>
   )
