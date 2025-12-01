@@ -200,6 +200,57 @@ export class BookingValidator {
       throw new Error('Failed to validate room availability');
     }
   }
+
+  /**
+   * Check if a vehicle is available for booking during the specified date range
+   * @param vehicleId - The VehicleRental document ID
+   * @param startDate - Start date of the rental period
+   * @param endDate - End date of the rental period
+   * @param excludeBookingId - Optional booking ID to exclude from check (for updates)
+   * @returns Object with availability status and conflicting bookings if any
+   */
+  async checkVehicleAvailability(
+    vehicleId: string,
+    startDate: Date,
+    endDate: Date,
+    excludeBookingId?: string
+  ): Promise<DateOverlapCheck> {
+    try {
+      // Find all bookings that contain this vehicle in selectedServices
+      // and have overlapping dates
+      const query: any = {
+        status: { $in: ['pending', 'confirmed', 'checked_in'] }, // Only active bookings
+        paymentStatus: { $in: ['pending', 'paid'] }, // Only pending or paid bookings
+        // Check if any selectedService has this vehicleId
+        'selectedServices.serviceId': vehicleId,
+        // Check for date overlap: booking starts before endDate AND ends after startDate
+        $or: [
+          {
+            checkIn: { $lt: endDate },
+            checkOut: { $gt: startDate }
+          }
+        ]
+      };
+
+      // Exclude current booking if updating
+      if (excludeBookingId) {
+        query._id = { $ne: excludeBookingId };
+      }
+
+      const conflictingBookings = await Booking.find(query)
+        .populate('userId', 'name email')
+        .select('_id checkIn checkOut status paymentStatus primaryGuestInfo guestEmail')
+        .lean();
+
+      return {
+        hasOverlap: conflictingBookings.length > 0,
+        conflictingBookings: conflictingBookings.length > 0 ? conflictingBookings : undefined
+      };
+    } catch (error) {
+      console.error('Error checking vehicle availability:', error);
+      throw new Error('Failed to check vehicle availability');
+    }
+  }
 }
 
 export const bookingValidator = new BookingValidator();

@@ -4,6 +4,7 @@ import {
   getVehicles,
   getVehicleById,
   getVehiclesByType,
+  checkVehicleAvailability,
   createVehicle,
   updateVehicle,
   deleteVehicle,
@@ -18,6 +19,7 @@ const router = express.Router();
 // Public routes
 router.get('/', getVehicles);
 router.get('/type/:type', getVehiclesByType);
+router.get('/check-availability', checkVehicleAvailability);
 router.get('/:id', getVehicleById);
 
 // Admin routes

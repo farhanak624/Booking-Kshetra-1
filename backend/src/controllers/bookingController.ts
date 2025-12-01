@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import mongoose from 'mongoose';
-import { Booking, Room, Service, YogaSession, User, Agency, Coupon, CouponUsage } from '../models';
+import { Booking, Room, Service, YogaSession, User, Agency, Coupon, CouponUsage, VehicleRental } from '../models';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { pricingCalculator } from '../utils/pricing';
 import { bookingValidator } from '../utils/bookingValidation';
@@ -221,6 +221,63 @@ export const createPublicBooking = async (req: any, res: Response): Promise<void
 
         req.body.checkIn = req.body.checkIn || today;
         req.body.checkOut = req.body.checkOut || tomorrow;
+      }
+
+      // Check for vehicle rental bookings and validate availability
+      if (selectedServices && selectedServices.length > 0) {
+        // Check each selected service to see if it's a vehicle rental
+        for (const serviceSelection of selectedServices) {
+          const serviceId = serviceSelection.serviceId;
+          
+          // Try to find if this is a VehicleRental by checking the VehicleRental collection
+          const vehicleRental = await VehicleRental.findById(serviceId).session(session);
+          
+          if (vehicleRental) {
+            // This is a vehicle rental, check availability
+            const startDate = new Date(req.body.checkIn);
+            const endDate = new Date(req.body.checkOut);
+            
+            // Validate dates
+            const dateValidation = bookingValidator.validateBookingDates(startDate, endDate);
+            if (!dateValidation.valid) {
+              res.status(400).json({
+                success: false,
+                message: dateValidation.message
+              });
+              await session.abortTransaction();
+              return;
+            }
+
+            // Check vehicle availability
+            const availabilityCheck = await bookingValidator.checkVehicleAvailability(
+              serviceId.toString(),
+              startDate,
+              endDate
+            );
+
+            if (availabilityCheck.hasOverlap) {
+              const vehicleName = vehicleRental.name || `${vehicleRental.brand} ${vehicleRental.vehicleModel}`;
+              res.status(400).json({
+                success: false,
+                message: `Vehicle "${vehicleName}" is already booked for the selected dates. Please choose different dates.`,
+                conflictingBookings: availabilityCheck.conflictingBookings
+              });
+              await session.abortTransaction();
+              return;
+            }
+
+            // Also check if vehicle is active/available
+            if (!vehicleRental.isActive || !vehicleRental.availability?.isAvailable) {
+              const vehicleName = vehicleRental.name || `${vehicleRental.brand} ${vehicleRental.vehicleModel}`;
+              res.status(400).json({
+                success: false,
+                message: `Vehicle "${vehicleName}" is currently not available for booking.`
+              });
+              await session.abortTransaction();
+              return;
+            }
+          }
+        }
       }
     }
 
