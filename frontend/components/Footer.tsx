@@ -5,14 +5,18 @@ import { Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react"
 
 const stayLinks = [
   { label: "Rooms & Suites", href: "/rooms" },
-  { label: "Book Your Stay", href: "/booking" },
-  { label: "Photo Gallery", href: "/gallery" },
+  { label: "Book Your Stay", href: "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala" },
+  // { label: "Photo Gallery", href: "/gallery" },
 ];
 
 const experienceLinks = [
-  { label: "Spa & Wellness", href: "/spa" },
+  // { label: "Spa & Wellness", href: "/spa" },
   { label: "Yoga Sessions", href: "/yoga" },
   { label: "Dining & Cuisine", href: "/dining" },
+  { label: "Adventure Sports", href: "/adventure" },
+  { label: "Rent a Vehicle", href: "/services" },
+  { label: "Airport Transfers", href: "/airport-transport" },
+
 ];
 
 const supportLinks = [
@@ -125,14 +129,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#E24AA8] flex-shrink-0" />
-                <a href="mailto:hello@kshetra.com" className="hover:text-[#E24AA8] transition-colors">
-                  hello@kshetra.com
+                <a href="mailto:booking@kshetraretreat.com" className="hover:text-[#E24AA8] transition-colors">
+                  booking@kshetraretreat.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#E24AA8] flex-shrink-0" />
-                <a href="tel:+919876543210" className="hover:text-[#E24AA8] transition-colors">
-                  +91 98765 43210
+                <a href="tel:+919447082345" className="hover:text-[#E24AA8] transition-colors">
+                  +91 9447082345
                 </a>
               </li>
             </ul>

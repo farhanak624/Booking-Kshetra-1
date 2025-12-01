@@ -65,6 +65,7 @@ const BookingCompletePageContent = () => {
   const [error, setError] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
   const [bookingId, setBookingId] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   // Personal Information Form
   const [personalInfo, setPersonalInfo] = useState({
@@ -89,20 +90,32 @@ const BookingCompletePageContent = () => {
   const [bookingSummary, setBookingSummary] = useState<BookingSummary | null>(null);
 
   useEffect(() => {
-    // Load booking data from localStorage or URL params
-    const savedBookingData = localStorage.getItem('bookingFormData');
-    if (savedBookingData) {
-      const data = JSON.parse(savedBookingData);
-      setBookingData(data);
-      
-      // Initialize guest details array based on guest count
-      const totalGuests = data.guests.adults + data.guests.children;
-      const initialGuests = Array.from({ length: totalGuests }, (_, index) => ({
-        name: '',
-        age: index < data.guests.adults ? 25 : 8
-      }));
-      setGuestDetails(initialGuests);
-    }
+    // Simulate initial loading with minimum delay for smooth UX
+    const initializeApp = async () => {
+      try {
+        // Load booking data from localStorage or URL params
+        const savedBookingData = localStorage.getItem('bookingFormData');
+        if (savedBookingData) {
+          const data = JSON.parse(savedBookingData);
+          setBookingData(data);
+
+          // Initialize guest details array based on guest count
+          const totalGuests = data.guests.adults + data.guests.children;
+          const initialGuests = Array.from({ length: totalGuests }, (_, index) => ({
+            name: '',
+            age: index < data.guests.adults ? 25 : 8
+          }));
+          setGuestDetails(initialGuests);
+        }
+
+        // Minimum loading time for smooth animation (1.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    initializeApp();
   }, []);
 
   const handlePersonalInfoSubmit = (e: React.FormEvent) => {
@@ -387,8 +400,16 @@ const BookingCompletePageContent = () => {
         <button
           onClick={handleGuestDetailsSubmit}
           disabled={loading}
-          className="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+          className="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 flex items-center justify-center gap-2"
         >
+          {loading && (
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+            </motion.div>
+          )}
           {loading ? 'Creating Booking...' : 'Review & Pay'}
         </button>
       </div>
@@ -666,6 +687,11 @@ const BookingCompletePageContent = () => {
     </motion.div>
   );
 
+  // Show initial loading screen
+  if (initialLoading) {
+    return <KshetraLoading />;
+  }
+
   if (!bookingData) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -739,16 +765,220 @@ const BookingCompletePageContent = () => {
   );
 };
 
+// Custom Loading Component with Enhanced Kshetra Logo Animation
+const KshetraLoading = () => (
+  <div className="min-h-screen bg-gradient-to-br from-[#B23092]/10 via-blue-50 to-purple-50 flex items-center justify-center relative overflow-hidden">
+    {/* Animated background elements */}
+    <div className="absolute inset-0">
+      {/* Floating particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-[#B23092]/20 rounded-full"
+          initial={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            scale: 0
+          }}
+          animate={{
+            y: [null, -100],
+            x: [null, Math.random() * 100 - 50],
+            scale: [0, 1, 0],
+            opacity: [0, 0.6, 0]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            delay: i * 0.8,
+            ease: "easeOut"
+          }}
+        />
+      ))}
+
+      {/* Subtle gradient waves */}
+      <motion.div
+        className="absolute inset-0 opacity-30"
+        animate={{
+          background: [
+            'radial-gradient(circle at 20% 50%, #B23092 0%, transparent 50%)',
+            'radial-gradient(circle at 80% 50%, #3B82F6 0%, transparent 50%)',
+            'radial-gradient(circle at 50% 20%, #B23092 0%, transparent 50%)',
+            'radial-gradient(circle at 20% 50%, #B23092 0%, transparent 50%)',
+          ],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+    </div>
+
+    <div className="text-center relative z-10">
+      {/* Enhanced logo container with multiple animation rings */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.3, rotateY: 180 }}
+        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut", type: "spring", stiffness: 100 }}
+        className="mb-8 relative"
+      >
+        <div className="relative w-40 h-40 mx-auto">
+          {/* Multiple animated rings */}
+          {[0, 1, 2].map((ringIndex) => (
+            <motion.div
+              key={ringIndex}
+              className={`absolute inset-0 rounded-full border-2 border-transparent ${
+                ringIndex === 0 ? 'border-t-[#B23092]/40 border-r-[#B23092]/20' :
+                ringIndex === 1 ? 'border-l-blue-400/30 border-b-blue-400/15' :
+                'border-r-purple-400/25 border-t-purple-400/10'
+              }`}
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 3 + ringIndex,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{
+                width: `${120 + ringIndex * 20}px`,
+                height: `${120 + ringIndex * 20}px`,
+                margin: 'auto',
+                top: `${-10 - ringIndex * 10}px`,
+                left: `${-10 - ringIndex * 10}px`,
+                right: `${-10 - ringIndex * 10}px`,
+                bottom: `${-10 - ringIndex * 10}px`,
+                animationDirection: ringIndex % 2 === 0 ? "normal" : "reverse"
+              }}
+            />
+          ))}
+
+          {/* Glowing background for logo */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-[#B23092]/20 to-blue-400/20 rounded-full blur-lg"
+            animate={{
+              scale: [0.8, 1.1, 0.8],
+              opacity: [0.3, 0.7, 0.3]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Logo with enhanced animation */}
+          <motion.img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/logo_new.png"
+            alt="Kshetra Retreat Logo"
+            className="w-32 h-auto mx-auto relative z-10 drop-shadow-lg"
+            animate={{
+              scale: [1, 1.08, 1],
+              rotateY: [0, 5, -5, 0],
+              filter: ['brightness(1)', 'brightness(1.1)', 'brightness(1)']
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        </div>
+      </motion.div>
+
+      {/* Enhanced loading text with typewriter effect */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        className="space-y-4"
+      >
+        <motion.h2
+          className="text-2xl font-bold text-gray-800 font-annie-telescope"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+        >
+          Kshetra Retreat Resort
+        </motion.h2>
+
+        <motion.p
+          className="text-[#B23092] text-sm font-semibold font-urbanist"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.6 }}
+        >
+          Where Serenity Meets Luxury
+        </motion.p>
+
+        {/* Enhanced animated loading text */}
+        <div className="flex items-center justify-center gap-2">
+          <motion.span
+            className="text-gray-600 font-urbanist"
+            animate={{ opacity: [1, 0.6, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            Crafting your perfect experience
+          </motion.span>
+          <div className="flex gap-1">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-2 h-2 bg-[#B23092] rounded-full"
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.4, 1, 0.4],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Enhanced progress bar with glow effect */}
+        <motion.div
+          className="w-64 h-2 bg-gray-200/50 rounded-full mx-auto overflow-hidden shadow-inner"
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: 256 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+        >
+          <motion.div
+            className="h-full bg-gradient-to-r from-[#B23092] via-blue-500 to-purple-500 rounded-full shadow-lg"
+            style={{
+              background: 'linear-gradient(90deg, #B23092, #3B82F6, #8B5CF6, #B23092)',
+              backgroundSize: '300% 100%'
+            }}
+            animate={{
+              x: [-280, 280],
+              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+            }}
+            transition={{
+              x: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+              backgroundPosition: { duration: 3, repeat: Infinity, ease: "linear" }
+            }}
+          />
+        </motion.div>
+
+        {/* Subtle loading percentage simulation */}
+        <motion.div
+          className="text-xs text-gray-500 font-urbanist"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+        >
+          Preparing your booking experience...
+        </motion.div>
+      </motion.div>
+    </div>
+  </div>
+);
+
 const BookingCompletePage = () => {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<KshetraLoading />}>
       <BookingCompletePageContent />
     </Suspense>
   );

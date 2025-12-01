@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Users,
   Clock,
@@ -70,8 +70,6 @@ interface Teacher {
 
 export default function YogaPage() {
   const router = useRouter();
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
@@ -378,18 +376,15 @@ export default function YogaPage() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image with Parallax */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ y }}
-        >
+        {/* Background Image */}
+        <div className="absolute inset-0">
           <img
             src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png"
             alt="Yoga & Wellness at Kshetra"
-            className="w-full h-[120%] object-cover"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/20"></div>
-        </motion.div>
+        </div>
 
         {/* Content */}
         <div className="relative z-10 min-h-screen flex items-center">
