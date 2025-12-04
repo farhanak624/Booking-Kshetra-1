@@ -622,6 +622,14 @@ export default function AirportTransportPage() {
                             }`}
                             maxLength={10}
                           />
+                          <button
+                            type="button"
+                            onClick={() => window.open('https://www.ixigo.com/flight-status', '_blank')}
+                            className="mt-2 text-sm text-[#B23092] hover:text-[#9a2578] font-medium font-urbanist flex items-center gap-1 transition-colors"
+                          >
+                            <Plane className="w-4 h-4" />
+                            Check Flight Status
+                          </button>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-white/80 mb-2 font-urbanist">
@@ -789,6 +797,14 @@ export default function AirportTransportPage() {
                             }`}
                             maxLength={10}
                           />
+                          <button
+                            type="button"
+                            onClick={() => window.open('https://www.ixigo.com/flight-status', '_blank')}
+                            className="mt-2 text-sm text-[#B23092] hover:text-[#9a2578] font-medium font-urbanist flex items-center gap-1 transition-colors"
+                          >
+                            <Plane className="w-4 h-4" />
+                            Check Flight Status
+                          </button>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-white/80 mb-2 font-urbanist">
