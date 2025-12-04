@@ -4,6 +4,7 @@ import './globals.css'
 import { YogaBookingProvider } from '../contexts/YogaBookingContext'
 import { Toaster } from 'react-hot-toast'
 import AppInitializer from '../components/AppInitializer'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ subsets: ['latin'] })
 const monomaniacOne = Monomaniac_One({ 
@@ -70,6 +71,7 @@ export default function RootLayout({
             />
           </YogaBookingProvider>
         </AppInitializer>
+        <SpeedInsights />
       </body>
     </html>
   )
