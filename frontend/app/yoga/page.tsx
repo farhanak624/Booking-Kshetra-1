@@ -24,6 +24,8 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useRouter } from "next/navigation";
 import { yogaAPI } from "../../lib/api";
+import HeroSection from "../../components/HeroSection";
+import { preloadHeroImages } from "../../utils/imagePreloader";
 
 interface YogaSession {
   _id: string;
@@ -84,6 +86,11 @@ export default function YogaPage() {
     fetchYogaSessions();
     fetchTeachers();
     fetchDailySessions();
+    // Preload hero images
+    preloadHeroImages([
+      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png',
+      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595'
+    ]);
   }, []);
 
   const fetchYogaSessions = async () => {
@@ -375,66 +382,56 @@ export default function YogaPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png"
-            alt="Yoga & Wellness at Kshetra"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/20"></div>
-        </div>
+      <HeroSection
+        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png"
+        overlayOpacity={0.2}
+      >
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] mt-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="max-w-3xl"
+          >
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight mt-12">
+              <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
+                WE OFFER MORE THAN YOGA
+              </span>
+              <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4" style={{ color: '#B23092' }}>
+                We Offer Renewal.
+              </span>
+            </h1>
 
-        {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] mt-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="max-w-3xl"
+            {/* Description */}
+            <div className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-urbanist space-y-2">
+              <p>
+                At Kshetra, yoga is a journey of strength, serenity, and self-discovery.
+              </p>
+              <p>
+                Each session is designed to align your body, refresh your mind,
+              </p>
+              <p>
+                and help you live with balance and grace every single day.
+              </p>
+            </div>
+
+            {/* CTA Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const element = document.getElementById("programs-section");
+                element?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="bg-[#B23092] hover:bg-[#9a2578] text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist flex items-center gap-3"
             >
-              {/* Main Heading */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight mt-12">
-                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
-                  WE OFFER MORE THAN YOGA
-                </span>
-                <span className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4" style={{ color: '#B23092' }}>
-                  We Offer Renewal.
-                </span>
-              </h1>
-
-              {/* Description */}
-              <div className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-urbanist space-y-2">
-                <p>
-                  At Kshetra, yoga is a journey of strength, serenity, and self-discovery.
-                </p>
-                <p>
-                  Each session is designed to align your body, refresh your mind,
-                </p>
-                <p>
-                  and help you live with balance and grace every single day.
-                </p>
-              </div>
-
-              {/* CTA Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const element = document.getElementById("programs-section");
-                  element?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="bg-[#B23092] hover:bg-[#9a2578] text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist flex items-center gap-3"
-              >
-                View Programs
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </motion.div>
-          </div>
+              View Programs
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </motion.div>
         </div>
-      </section>
+      </HeroSection>
 
       {/* Why Choose Kshetra Section */}
       <section 

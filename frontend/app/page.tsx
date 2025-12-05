@@ -42,6 +42,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { accommodationAPI } from "../lib/api";
 import Link from "next/link";
+import HeroSection from "../components/HeroSection";
+import { preloadHeroImages } from "../utils/imagePreloader";
 
 interface Accommodation {
   _id: string;
@@ -435,6 +437,14 @@ export default function Home() {
     },
   ];
 
+  // Preload critical images
+  useEffect(() => {
+    preloadHeroImages([
+      'https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710',
+      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png'
+    ]);
+  }, []);
+
   // Fetch accommodations on component mount
   useEffect(() => {
     const fetchAccommodations = async () => {
@@ -541,138 +551,113 @@ export default function Home() {
       <Header />
 
       {/* Hero Section - Tropical Night Theme */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image with Parallax */}
+      <HeroSection
+        backgroundImage="https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710"
+        enableParallax={true}
+        overlayOpacity={0.2}
+      >
         <motion.div
-          className="absolute inset-0"
-          style={{ y }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="max-w-3xl pt-4 sm:pt-6 md:pt-10"
         >
-          <img
-            src="https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710"
-            alt="Kshetra Retreat Hero"
-            className="w-full h-[120%] object-cover"
-          />
-          <div className="absolute inset-0 bg-black/20"></div>
-        </motion.div>
+          {/* Main Heading */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 sm:mb-8 leading-tight">
+            <span className="block uppercase tracking-wider mb-2 text-base sm:text-lg md:text-xl lg:text-4xl font-annie-telescope">
+              BOOK ROOMS & SERVICES
+            </span>
+            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-water-brush italic mt-2 sm:mt-4">
+              All In <span className="text-[#B23092]">One</span> Place
+            </span>
+          </h1>
 
-        {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-[100px] 2xl:px-[120px] pt-4 sm:pt-6 md:pt-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="max-w-3xl"
+          {/* Description */}
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 md:mb-12 max-w-xl leading-relaxed font-annie-telescope">
+            Find the perfect stay and trusted services in seconds. Browse
+            rooms, book instantly, and get reliable help at your fingertips.
+          </p>
+
+          {/* CTA Button */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() =>
+                window.open(
+                  "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala",
+                  "_blank"
+                )
+              }
+              className="bg-[#B23092] hover:bg-[#B23092]/80 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
             >
-              {/* Main Heading */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 sm:mb-8 leading-tight">
-                <span className="block uppercase tracking-wider mb-2 text-base sm:text-lg md:text-xl lg:text-4xl font-annie-telescope">
-                  BOOK ROOMS & SERVICES
-                </span>
-                <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-water-brush italic mt-2 sm:mt-4">
-                  All In <span className="text-[#B23092]">One</span> Place
-                </span>
-              </h1>
-
-              {/* Description */}
-              <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10 md:mb-12 max-w-xl leading-relaxed font-annie-telescope">
-                Find the perfect stay and trusted services in seconds. Browse
-                rooms, book instantly, and get reliable help at your fingertips.
-              </p>
-
-              {/* CTA Button */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() =>
-                  window.open(
-                    "https://live.ipms247.com/booking/book-rooms-kshetraretreatvarkala",
-                    "_blank"
-                  )
-                }
-                className="bg-[#B23092] hover:bg-[#B23092]/80 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
-              >
-                Start Your Booking
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() =>
-                  router.push("/track-booking")
-                }
-                className="bg-transparent border border-[#B23092] text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
-              >
-                Track Your Booking
-              </motion.button>
-              </div>
-            </motion.div>
+              Start Your Booking
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() =>
+                router.push("/track-booking")
+              }
+              className="bg-transparent border border-[#B23092] text-white font-semibold text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist w-full sm:w-auto text-center"
+            >
+              Track Your Booking
+            </motion.button>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </HeroSection>
 
       {/* Kerala's Spirit Section */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png"
-            alt="Where Kerala's Spirit Meets Coastal Serenity"
-            className="w-full h-full object-cover"
-          />
-        </div>
+      <HeroSection
+        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png"
+        overlayOpacity={0}
+      >
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
+          {/* Left Side - Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="text-white"
+          >
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight font-water-brush">
+              Where Kerala's Spirit
+            </h1>
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight font-water-brush">
+              <span className="text-white">Meets</span>{" "}
+              <span className="text-[#B23092]">Coastal Serenity</span>
+            </h2>
 
-        {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
-            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
-              {/* Left Side - Text Content */}
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-                className="text-white"
-              >
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight font-water-brush">
-                  Where Kerala's Spirit
-                </h1>
-                <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight font-water-brush">
-                  <span className="text-white">Meets</span>{" "}
-                  <span className="text-[#B23092]">Coastal Serenity</span>
-                </h2>
+            <div className="space-y-6 text-lg md:text-xl leading-relaxed font-urbanist text-white/90">
+              <p>
+                Welcome to Kshetra Retreat, a boutique hideaway perched near
+                the iconic North Cliff of Varkala Beach — Kerala's best-kept
+                coastal secret. More than just a stay, Kshetra is a soulful
+                experience crafted around nature, tradition, wellness, and
+                exploration.
+              </p>
 
-                <div className="space-y-6 text-lg md:text-xl leading-relaxed font-urbanist text-white/90">
-                  <p>
-                    Welcome to Kshetra Retreat, a boutique hideaway perched near
-                    the iconic North Cliff of Varkala Beach — Kerala's best-kept
-                    coastal secret. More than just a stay, Kshetra is a soulful
-                    experience crafted around nature, tradition, wellness, and
-                    exploration.
-                  </p>
+              <p>
+                Here, your journey through Kerala begins at your doorstep.
+                Step out to five stunning beaches within minutes, sail
+                through tranquil backwaters and houseboats of Kollam just 20
+                km away, or trek through the misty Western Ghats and Ponmudi
+                tea gardens about 50 km from us. From Kathakali's birthplace
+                in Kottarakara (25 km) to the Raja Ravi Varma Palace (19 km)
+                and royal palaces of Trivandrum (25 km) — every essence of
+                Kerala lies within a short journey.
+              </p>
 
-                  <p>
-                    Here, your journey through Kerala begins at your doorstep.
-                    Step out to five stunning beaches within minutes, sail
-                    through tranquil backwaters and houseboats of Kollam just 20
-                    km away, or trek through the misty Western Ghats and Ponmudi
-                    tea gardens about 50 km from us. From Kathakali's birthplace
-                    in Kottarakara (25 km) to the Raja Ravi Varma Palace (19 km)
-                    and royal palaces of Trivandrum (25 km) — every essence of
-                    Kerala lies within a short journey.
-                  </p>
-
-                  <p>
-                    At Kshetra, we bring this all together — boutique comfort,
-                    heartfelt hospitality, and the unmatched advantage of
-                    staying in the true cross-section of Kerala tourism.
-                  </p>
-                </div>
-              </motion.div>
+              <p>
+                At Kshetra, we bring this all together — boutique comfort,
+                heartfelt hospitality, and the unmatched advantage of
+                staying in the true cross-section of Kerala tourism.
+              </p>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </HeroSection>
 
       {/* Why Varkala Section */}
       <section className="relative min-h-screen py-20 sm:py-24 md:py-28 lg:py-32 xl:py-40 2xl:py-44 overflow-hidden bg-black">

@@ -21,6 +21,8 @@ import {
 } from 'lucide-react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import HeroSection from '../../components/HeroSection'
+import { preloadHeroImages } from '../../utils/imagePreloader'
 
 interface TransportBooking {
   pickup: boolean
@@ -68,6 +70,10 @@ export default function AirportTransportPage() {
   // Calculate total on component mount and when bookingData changes
   useEffect(() => {
     calculateTotal()
+    // Preload hero image
+    preloadHeroImages([
+      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png'
+    ])
   }, [bookingData.pickup, bookingData.drop])
 
   const handlePickupChange = (enabled: boolean) => {
@@ -192,68 +198,53 @@ export default function AirportTransportPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image with Parallax */}
+      <HeroSection
+        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png"
+        enableParallax={true}
+        overlayOpacity={0.2}
+      >
         <motion.div
-          className="absolute inset-0"
-          style={{ y }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="max-w-3xl"
         >
-          <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png"
-            style={{ objectFit: "cover" }}
-            alt="Airport Transfers at Kshetra"
-            className="w-full h-[120%] object-cover"
-          />
-          <div className="absolute inset-0 bg-black/20"></div>
-        </motion.div>
-
-        {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="max-w-3xl"
+          {/* Main Heading */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+            <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
+              Smooth Rides
+            </span>
+            <span
+              className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4"
+              style={{ color: "#B23092" }}
             >
-              {/* Main Heading */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
-                <span className="block uppercase tracking-wider mb-2 font-annie-telescope">
-                  Smooth Rides
-                </span>
-                <span
-                  className="block text-6xl md:text-7xl lg:text-8xl font-water-brush italic mt-4"
-                  style={{ color: "#B23092" }}
-                >
-                  to Every Terminal
-                </span>
-              </h1>
+              to Every Terminal
+            </span>
+          </h1>
 
-              {/* Description */}
-              <div className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-urbanist space-y-2">
-                <p>
-                  Experience comfort and punctuality with our dedicated airport
-                  transport service.
-                </p>
-              </div>
-
-              {/* CTA Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const element = document.getElementById("programs-section");
-                  element?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="bg-[#B23092] hover:bg-[#9a2578] text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist flex items-center gap-3"
-              >
-                View Programs
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </motion.div>
+          {/* Description */}
+          <div className="text-lg md:text-xl text-white/90 mb-12 max-w-xl leading-relaxed font-urbanist space-y-2">
+            <p>
+              Experience comfort and punctuality with our dedicated airport
+              transport service.
+            </p>
           </div>
-        </div>
-      </section>
+
+          {/* CTA Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              const element = document.getElementById("programs-section");
+              element?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="bg-[#B23092] hover:bg-[#9a2578] text-white font-semibold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-lg font-urbanist flex items-center gap-3"
+          >
+            View Programs
+            <ArrowRight className="w-5 h-5" />
+          </motion.button>
+        </motion.div>
+      </HeroSection>
       {/* Service Information */}
       <section className="relative py-20 md:py-30 overflow-hidden bg-black">
         {/* Background Image */}

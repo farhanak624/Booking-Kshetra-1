@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Image loading shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer-animation {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Optimize image loading */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Prevent layout shift during image load */
+img[loading="eager"],
+img[fetchpriority="high"] {
+  content-visibility: auto;
+}
+
+/* Smooth transitions for background images */
+.bg-image-loaded {
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Hero section optimization */
+section img {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
