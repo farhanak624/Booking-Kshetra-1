@@ -15,6 +15,8 @@ import Header from '../../components/Header'
 import { adventureSportsAPI } from '../../lib/api'
 import { useRouter } from 'next/navigation'
 import Footer from '@/components/Footer'
+import HeroSection from '../../components/HeroSection'
+import { preloadHeroImages } from '../../utils/imagePreloader'
 
 interface Service {
   _id: string
@@ -59,6 +61,10 @@ const AdventurePage = () => {
       }
     }
     fetchServices()
+    // Preload hero image
+    preloadHeroImages([
+      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/adventure.jpg?updatedAt=1763305822583'
+    ])
   }, [])
 
   const formatPrice = (price: number, unit?: string) => {
@@ -240,53 +246,41 @@ const AdventurePage = () => {
       <Header />
 
       {/* Hero */}
-      <section className="relative overflow-hidden min-h-screen ">
-        {/* Background Image with Parallax */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ y }}
-        >
-          <img
-            src={'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/adventure.jpg?updatedAt=1763305822583'}
-            alt={'Adventure Sports'}
-            className="w-full h-[120%] object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </motion.div>
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px]">
-            <div className="max-w-3xl">
-              <h1 className="text-white mb-6">
-                <span className="block text-3xl sm:text-4xl md:text-5xl font-annie-telescope">
-                  WHERE EVERY MOMENT
-                </span>
-                <span className="block text-5xl sm:text-6xl md:text-7xl font-water-brush text-[#B23092] mt-3">
-                  Sparks Adventure
-                </span>
-              </h1>
-              <p className="text-white/90 font-urbanist text-sm sm:text-base md:text-lg max-w-2xl">
-                Dive into heart‑racing experiences designed to push your limits and ignite your spirit.
-                Our premium adventure sports combine excitement, safety, and world‑class service to
-                turn your getaway into a story worth telling.
-              </p>
-              <button
-                onClick={() => {
-                  const el = document.getElementById('adventure-list')
-                  if (el) el.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="mt-8 inline-flex items-center gap-2 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-full font-urbanist font-semibold"
-              >
-                View Programs
-                <span className="inline-block"><svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <HeroSection
+        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/adventure.jpg?updatedAt=1763305822583"
+        enableParallax={true}
+        overlayOpacity={0.4}
+      >
+        <div className="max-w-3xl">
+          <h1 className="text-white mb-6">
+            <span className="block text-3xl sm:text-4xl md:text-5xl font-annie-telescope">
+              WHERE EVERY MOMENT
+            </span>
+            <span className="block text-5xl sm:text-6xl md:text-7xl font-water-brush text-[#B23092] mt-3">
+              Sparks Adventure
+            </span>
+          </h1>
+          <p className="text-white/90 font-urbanist text-sm sm:text-base md:text-lg max-w-2xl">
+            Dive into heart‑racing experiences designed to push your limits and ignite your spirit.
+            Our premium adventure sports combine excitement, safety, and world‑class service to
+            turn your getaway into a story worth telling.
+          </p>
+          <button
+            onClick={() => {
+              const el = document.getElementById('adventure-list')
+              if (el) el.scrollIntoView({ behavior: 'smooth' })
+            }}
+            className="mt-8 inline-flex items-center gap-2 bg-[#B23092] hover:bg-[#9a2578] text-white px-6 py-3 rounded-full font-urbanist font-semibold"
+          >
+            View Programs
+            <span className="inline-block"><svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.11901 7.40916C6.45814 7.40916 6.79726 7.27646 7.03318 7.0258L11.8694 2.20432C12.3707 1.703 12.3707 0.877304 11.8694 0.375987C11.3681 -0.125329 10.5424 -0.125329 10.0411 0.375987L6.11901 4.28331L2.21169 0.375987C1.71037 -0.125329 0.884676 -0.125329 0.38336 0.375987C0.132702 0.626646 0 0.965771 0 1.29015C0 1.61453 0.132702 1.95366 0.38336 2.20432L5.20485 7.0258C5.44076 7.27646 5.77989 7.40916 6.11901 7.40916Z" fill="white"/>
 <path d="M7.03318 13.6165L11.8694 8.79502C12.3707 8.2937 12.3707 7.468 11.8694 6.96669C11.3681 6.46537 10.5424 6.46537 10.0411 6.96669L6.11901 10.874L2.21169 6.96669C1.71037 6.46537 0.884676 6.46537 0.38336 6.96669C0.132702 7.21734 0 7.55647 0 7.88085C0 8.20523 0.132702 8.54436 0.38336 8.79502L5.20485 13.6165C5.44076 13.8524 5.77989 13.9999 6.11901 13.9999C6.45814 13.9999 6.79726 13.8672 7.03318 13.6165Z" fill="white"/>
 </svg>
 </span>
-              </button>
-            </div>
-          </div>
+          </button>
         </div>
-      </section>
+      </HeroSection>
 
       {/* Date + Summary */}
       <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8" id="adventure-list"
