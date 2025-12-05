@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent white flash on page load */
+html,
+body {
+  background-color: #000000;
+  min-height: 100vh;
+}
+
 /* Image loading shimmer effect */
 @keyframes shimmer {
   0% {

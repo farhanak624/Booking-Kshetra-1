@@ -280,7 +280,7 @@ export default function YogaPage() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+        className="bg-black rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
       >
         <div className="h-64 bg-gradient-to-br from-orange-400 to-pink-500 relative">
           <div className="absolute inset-0 bg-black/20" />
@@ -380,7 +380,7 @@ export default function YogaPage() {
   // }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Header />
 
       {/* Hero Section */}
@@ -438,13 +438,16 @@ export default function YogaPage() {
       {/* Why Choose Kshetra Section */}
       <section 
         className="relative py-32 overflow-hidden min-h-screen bg-black"
-        style={{
-          backgroundImage: "url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595')",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center center",
-        }}
       >
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0 bg-black">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/frame1.png?updatedAt=1762760253595"
+            alt="Background"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/50 z-0"></div>
         
@@ -576,26 +579,24 @@ export default function YogaPage() {
         className="relative py-32 overflow-hidden bg-black"
       >
         {/* Frame1 Background - Base layer (extends from previous section) */}
-        <div 
-          className="absolute inset-0 z-[1]"
-          style={{
-            backgroundImage: `url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png')`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center center',
-          }}
-        ></div>
+        <div className="absolute inset-0 z-[1] bg-black">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png"
+            alt="Background"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
         
         {/* Yoga Background - Top layer with transparency */}
-        <div 
-          className="absolute inset-0 z-[2] opacity-70"
-          style={{
-            backgroundImage: `url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png')`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center center',
-          }}
-        ></div>
+        <div className="absolute inset-0 z-[2] opacity-70 bg-black">
+          <img
+            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png"
+            alt="Background"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
         
         {/* Dark Overlay for readability */}
         <div className="absolute inset-0 bg-black/40 z-[3]"></div>
@@ -984,13 +985,14 @@ export default function YogaPage() {
 
       {/* Instructors Section */}
       {teachers.length > 0 && (
-        <section className="relative py-32 overflow-hidden">
+        <section className="relative py-32 overflow-hidden bg-black">
           {/* Background Image */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-black">
             <img
               src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetteaherbg.png?updatedAt=1762973554357"
               alt="Meet Our Teachers Background"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-black/50"></div>
           </div>

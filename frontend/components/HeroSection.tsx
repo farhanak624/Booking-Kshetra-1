@@ -54,16 +54,19 @@ export default function HeroSection({
   }, [backgroundImage])
 
   return (
-    <section className={`relative ${minHeight} overflow-hidden ${className}`}>
+    <section className={`relative ${minHeight} overflow-hidden bg-black ${className}`}>
       {/* Background Image Layer */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-black"
         style={enableParallax ? { y } : {}}
       >
+        {/* Immediate black background to prevent white flash */}
+        <div className="absolute inset-0 bg-black" />
+        
         {/* Blur placeholder - visible before image loads */}
         {!imageLoaded && (
           <div
-            className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black animate-pulse"
+            className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black animate-pulse z-10"
             style={{
               backgroundImage: blurDataURL ? `url(${blurDataURL})` : undefined,
               backgroundSize: 'cover',
@@ -78,7 +81,7 @@ export default function HeroSection({
         <motion.img
           src={backgroundImage}
           alt="Hero Background"
-          className={`w-full ${enableParallax ? 'h-[120%]' : 'h-full'} object-cover`}
+          className={`w-full ${enableParallax ? 'h-[120%]' : 'h-full'} object-cover relative z-20`}
           loading="eager"
           fetchPriority="high"
           decoding="async"
@@ -99,13 +102,13 @@ export default function HeroSection({
 
         {/* Overlay */}
         <div 
-          className="absolute inset-0 bg-black"
+          className="absolute inset-0 bg-black z-30"
           style={{ opacity: overlayOpacity }}
         />
       </motion.div>
 
       {/* Content Layer */}
-      <div className={`relative z-10 ${minHeight} flex items-center`}>
+      <div className={`relative z-40 ${minHeight} flex items-center`}>
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-[100px] 2xl:px-[120px] w-full">
           {title && (
             <motion.div

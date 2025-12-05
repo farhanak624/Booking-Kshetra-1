@@ -88,13 +88,19 @@ export default function Header() {
                     href={item.href}
                     className={`font-monomaniac-one transition-all duration-200 relative group cursor-pointer whitespace-nowrap text-base lg:text-lg xl:text-lg ${
                       isTransparentPage
-                        ? "text-gray-300 hover:text-white"
+                        ? isActive
+                          ? "text-[#B23092] font-semibold"
+                          : "text-gray-300 hover:text-[#B23092]"
                         : isActive
-                        ? "text-[#B23092]"
-                        : "text-gray-700 hover:text-gray-900"
+                        ? "text-[#B23092] font-semibold"
+                        : "text-gray-700 hover:text-[#B23092]"
                     }`}
                   >
                     {item.name}
+                    {/* Active indicator underline */}
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#B23092] rounded-full"></span>
+                    )}
                   </Link>
                 );
               })}
@@ -118,8 +124,8 @@ export default function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={`lg:hidden p-2 transition-colors z-10 relative ml-auto ${
               isTransparentPage
-                ? "text-white hover:text-pink-500"
-                : "text-gray-700 hover:text-gray-900"
+                ? "text-white hover:text-[#B23092]"
+                : "text-gray-700 hover:text-[#B23092]"
             }`}
           >
             {isMenuOpen ? (
@@ -151,11 +157,11 @@ export default function Header() {
                     className={`font-monomaniac-one font-medium py-2 transition-all duration-200 cursor-pointer ${
                       isTransparentPage
                         ? isActive
-                          ? "text-pink-500 border-l-2 border-pink-500 pl-4"
-                          : "text-white hover:text-pink-500 hover:border-l-2 hover:border-pink-500 hover:pl-4"
+                          ? "text-[#B23092] border-l-4 border-[#B23092] pl-4 font-semibold"
+                          : "text-white hover:text-[#B23092] hover:border-l-4 hover:border-[#B23092] hover:pl-4"
                         : isActive
-                        ? "text-orange-500 border-l-2 border-orange-500 pl-4"
-                        : "text-gray-700 hover:text-orange-500 hover:border-l-2 hover:border-orange-500 hover:pl-4"
+                        ? "text-[#B23092] border-l-4 border-[#B23092] pl-4 font-semibold"
+                        : "text-gray-700 hover:text-[#B23092] hover:border-l-4 hover:border-[#B23092] hover:pl-4"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
