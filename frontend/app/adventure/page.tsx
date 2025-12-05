@@ -284,7 +284,7 @@ const AdventurePage = () => {
 
       {/* Date + Summary */}
       <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] py-8" id="adventure-list"
-      style={{backgroundImage: 'url(https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/adventure.png)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      style={{backgroundImage: 'url(/carousal/adventure.png)', backgroundSize: 'cover', backgroundPosition: 'center'}}
       >
         
 

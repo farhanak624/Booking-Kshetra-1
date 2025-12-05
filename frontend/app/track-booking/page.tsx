@@ -259,7 +259,7 @@ const TrackBookingPage = () => {
           {/* Background Image */}
           <div className="absolute inset-0 w-full min-h-full">
             <img
-              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+              src="/carousal/airpotbg3.png"
               alt="Track Your Booking"
               className="w-full h-full min-h-screen object-cover"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}

@@ -88,7 +88,7 @@ export default function ContactPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/contact.png"
+            src="/carousal/contact.png"
             alt="Contact Hero"
             className="w-full h-full object-cover"
           />

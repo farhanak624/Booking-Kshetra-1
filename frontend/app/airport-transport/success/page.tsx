@@ -224,7 +224,7 @@ Thank you for choosing Kshetra Retreat Resort!
         {/* Background Image */}
         <div className="absolute inset-0 w-full h-full">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+            src="/carousal/airpotbg3.png"
             alt="Booking Success"
             className="w-full h-full object-cover"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}

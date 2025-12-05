@@ -347,7 +347,7 @@ const RoomsPage = () => {
           style={{ y }}
         >
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/hotel.png?updatedAt=1763030443251"
+            src="/images/hotel.jpg"
             alt="Kshetra Rooms"
             className="w-full h-[120%] object-cover"
           />

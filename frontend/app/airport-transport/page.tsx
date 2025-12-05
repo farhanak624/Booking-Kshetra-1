@@ -72,7 +72,7 @@ export default function AirportTransportPage() {
     calculateTotal()
     // Preload hero image
     preloadHeroImages([
-      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png'
+      '/carousal/airpotbg.png'
     ])
   }, [bookingData.pickup, bookingData.drop])
 
@@ -199,7 +199,7 @@ export default function AirportTransportPage() {
 
       {/* Hero Section */}
       <HeroSection
-        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg.png"
+        backgroundImage="/carousal/airpotbg.png"
         enableParallax={true}
         overlayOpacity={0.2}
       >
@@ -250,7 +250,7 @@ export default function AirportTransportPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/airpotbg2.png?updatedAt=1763053652989"
+            src="/carousal/airpotbg2.png"
             style={{
               objectFit: "cover",
               backgroundSize: "cover",
@@ -396,7 +396,7 @@ export default function AirportTransportPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/airpotbg3.png"
+            src="/carousal/airpotbg3.png"
             alt="Airport terminal"
             className="w-full h-full object-cover opacity-100"
           />

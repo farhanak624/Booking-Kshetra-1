@@ -385,7 +385,7 @@ export default function YogaPage() {
 
       {/* Hero Section */}
       <HeroSection
-        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yoga.png"
+        backgroundImage="/icons/yoga.jpg"
         overlayOpacity={0.2}
       >
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] 2xl:px-[120px] mt-10">
@@ -482,7 +482,7 @@ export default function YogaPage() {
               {/* Background Image */}
               <div className="absolute inset-0 opacity-20">
                 <img
-                  src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png"
+                  src="/icons/yogabg.jpg"
                   alt="Certified Instructors"
                   className="w-full h-full object-cover blur-sm"
                 />
@@ -581,7 +581,7 @@ export default function YogaPage() {
         {/* Frame1 Background - Base layer (extends from previous section) */}
         <div className="absolute inset-0 z-[1] bg-black">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png"
+            src="/icons/yogabg.jpg"
             alt="Background"
             className="w-full h-full object-cover"
             loading="lazy"
@@ -591,7 +591,7 @@ export default function YogaPage() {
         {/* Yoga Background - Top layer with transparency */}
         <div className="absolute inset-0 z-[2] opacity-70 bg-black">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/yogabg.png"
+            src="/icons/yogabg.jpg"
             alt="Background"
             className="w-full h-full object-cover"
             loading="lazy"
@@ -989,7 +989,7 @@ export default function YogaPage() {
           {/* Background Image */}
           <div className="absolute inset-0 bg-black">
             <img
-              src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetteaherbg.png?updatedAt=1762973554357"
+              src="/icons/meetteaherbg.jpg"
               alt="Meet Our Teachers Background"
               className="w-full h-full object-cover"
               loading="lazy"

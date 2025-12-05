@@ -76,12 +76,12 @@ export default function Home() {
       description:
         "Find inner balance with daily yoga sessions, guided meditation, and Ayurveda therapies designed to heal body and mind. Whether you're here for a rejuvenating break or a certified yoga teacher training, Kshetra's serene setting and experienced instructors make it effortless to reconnect with yourself.",
       background:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg1.png?updatedAt=1762755561353",
+        "/images/crbg1.jpg",
       cardImage:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr1.png?updatedAt=1762755559262",
+        "/carousal/cr1.png",
       cardAlt: "Sunrise yoga above misty mountains",
       visualImage:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel1.png",
+        "/carousal/carausel1.png",
       visualAlt: "Meditating monk at sunrise over lotus pond",
       ctaLabel: "Explore Now",
       ctaLink: "/yoga",
@@ -95,9 +95,9 @@ export default function Home() {
       description:
         "Step out of your room and into adventure. Learn to surf the rolling Arabian Sea, kayak through serene lagoons, paraglide above dramatic cliffs, or trek through lush forest trails. Our team curates unforgettable experiences — from sunrise beach walks to sunset houseboat cruises — so you make the most of every moment in Varkala. ",
       background:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg2.png?updatedAt=1762758524024",
+        "/images/crbg2.jpg",
       cardImage:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr4.png?updatedAt=1762758519609",
+        "/carousal/cr4.png",
       cardAlt: "Ayurvedic massage setup with herbal oils",
       visualImage:
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel2.png",
@@ -114,9 +114,9 @@ export default function Home() {
       description:
         "Savour Kerala’s heritage and global cuisines in our open-air courtyard restaurant. From traditional Kerala sadhya and seafood grills to fresh juices and international favourites, our kitchen celebrates seasonal produce and local flavours, creating meals that are as memorable as the sunsets.",
       background:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg4.png?updatedAt=1762758521798",
+        "/images/crbg4.jpg",
       cardImage:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr3.png?updatedAt=1762758519740",
+        "/carousal/cr3.png",
       cardAlt: "Guests meditating beneath palm trees at dusk",
       visualImage:
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel3.png",
@@ -133,9 +133,9 @@ export default function Home() {
       description:
         "Varkala’s unique location makes day trips effortless. Visit Ponmudi tea estates, marvel at Trivandrum’s palaces, explore the Thenmala eco-forest, or watch a Kathakali performance in its birthplace — all while returning to the comfort of your seaside retreat by nightfall.",
       background:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/crbg3.png?updatedAt=1762758524100",
+        "/images/crbg3.jpg",
       cardImage:
-        "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/cr2.png?updatedAt=1762758520155",
+        "/carousal/cr2.png",
       cardAlt: "Sattvic meal setup with fresh ingredients",
       visualImage:
         "https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/carausel4.png",
@@ -440,8 +440,8 @@ export default function Home() {
   // Preload critical images
   useEffect(() => {
     preloadHeroImages([
-      'https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710',
-      'https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png'
+      '/images/hero.jpg',
+      '/images/hero2.jpg'
     ]);
   }, []);
 
@@ -552,7 +552,7 @@ export default function Home() {
 
       {/* Hero Section - Tropical Night Theme */}
       <HeroSection
-        backgroundImage="https://ik.imagekit.io/8xufknozx/hero.png?updatedAt=1762180200710"
+        backgroundImage="/images/hero.jpg"
         enableParallax={true}
         overlayOpacity={0.2}
       >
@@ -609,7 +609,7 @@ export default function Home() {
 
       {/* Kerala's Spirit Section */}
       <HeroSection
-        backgroundImage="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/hero2.png"
+        backgroundImage="/images/hero2.jpg"
         overlayOpacity={0}
       >
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
@@ -664,7 +664,7 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/varkala.png?updatedAt=1762242897187"
+            src="/icons/varkala.jpg"
             alt="Why Varkala - Kerala in One Place"
             className="w-full h-full object-cover"
           />
@@ -916,7 +916,7 @@ export default function Home() {
         className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 text-white bg-black"
         style={{
           backgroundImage:
-            "url('https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/meetscoastal.png?updatedAt=1762759854675')",
+            "url('/icons/meetscoastal.jpg')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",

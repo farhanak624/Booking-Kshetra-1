@@ -817,7 +817,7 @@ const ServicesPage = () => {
           style={{ y }}
         >
           <img
-            src="https://ik.imagekit.io/8xufknozx/kshetra%20all%20images/Kshetra/rentbike.png"
+            src="/icons/scooter.jpg"
             alt="Rent a Vehicle Hero"
             className="w-full h-[120%] object-cover"
           />
