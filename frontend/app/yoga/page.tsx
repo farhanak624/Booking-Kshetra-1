@@ -369,13 +369,15 @@ export default function YogaPage() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
-      </div>
-    );
-  }
+  // Removed initial loading screen to show content immediately
+  // Data will load in the background and update the UI
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen">
