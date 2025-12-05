@@ -194,7 +194,7 @@ export default function AirportTransportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-black">
       <Header />
 
       {/* Hero Section */}

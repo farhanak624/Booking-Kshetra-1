@@ -547,7 +547,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Header />
 
       {/* Hero Section - Tropical Night Theme */}
