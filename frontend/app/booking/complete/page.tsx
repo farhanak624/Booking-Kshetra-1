@@ -776,8 +776,8 @@ const KshetraLoading = () => (
           key={i}
           className="absolute w-2 h-2 bg-[#B23092]/20 rounded-full"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
             scale: 0
           }}
           animate={{
